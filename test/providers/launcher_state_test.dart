@@ -92,4 +92,40 @@ void main() {
       verifyNever(mockAppsService.startAmbientMode());
     });
   });
+
+  group('LauncherState toggleLauncherVisibility', () {
+    late LauncherState launcherState;
+
+    setUp(() {
+      launcherState = LauncherState();
+    });
+
+    test('initial launcherVisible state is true', () {
+      expect(launcherState.launcherVisible, isTrue);
+    });
+
+    test('toggleLauncherVisibility changes launcherVisible from true to false', () {
+      launcherState.toggleLauncherVisibility();
+      expect(launcherState.launcherVisible, isFalse);
+    });
+
+    test('toggleLauncherVisibility changes launcherVisible from false back to true', () {
+      launcherState.toggleLauncherVisibility();
+      expect(launcherState.launcherVisible, isFalse);
+
+      launcherState.toggleLauncherVisibility();
+      expect(launcherState.launcherVisible, isTrue);
+    });
+
+    test('toggleLauncherVisibility calls notifyListeners', () {
+      bool listenersNotified = false;
+      launcherState.addListener(() {
+        listenersNotified = true;
+      });
+
+      launcherState.toggleLauncherVisibility();
+
+      expect(listenersNotified, isTrue);
+    });
+  });
 }

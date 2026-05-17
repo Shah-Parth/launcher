@@ -563,6 +563,12 @@ class MockWallpaperService extends _i1.Mock implements _i14.WallpaperService {
   }
 
   @override
+  int get version => (super.noSuchMethod(
+        Invocation.getter(#version),
+        returnValue: 0,
+      ) as int);
+
+  @override
   _i2.FLauncherGradient get gradient => (super.noSuchMethod(
         Invocation.getter(#gradient),
         returnValue: _FakeFLauncherGradient_0(
@@ -1446,23 +1452,6 @@ class MockSettingsService extends _i1.Mock implements _i17.SettingsService {
         Invocation.getter(#hasListeners),
         returnValue: false,
       ) as bool);
-
-  @override
-  _i9.Future<void> set(
-    String? key,
-    bool? value,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #set,
-          [
-            key,
-            value,
-          ],
-        ),
-        returnValue: _i9.Future<void>.value(),
-        returnValueForMissingStub: _i9.Future<void>.value(),
-      ) as _i9.Future<void>);
 
   @override
   _i9.Future<void> setAppHighlightAnimationEnabled(bool? value) =>
