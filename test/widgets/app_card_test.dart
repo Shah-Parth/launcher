@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:flauncher/models/app.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/apps_service.dart';
@@ -126,14 +124,10 @@ void main() {
       tester.view.resetDevicePixelRatio();
     });
 
-    AxisDirection? movedDirection;
-    await tester.pumpWidget(createWidgetUnderTest(
-      onMove: (dir) => movedDirection = dir,
-    ));
+    await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
 
     // Use a small hack to trigger the private state _moving logic so we can test the public callbacks without relying on the complex private dialog and nested navigator hierarchy logic
-    final state = tester.state(find.byType(AppCard)) as dynamic;
 
     // Setting _moving directly fails but we can just use the exposed callback to fake it
     // Or we just test bump navigation
@@ -154,10 +148,7 @@ void main() {
       tester.view.resetDevicePixelRatio();
     });
 
-    bool moveEnded = false;
-    await tester.pumpWidget(createWidgetUnderTest(
-      onMoveEnd: () => moveEnded = true,
-    ));
+    await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
 
     // Skip testing private move state since it's hard to trigger without full framework Context.
