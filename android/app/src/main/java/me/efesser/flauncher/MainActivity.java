@@ -118,6 +118,7 @@ public class MainActivity extends FlutterActivity {
                     requestUsageStatsPermission();
                     result.success(null);
                 }
+                case "openDefaultLauncherSettings" -> result.success(openDefaultLauncherSettings());
                 case "openWifiSettings" -> result.success(openWifiSettings());
                 default -> throw new IllegalArgumentException();
             }
@@ -609,6 +610,23 @@ public class MainActivity extends FlutterActivity {
     private void requestUsageStatsPermission() {
         Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
         tryStartActivity(intent);
+    }
+
+    private boolean openDefaultLauncherSettings() {
+        // 1. Try Android TV home settings
+        Intent homeIntent = new Intent(Settings.ACTION_HOME_SETTINGS);
+        if (tryStartActivity(homeIntent)) {
+            return true;
+        }
+
+        // 2. Try manage default apps settings
+        Intent defaultAppsIntent = new Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS);
+        if (tryStartActivity(defaultAppsIntent)) {
+            return true;
+        }
+
+        // 3. Fallback to main settings
+        return launchActivityFromAction(Settings.ACTION_SETTINGS);
     }
 
     private boolean openWifiSettings() {

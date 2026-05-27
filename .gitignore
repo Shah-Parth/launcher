@@ -92,3 +92,18 @@ android/keystore.properties
 .android/
 .ios/
 *.py
+.agents
+.antigravitycli/
+com.leanbitlab.ltvL.yml
+test/app_card_long_press_test.dart
+sqlite_lib/
+
+# VS Code
+.vscode/
+
+# Drift generated schemas (not needed for builds)
+drift_schemas/
+test/generated_migrations/
+
+# Mockito generated mocks (only for tests)
+test/mocks.mocks.dart

@@ -53,13 +53,13 @@ class Categories extends Table
 
   TextColumn get name => text()();
 
-  IntColumn get sort => intEnum<CategorySort>().withDefault(Constant(Category.Sort.index))();
+  IntColumn get sort => intEnum<CategorySort>().withDefault(const Constant(0))();
 
-  IntColumn get type => intEnum<CategoryType>().withDefault(Constant(Category.Type.index))();
+  IntColumn get type => intEnum<CategoryType>().withDefault(const Constant(0))();
 
-  IntColumn get rowHeight => integer().withDefault(const Constant(Category.RowHeight))();
+  IntColumn get rowHeight => integer().withDefault(const Constant(110))();
 
-  IntColumn get columnsCount => integer().withDefault(const Constant(Category.ColumnsCount))();
+  IntColumn get columnsCount => integer().withDefault(const Constant(6))();
 
   IntColumn get order => integer()();
 }
@@ -105,13 +105,19 @@ class FLauncherDatabase extends _$FLauncherDatabase
           await migrator.createAll();
         },
         onUpgrade: (migrator, from, to) async {
-          if (from <= 1) {
-            await migrator.alterTable(TableMigration(apps, newColumns: [apps.hidden]));
+          if (from <= 1 && to >= 2) {
+            await migrator.alterTable(TableMigration(
+              apps,
+              newColumns: [
+                apps.hidden,
+                if (to >= 8) apps.lastLaunchedAt,
+              ],
+            ));
           }
-          if (from <= 2 && from != 1) {
+          if (from <= 2 && from != 1 && to >= 3) {
             await migrator.addColumn(apps, apps.hidden);
           }
-          if (from <= 3) {
+          if (from <= 3 && to >= 4) {
             await migrator.addColumn(categories, categories.sort);
             await migrator.addColumn(categories, categories.type);
             await migrator.addColumn(categories, categories.rowHeight);
@@ -119,15 +125,26 @@ class FLauncherDatabase extends _$FLauncherDatabase
             await (update(categories)..where((tbl) => tbl.name.equals("Applications")))
                 .write(const CategoriesCompanion(type: Value(CategoryType.grid)));
           }
-          if (from < 6) {
-            await customStatement("ALTER TABLE apps DROP COLUMN banner;");
-            await customStatement("ALTER TABLE apps DROP COLUMN icon;");
+          if (from < 6 && to >= 6) {
+            final columns = await customSelect("PRAGMA table_info(apps);").get();
+            final hasBanner = columns.any((row) => row.read<String>('name') == 'banner');
+            final hasIcon = columns.any((row) => row.read<String>('name') == 'icon');
+            if (hasBanner) {
+              await customStatement("ALTER TABLE apps DROP COLUMN banner;");
+            }
+            if (hasIcon) {
+              await customStatement("ALTER TABLE apps DROP COLUMN icon;");
+            }
           }
-          if (from < 7) {
+          if (from < 7 && to >= 7) {
             await migrator.createTable(launcherSpacers);
-            await migrator.dropColumn(apps, "sideloaded");
+            final columns = await customSelect("PRAGMA table_info(apps);").get();
+            final hasSideloaded = columns.any((row) => row.read<String>('name') == 'sideloaded');
+            if (hasSideloaded) {
+              await migrator.dropColumn(apps, "sideloaded");
+            }
           }
-          if (from < 8) {
+          if (from < 8 && from != 1 && to >= 8) {
             await migrator.addColumn(apps, apps.lastLaunchedAt);
           }
         },

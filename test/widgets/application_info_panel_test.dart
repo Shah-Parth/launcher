@@ -18,9 +18,13 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/models/category.dart';
+import 'package:flauncher/models/app.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
@@ -47,8 +51,9 @@ void main() {
     when(appsService.applications).thenReturn([app]);
     await _pumpWidgetWithProviders(tester, appsService, null, app);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    final finder = find.text("Open");
+    await tester.ensureVisible(finder);
+    await tester.tap(finder);
     await tester.pumpAndSettle();
     verify(appsService.launchApp(app));
   });
@@ -61,16 +66,15 @@ void main() {
       name: "FLauncher",
       version: "1.0.0",
     );
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(category, [app]),
-    ]);
+    category.applications.add(app);
+    when(appsService.launcherSections).thenReturn([category]);
     when(appsService.applications).thenReturn([]);
     await _pumpWidgetWithProviders(tester, appsService, category, app);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    final finder = find.text("Hide");
+    await tester.ensureVisible(finder);
+    await tester.tap(finder);
+    await tester.pumpAndSettle();
     verify(appsService.hideApplication(app));
   });
 
@@ -82,17 +86,15 @@ void main() {
       name: "FLauncher",
       version: "1.0.0",
     );
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(category, [app]),
-    ]);
+    category.applications.add(app);
+    when(appsService.launcherSections).thenReturn([category]);
     when(appsService.applications).thenReturn([]);
     await _pumpWidgetWithProviders(tester, appsService, category, app);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    final finder = find.text("Remove from Category 1");
+    await tester.ensureVisible(finder);
+    await tester.tap(finder);
+    await tester.pumpAndSettle();
     verify(appsService.removeFromCategory(app, category));
   });
 
@@ -104,18 +106,15 @@ void main() {
       name: "FLauncher",
       version: "1.0.0",
     );
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(category, [app]),
-    ]);
+    category.applications.add(app);
+    when(appsService.launcherSections).thenReturn([category]);
     when(appsService.applications).thenReturn([]);
     await _pumpWidgetWithProviders(tester, appsService, category, app);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    final finder = find.text("Application info");
+    await tester.ensureVisible(finder);
+    await tester.tap(finder);
+    await tester.pumpAndSettle();
     verify(appsService.openAppInfo(app));
   });
 
@@ -127,19 +126,15 @@ void main() {
       name: "FLauncher",
       version: "1.0.0",
     );
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(category, [app]),
-    ]);
+    category.applications.add(app);
+    when(appsService.launcherSections).thenReturn([category]);
     when(appsService.applications).thenReturn([]);
     await _pumpWidgetWithProviders(tester, appsService, category, app);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    final finder = find.text("Uninstall");
+    await tester.ensureVisible(finder);
+    await tester.tap(finder);
+    await tester.pumpAndSettle();
     verify(appsService.uninstallApp(app));
   });
 }
@@ -150,12 +145,23 @@ Future<void> _pumpWidgetWithProviders(
   Category? category,
   App application,
 ) async {
+  when(appsService.isAppInFavorites(application)).thenReturn(false);
+  when(appsService.hasCustomBanner(application.packageName)).thenAnswer((_) async => false);
+  when(appsService.getAppIcon(application.packageName)).thenAnswer((_) async => Uint8List(0));
+  when(appsService.getAppBanner(application.packageName)).thenAnswer((_) async => Uint8List(0));
+
   await tester.pumpWidget(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
       builder: (_, __) => MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         home: ApplicationInfoPanel(
           category: category,
           application: application,

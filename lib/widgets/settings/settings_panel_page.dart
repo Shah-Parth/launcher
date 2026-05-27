@@ -17,6 +17,7 @@
  */
 
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/widgets/settings/accessibility_page.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/flauncher_about_dialog.dart';
 import 'package:flauncher/widgets/settings/interface_settings_page.dart';
@@ -58,6 +59,11 @@ class SettingsPanelPage extends StatelessWidget {
                   leading: const Icon(Icons.settings_suggest_outlined),
                   title: Text('System', style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context).pushNamed(GeneralSettingsPage.routeName),
+                ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.accessibility_new),
+                  title: Text('Accessibility', style: Theme.of(context).textTheme.bodyMedium),
+                  onPressed: () => Navigator.of(context).pushNamed(AccessibilityPage.routeName),
                 ),
                 const Divider(),
                 FocusableSettingsTile(

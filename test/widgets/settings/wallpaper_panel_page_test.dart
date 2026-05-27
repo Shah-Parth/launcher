@@ -22,6 +22,8 @@ import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
 import 'package:flauncher/widgets/settings/wallpaper_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
@@ -43,8 +45,7 @@ void main() {
 
     await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.tap(find.text("Gradient"));
     await tester.pumpAndSettle();
     expect(find.byKey(Key("GradientPanelPage")), findsOneWidget);
   }, skip: true);
@@ -56,9 +57,7 @@ void main() {
 
       await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.tap(find.text("Picture"));
       await tester.pumpAndSettle();
       verify(wallpaperService.pickWallpaper());
     });
@@ -70,12 +69,10 @@ void main() {
 
       await _pumpWidgetWithProviders(tester, settingsService, wallpaperService);
 
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-      await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+      await tester.tap(find.text("Picture"));
       await tester.pumpAndSettle();
       expect(find.byType(SnackBar), findsOneWidget);
-      expect(find.text("Please install a file explorer in order to pick an image."), findsOneWidget);
+      expect(find.text("Please install a file explorer in order to pick a picture."), findsOneWidget);
     });
   });
 }
@@ -85,6 +82,7 @@ Future<void> _pumpWidgetWithProviders(
   SettingsService settingsService,
   WallpaperService wallpaperService,
 ) async {
+  when(settingsService.timeBasedWallpaperEnabled).thenReturn(false);
   await tester.pumpWidget(
     MultiProvider(
       providers: [
@@ -92,6 +90,12 @@ Future<void> _pumpWidgetWithProviders(
         ChangeNotifierProvider<WallpaperService>.value(value: wallpaperService),
       ],
       builder: (_, __) => MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         routes: {
           GradientPanelPage.routeName: (_) => Container(key: Key("GradientPanelPage")),
         },

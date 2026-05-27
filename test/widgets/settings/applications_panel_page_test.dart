@@ -18,14 +18,20 @@
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/models/app.dart';
+import 'package:flauncher/models/category.dart';
 import 'package:flauncher/widgets/add_to_category_dialog.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
+import 'package:flauncher/widgets/settings/app_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import '../../mocks.dart';
 import '../../mocks.mocks.dart';
@@ -52,7 +58,7 @@ void main() {
 
     await _pumpWidgetWithProviders(tester, appsService);
 
-    expect(find.text("TV Applications"), findsOneWidget);
+    expect(find.text("TV Apps"), findsOneWidget);
     expect(find.text("FLauncher"), findsOneWidget);
   });
 
@@ -69,12 +75,10 @@ void main() {
 
     await _pumpWidgetWithProviders(tester, appsService);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.tap(find.byIcon(Icons.android));
     await tester.pumpAndSettle();
 
-    expect(find.text("Non-TV Applications"), findsOneWidget);
+    expect(find.text("Non-TV Apps"), findsOneWidget);
     expect(find.text("FLauncher"), findsOneWidget);
   });
 
@@ -91,13 +95,10 @@ void main() {
 
     await _pumpWidgetWithProviders(tester, appsService);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.tap(find.byIcon(Icons.visibility_off_outlined));
     await tester.pumpAndSettle();
 
-    expect(find.text("Hidden Applications"), findsOneWidget);
+    expect(find.text("Hidden Apps"), findsOneWidget);
     expect(find.text("FLauncher"), findsOneWidget);
   });
 
@@ -109,18 +110,19 @@ void main() {
       version: "1.0.0",
     );
     when(appsService.applications).thenReturn([application]);
-    when(appsService.categoriesWithApps).thenReturn([CategoryWithApps(fakeCategory(), [])]);
+    when(appsService.launcherSections).thenReturn([fakeCategory()]);
 
     await _pumpWidgetWithProviders(tester, appsService);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.tap(find.text("FLauncher"));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text("Add to Category"));
     await tester.pumpAndSettle();
     expect(find.byType(AddToCategoryDialog), findsOneWidget);
   });
 
-  testWidgets("'Info' opens ApplicationInfoPanel", (tester) async {
+  testWidgets("'Info' calls openAppInfo on AppsService", (tester) async {
     final appsService = MockAppsService();
     final application = fakeApp(
       packageName: "me.efesser.flauncher",
@@ -128,26 +130,43 @@ void main() {
       version: "1.0.0",
     );
     when(appsService.applications).thenReturn([application]);
-    when(appsService.categoriesWithApps).thenReturn([CategoryWithApps(fakeCategory(), [])]);
+    when(appsService.launcherSections).thenReturn([fakeCategory()]);
 
     await _pumpWidgetWithProviders(tester, appsService);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.tap(find.text("FLauncher"));
     await tester.pumpAndSettle();
-    expect(find.byType(ApplicationInfoPanel), findsOneWidget);
+
+    await tester.tap(find.text("Application info"));
+    await tester.pumpAndSettle();
+    verify(appsService.openAppInfo(application));
   });
 }
 
-Future<void> _pumpWidgetWithProviders(WidgetTester tester, AppsService appsService) async {
+Future<void> _pumpWidgetWithProviders(WidgetTester tester, MockAppsService appsService) async {
+  when(appsService.categories).thenReturn([]);
+  when(appsService.isAppInFavorites(any)).thenReturn(false);
+  when(appsService.getAppIcon(any)).thenAnswer((_) async => kTransparentImage);
   await tester.pumpWidget(
     MultiProvider(
       providers: [
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
-      builder: (_, __) => MaterialApp(home: ApplicationsPanelPage()),
+      builder: (_, __) => MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
+        routes: {
+          AppDetailsPage.routeName: (context) {
+            final app = ModalRoute.of(context)!.settings.arguments as App;
+            return Scaffold(body: AppDetailsPage(application: app));
+          },
+        },
+        home: Scaffold(body: ApplicationsPanelPage()),
+      ),
     ),
   );
   await tester.pumpAndSettle();

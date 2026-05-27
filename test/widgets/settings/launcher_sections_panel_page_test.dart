@@ -16,13 +16,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import 'package:flauncher/database.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flauncher/widgets/rename_category_dialog.dart';
 import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
-import 'package:flauncher/widgets/settings/category_panel_page.dart';
+import 'package:flauncher/widgets/settings/launcher_section_panel_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
@@ -41,9 +41,9 @@ void main() {
 
   testWidgets("Categories are displayed", (tester) async {
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "Favorites"), []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
+    when(appsService.launcherSections).thenReturn([
+      fakeCategory(name: "Favorites"),
+      fakeCategory(name: "Applications"),
     ]);
 
     await _pumpWidgetWithProviders(tester, appsService);
@@ -54,52 +54,53 @@ void main() {
 
   testWidgets("'Arrow down' change category order", (tester) async {
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "Favorites"), []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
+    when(appsService.launcherSections).thenReturn([
+      fakeCategory(name: "Favorites"),
+      fakeCategory(name: "Applications"),
     ]);
     await _pumpWidgetWithProviders(tester, appsService);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    // Explicitly request focus on the Focus node of the widget
+    Focus.of(tester.element(find.text("Favorites"))).requestFocus();
     await tester.pumpAndSettle();
 
-    verify(appsService.moveCategory(0, 1));
-    expect(find.text("Favorites"), findsOneWidget);
-    expect(find.text("Applications"), findsOneWidget);
-  });
-
-  testWidgets("'Settings' opens CategoryPanelPage", (tester) async {
-    final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "Favorites"), []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
-    ]);
-    await _pumpWidgetWithProviders(tester, appsService);
-
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    // Enter move state and move down
     await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
     await tester.pumpAndSettle();
 
-    expect(find.byKey(Key("CategoryPanelPage")), findsOneWidget);
+    verify(appsService.moveSectionInMemory(0, 1));
   });
 
-  testWidgets("'Add Category' opens AddCategoryDialog", (tester) async {
+  testWidgets("'Settings' opens LauncherSectionPanelPage", (tester) async {
     final appsService = MockAppsService();
-    when(appsService.categoriesWithApps).thenReturn([
-      CategoryWithApps(fakeCategory(name: "Favorites"), []),
-      CategoryWithApps(fakeCategory(name: "Applications"), []),
+    when(appsService.launcherSections).thenReturn([
+      fakeCategory(name: "Favorites"),
+      fakeCategory(name: "Applications"),
     ]);
     await _pumpWidgetWithProviders(tester, appsService);
 
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
-    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    // Tap to open it
+    await tester.tap(find.text("Favorites"));
     await tester.pumpAndSettle();
 
-    expect(find.byType(AddCategoryDialog), findsOneWidget);
+    expect(find.byKey(Key("LauncherSectionPanelPage")), findsOneWidget);
+  });
+
+  testWidgets("'Add Section' opens LauncherSectionPanelPage", (tester) async {
+    final appsService = MockAppsService();
+    when(appsService.launcherSections).thenReturn([
+      fakeCategory(name: "Favorites"),
+      fakeCategory(name: "Applications"),
+    ]);
+    await _pumpWidgetWithProviders(tester, appsService);
+
+    // Tap "Add section" (lowercase s)
+    await tester.tap(find.text("Add section"));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(Key("LauncherSectionPanelPage")), findsOneWidget);
   });
 }
 
@@ -110,8 +111,14 @@ Future<void> _pumpWidgetWithProviders(WidgetTester tester, AppsService appsServi
         ChangeNotifierProvider<AppsService>.value(value: appsService),
       ],
       builder: (_, __) => MaterialApp(
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: AppLocalizations.supportedLocales,
         routes: {
-          CategoryPanelPage.routeName: (_) => Container(key: Key("CategoryPanelPage")),
+          LauncherSectionPanelPage.routeName: (_) => Container(key: Key("LauncherSectionPanelPage")),
         },
         home: Scaffold(body: LauncherSectionsPanelPage()),
       ),

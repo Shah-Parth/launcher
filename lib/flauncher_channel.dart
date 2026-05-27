@@ -96,6 +96,9 @@ class FLauncherChannel {
   Future<void> openWifiSettings() async =>
       await _methodChannel.invokeMethod("openWifiSettings");
 
+  Future<void> openDefaultLauncherSettings() async =>
+      await _methodChannel.invokeMethod("openDefaultLauncherSettings");
+
   Future<void> startAmbientMode() async => await _methodChannel.invokeMethod("startAmbientMode");
 
   void addAppsChangedListener(void Function(Map<String, dynamic>) listener) =>

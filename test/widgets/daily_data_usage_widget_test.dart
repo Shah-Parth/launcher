@@ -42,7 +42,7 @@ void main() {
     await tester.pumpWidget(createWidgetUnderTest());
 
     expect(find.text('Grant Usage Permission'), findsOneWidget);
-    expect(find.byType(TextButton), findsOneWidget);
+    expect(find.byWidgetPredicate((w) => w is TextButton), findsOneWidget);
     expect(find.byIcon(Icons.data_usage), findsOneWidget);
   });
 

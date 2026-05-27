@@ -466,13 +466,16 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
         else {
           return const Padding(
             padding: EdgeInsets.all(8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 0, width: 16),
-                Text("Loading")
-              ],
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 0, width: 16),
+                  Text("Loading")
+                ],
+              ),
             ),
           );
         }

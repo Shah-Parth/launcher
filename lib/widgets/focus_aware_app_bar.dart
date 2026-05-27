@@ -25,6 +25,8 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
   bool focused = false;
   late FocusNode _settingsFocusNode;
 
+  FocusNode get settingsFocusNode => _settingsFocusNode;
+
   @override
   void initState() {
     super.initState();

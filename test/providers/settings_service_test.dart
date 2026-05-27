@@ -105,13 +105,17 @@ void main() async {
 
   group("getDateFormat", ()  {
     test("with default", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final settingsService = SettingsService(sharedPreferences);
       expect(settingsService.dateFormat, SettingsService.defaultDateFormat);
     });
 
     test("with value set", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final settingsService = SettingsService(sharedPreferences);
       final expected = "XYZ";
 
-      settingsService.setDateTimeFormat(expected, "");
+      await settingsService.setDateTimeFormat(expected, "");
 
       expect(settingsService.dateFormat, expected);
     });
