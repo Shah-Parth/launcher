@@ -57,9 +57,10 @@ coverage/
 keystore.properties
 key.properties
 
-# Logs
+# Logs and Test Results
 build_log.txt
 release_build_log.txt
+test-reports/
 
 # Gemini
 .geminiignore
@@ -107,3 +108,9 @@ test/generated_migrations/
 
 # Mockito generated mocks (only for tests)
 test/mocks.mocks.dart
+
+# Dev tooling (not needed for builds)
+.gitlab-ci.yml
+commitlint.config.js
+AGENTS.md
+AGENTS.original.md

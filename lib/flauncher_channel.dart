@@ -112,4 +112,22 @@ class FLauncherChannel {
         Map<dynamic, dynamic> eventMap = event;
         listener(eventMap.cast<String, dynamic>());
       });
+
+  Future<List<Map<dynamic, dynamic>>> getTvInputs() async {
+    try {
+      final List<dynamic> inputs = await _methodChannel.invokeMethod("getTvInputs");
+      return inputs.cast<Map<dynamic, dynamic>>();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<bool> launchTvInput(String inputId) async {
+    try {
+      final bool success = await _methodChannel.invokeMethod("launchTvInput", inputId);
+      return success;
+    } catch (_) {
+      return false;
+    }
+  }
 }

@@ -36,6 +36,19 @@ class LauncherSectionsPanelPage extends StatefulWidget {
 
 class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
   int? _movingIndex;
+  late AppsService _appsService;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _appsService = Provider.of<AppsService>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    _appsService.persistSectionsOrder();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -60,19 +58,16 @@ class AppLocalizationsEs extends AppLocalizations {
   String get dialogOptionBackButtonActionDoNothing => 'Nada';
 
   @override
-  String get dialogOptionBackButtonActionShowScreensaver =>
-      'Mostrar salvapantallas';
+  String get dialogOptionBackButtonActionShowScreensaver => 'Mostrar salvapantallas';
 
   @override
   String get dialogOptionBackButtonActionShowClock => 'Mostrar reloj';
 
   @override
-  String get dialogTextNoFileExplorer =>
-      'Por favor, instale un gestor de archivos para seleccionar una imagen.';
+  String get dialogTextNoFileExplorer => 'Por favor, instale un gestor de archivos para seleccionar una imagen.';
 
   @override
-  String get dialogTitleBackButtonAction =>
-      'Elegir la acción del botón \'Atrás\'';
+  String get dialogTitleBackButtonAction => 'Elegir la acción del botón \'Atrás\'';
 
   @override
   String disambiguateCategoryTitle(String title) {
@@ -144,8 +139,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get open => 'Abrir';
 
   @override
-  String get orSelectFormatSpecifiers =>
-      'O seleccione especificadores de formato';
+  String get orSelectFormatSpecifiers => 'O seleccione especificadores de formato';
 
   @override
   String get picture => 'Imagen';
@@ -174,8 +168,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get spacer => 'Espaciador';
 
   @override
-  String get spacerMaxHeightRequirement =>
-      'Debe ser mayor a cero y menor o igual a 500';
+  String get spacerMaxHeightRequirement => 'Debe ser mayor a cero y menor o igual a 500';
 
   @override
   String get statusBar => 'Barra de estado';
@@ -193,12 +186,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get themes => 'Temas';
 
   @override
-  String get hideHighlightOutlineOnHomescreen =>
-      'Ocultar el contorno de resaltado en la pantalla de inicio';
+  String get hideHighlightOutlineOnHomescreen => 'Ocultar el contorno de resaltado en la pantalla de inicio';
 
   @override
-  String get appSelectorTransitionAnimation =>
-      'Animación de transición del selector de aplicaciones';
+  String get appSelectorTransitionAnimation => 'Animación de transición del selector de aplicaciones';
 
   @override
   String get sort => 'Orden';
@@ -218,8 +209,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get time => 'Hora';
 
   @override
-  String get titleStatusBarSettingsPage =>
-      'Elija la información a mostrar en la barra de estado';
+  String get titleStatusBarSettingsPage => 'Elija la información a mostrar en la barra de estado';
 
   @override
   String get tvApplications => 'Aplicaciones del televisor';
@@ -250,4 +240,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pickNightWallpaper => 'Pick night wallpaper';
+
+  @override
+  String get accessibility => 'Accesibilidad';
+
+  @override
+  String get defaultLauncherIsDefault => 'LTvLauncher es el lanzador predeterminado';
+
+  @override
+  String get defaultLauncherNotDefault => 'LTvLauncher no es el lanzador predeterminado';
+
+  @override
+  String get setAsDefaultLauncher => 'Establecer como lanzador predeterminado';
+
+  @override
+  String get defaultLauncherDescription => 'Cuando se establece como lanzador predeterminado, el botón de inicio siempre regresará a LTvLauncher. El TV también iniciará directamente en LTvLauncher.';
+
+  @override
+  String get inputs => 'Entradas';
+
+  @override
+  String get inputSources => 'Fuentes de Entrada';
 }

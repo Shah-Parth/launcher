@@ -107,5 +107,7 @@
     "defaultLauncherIsDefault": "LTvLauncher es el lanzador predeterminado",
     "defaultLauncherNotDefault": "LTvLauncher no es el lanzador predeterminado",
     "setAsDefaultLauncher": "Establecer como lanzador predeterminado",
-    "defaultLauncherDescription": "Cuando se establece como lanzador predeterminado, el botón de inicio siempre regresará a LTvLauncher. El TV también iniciará directamente en LTvLauncher."
+    "defaultLauncherDescription": "Cuando se establece como lanzador predeterminado, el botón de inicio siempre regresará a LTvLauncher. El TV también iniciará directamente en LTvLauncher.",
+    "inputs": "Entradas",
+    "inputSources": "Fuentes de Entrada"
 }

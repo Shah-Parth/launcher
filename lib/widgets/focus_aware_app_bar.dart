@@ -1,4 +1,6 @@
 import 'package:flauncher/widgets/settings/settings_panel.dart';
+import 'package:flauncher/widgets/settings/inputs_panel.dart';
+import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,18 +26,22 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
 {
   bool focused = false;
   late FocusNode _settingsFocusNode;
+  late FocusNode _inputsFocusNode;
 
   FocusNode get settingsFocusNode => _settingsFocusNode;
+  FocusNode get inputsFocusNode => _inputsFocusNode;
 
   @override
   void initState() {
     super.initState();
     _settingsFocusNode = FocusNode();
+    _inputsFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _settingsFocusNode.dispose();
+    _inputsFocusNode.dispose();
     super.dispose();
   }
 
@@ -81,6 +87,27 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                 icon: Icons.settings_outlined,
                 focusNode: _settingsFocusNode,
                 onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
+              ),
+              Consumer<TvInputsService>(
+                builder: (context, tvInputsService, _) {
+                  if (tvInputsService.hasInputs) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(width: 16),
+                        _FocusableIconButton(
+                          icon: Icons.tv_outlined,
+                          focusNode: _inputsFocusNode,
+                          onPressed: () => showDialog(
+                            context: context,
+                            builder: (_) => const InputsPanel(),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
               const SizedBox(width: 16),
               // Network indicator (conditionally shown)

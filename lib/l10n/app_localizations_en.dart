@@ -1,5 +1,3 @@
-// ignore: unused_import
-import 'package:intl/intl.dart' as intl;
 import 'app_localizations.dart';
 
 // ignore_for_file: type=lint
@@ -66,8 +64,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dialogOptionBackButtonActionShowClock => 'Show clock';
 
   @override
-  String get dialogTextNoFileExplorer =>
-      'Please install a file explorer in order to pick a picture.';
+  String get dialogTextNoFileExplorer => 'Please install a file explorer in order to pick a picture.';
 
   @override
   String get dialogTitleBackButtonAction => 'Choose the back button action';
@@ -171,8 +168,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spacer => 'Spacer';
 
   @override
-  String get spacerMaxHeightRequirement =>
-      'Must be greater than 0 and less than or equal to 500';
+  String get spacerMaxHeightRequirement => 'Must be greater than 0 and less than or equal to 500';
 
   @override
   String get statusBar => 'Status bar';
@@ -190,12 +186,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get themes => 'Themes';
 
   @override
-  String get hideHighlightOutlineOnHomescreen =>
-      'Hide highlight outline on homescreen';
+  String get hideHighlightOutlineOnHomescreen => 'Hide highlight outline on homescreen';
 
   @override
-  String get appSelectorTransitionAnimation =>
-      'App selector transition animation';
+  String get appSelectorTransitionAnimation => 'App selector transition animation';
 
   @override
   String get sort => 'Sort';
@@ -215,8 +209,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get time => 'Time';
 
   @override
-  String get titleStatusBarSettingsPage =>
-      'Choose what to display in the status bar';
+  String get titleStatusBarSettingsPage => 'Choose what to display in the status bar';
 
   @override
   String get tvApplications => 'TV Apps';
@@ -247,4 +240,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get pickNightWallpaper => 'Pick night wallpaper';
+
+  @override
+  String get accessibility => 'Accessibility';
+
+  @override
+  String get defaultLauncherIsDefault => 'LTvLauncher is the default launcher';
+
+  @override
+  String get defaultLauncherNotDefault => 'LTvLauncher is not the default launcher';
+
+  @override
+  String get setAsDefaultLauncher => 'Set as default launcher';
+
+  @override
+  String get defaultLauncherDescription => 'When set as the default launcher, the Home button will always return to LTvLauncher. The TV will also boot directly into LTvLauncher.';
+
+  @override
+  String get inputs => 'Inputs';
+
+  @override
+  String get inputSources => 'Input Sources';
 }

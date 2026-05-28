@@ -274,17 +274,9 @@ class AppsService extends ChangeNotifier {
     Map<String, (Map, AppsCompanion)> appsFromSystemByPackageName =
         Map.fromEntries(appEntries);
 
-    List<App> appsFromDatabase = await appsFromDatabaseFuture;
-    final Iterable<App> appsRemovedFromSystem = appsFromDatabase.where(
-        (app) => !appsFromSystemByPackageName.containsKey(app.packageName));
-
-    final List<String> uninstalledApplications =
-        appsRemovedFromSystem.map((app) => app.packageName).toList();
-
     await _database.transaction(() async {
       await _database.persistApps(
           appsFromSystemByPackageName.values.map((record) => record.$2));
-      await _database.deleteApps(uninstalledApplications);
     });
 
     appsFromDatabaseFuture = _database.getApplications();
@@ -296,7 +288,7 @@ class AppsService extends ChangeNotifier {
       spacersFuture
     ]);
 
-    appsFromDatabase = await appsFromDatabaseFuture;
+    List<App> appsFromDatabase = await appsFromDatabaseFuture;
     List<AppCategory> appsCategories = await appsCategoriesFuture;
     List<Category> categories = await categoriesFuture;
     List<LauncherSpacer> spacers = await spacersFuture;
@@ -305,6 +297,8 @@ class AppsService extends ChangeNotifier {
         categories.map((category) => MapEntry(category.id, category)));
     _invalidateCategoryCache();
     _applications = Map.fromEntries(appsFromDatabase
+        .where((application) =>
+            appsFromSystemByPackageName.containsKey(application.packageName))
         .map((application) => MapEntry(application.packageName, application)));
 
     _launcherSections.clear();
@@ -734,23 +728,16 @@ class AppsService extends ChangeNotifier {
       int columnsCount = Category.ColumnsCount,
       int rowHeight = Category.RowHeight,
       bool shouldNotifyListeners = true}) async {
-    List<CategoriesCompanion> orderedCategories = [];
-    int categoryOrder = 1, newCategoryId = -1;
-    for (Category category in _categoriesById.values) {
-      orderedCategories.add(CategoriesCompanion(
-          id: Value(category.id), order: Value(categoryOrder++)));
-    }
+    int order = _launcherSections.length;
+    int newCategoryId = -1;
 
     try {
       newCategoryId = await _database.transaction(() async {
         int newCategoryId = await _database.insertCategory(
-            CategoriesCompanion.insert(name: categoryName, order: 0));
-        await _database.updateCategories(orderedCategories);
-
+            CategoriesCompanion.insert(name: categoryName, order: order));
         return newCategoryId;
       });
 
-      Map<int, Category> newCategories = Map();
       Category newCategory = Category(
           id: newCategoryId,
           name: categoryName,
@@ -758,16 +745,9 @@ class AppsService extends ChangeNotifier {
           type: type,
           columnsCount: columnsCount,
           rowHeight: rowHeight,
-          order: 0);
-      newCategories[newCategoryId] = newCategory;
+          order: order);
 
-      categoryOrder = 1;
-      for (Category category in _categoriesById.values) {
-        newCategories[category.id] = category;
-        category.order = categoryOrder++;
-      }
-
-      _categoriesById = newCategories;
+      _categoriesById[newCategoryId] = newCategory;
       _invalidateCategoryCache();
       _launcherSections.add(newCategory);
 

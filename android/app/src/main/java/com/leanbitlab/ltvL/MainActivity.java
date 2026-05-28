@@ -31,6 +31,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Pair;
+import android.media.tv.TvInputManager;
+import android.media.tv.TvInputInfo;
+import android.media.tv.TvContract;
 
 import androidx.annotation.NonNull;
 
@@ -129,6 +132,8 @@ public class MainActivity extends FlutterActivity {
                 }
                 case "openDefaultLauncherSettings" -> result.success(openDefaultLauncherSettings());
                 case "openWifiSettings" -> result.success(openWifiSettings());
+                case "getTvInputs" -> result.success(getTvInputs());
+                case "launchTvInput" -> result.success(launchTvInput(call.arguments()));
                 default -> throw new IllegalArgumentException();
             }
         });
@@ -764,6 +769,41 @@ public class MainActivity extends FlutterActivity {
 
         // 4. Final fallback - open main settings
         return launchActivityFromAction(Settings.ACTION_SETTINGS);
+    }
+
+    private List<Map<String, Object>> getTvInputs() {
+        List<Map<String, Object>> result = new ArrayList<>();
+        try {
+            TvInputManager manager = (TvInputManager) getSystemService(Context.TV_INPUT_SERVICE);
+            if (manager != null) {
+                List<TvInputInfo> inputs = manager.getTvInputList();
+                for (TvInputInfo input : inputs) {
+                    if (input.isPassthroughInput()) {
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("id", input.getId());
+                        CharSequence label = input.loadLabel(this);
+                        map.put("label", label != null ? label.toString() : input.getId());
+                        map.put("type", input.getType());
+                        result.add(map);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // TIF might not be supported or initialized on emulator
+        }
+        return result;
+    }
+
+    private boolean launchTvInput(String inputId) {
+        try {
+            Uri uri = TvContract.buildChannelUriForPassthroughInput(inputId);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(uri);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            return tryStartActivity(intent);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }

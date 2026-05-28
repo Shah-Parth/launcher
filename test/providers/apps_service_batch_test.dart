@@ -61,4 +61,15 @@ void main() {
     final dbAppsCategories = await database.getAppsCategories();
     expect(dbAppsCategories.length, numApps);
   });
+
+  test('Test addCategory sets correct order', () async {
+    int catId1 = await appsService.addCategory("Cat 1", shouldNotifyListeners: false);
+    int catId2 = await appsService.addCategory("Cat 2", shouldNotifyListeners: false);
+    
+    Category cat1 = appsService.categories.firstWhere((c) => c.id == catId1);
+    Category cat2 = appsService.categories.firstWhere((c) => c.id == catId2);
+
+    expect(cat1.order, 0);
+    expect(cat2.order, 1);
+  });
 }

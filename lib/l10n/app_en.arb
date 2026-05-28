@@ -111,5 +111,7 @@
     "defaultLauncherIsDefault": "LTvLauncher is the default launcher",
     "defaultLauncherNotDefault": "LTvLauncher is not the default launcher",
     "setAsDefaultLauncher": "Set as default launcher",
-    "defaultLauncherDescription": "When set as the default launcher, the Home button will always return to LTvLauncher. The TV will also boot directly into LTvLauncher."
+    "defaultLauncherDescription": "When set as the default launcher, the Home button will always return to LTvLauncher. The TV will also boot directly into LTvLauncher.",
+    "inputs": "Inputs",
+    "inputSources": "Input Sources"
 }
