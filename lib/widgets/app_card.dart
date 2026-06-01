@@ -24,6 +24,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/focus_keyboard_listener.dart';
+import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -226,6 +227,47 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
+                              Selector<NotificationsService, int>(
+                                selector: (_, service) => service.getNotificationCount(widget.application.packageName),
+                                builder: (context, count, _) {
+                                  if (count <= 0) return const SizedBox.shrink();
+                                  return Positioned(
+                                    top: 8,
+                                    right: 8,
+                                    child: IgnorePointer(
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius: BorderRadius.circular(10),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Colors.black45,
+                                              blurRadius: 4,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        constraints: const BoxConstraints(
+                                          minWidth: 20,
+                                          minHeight: 20,
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '$count',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold,
+                                              height: 1.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                               InkWell(
                                 focusNode: _focusNode,
                                 autofocus: widget.autofocus,

@@ -19,6 +19,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:flauncher/providers/notifications_service.dart';
 import 'focusable_settings_tile.dart';
 import 'brightness_settings_page.dart';
 import 'date_time_format_page.dart';
@@ -75,7 +77,64 @@ class GeneralSettingsPage extends StatelessWidget {
                   title: Text('Data Usage Period', style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context).pushNamed(DataUsagePeriodPage.routeName),
                 ),
-
+                Consumer<NotificationsService>(
+                  builder: (context, service, _) {
+                    return Column(
+                      children: [
+                        FocusableSettingsTile(
+                          leading: const Icon(Icons.notifications_active_outlined),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Notification Access', style: Theme.of(context).textTheme.bodyMedium),
+                              Text(
+                                service.hasPermission ? 'Granted' : 'Permission Required',
+                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                  color: service.hasPermission ? Colors.green : Colors.orange,
+                                ),
+                              ),
+                            ],
+                          ),
+                          onPressed: () async {
+                            if (!service.hasPermission) {
+                              await service.requestPermission();
+                            } else {
+                              await service.checkPermission();
+                            }
+                          },
+                        ),
+                        if (service.hasPermission)
+                          FocusableSettingsTile(
+                            leading: const Icon(Icons.picture_in_picture_alt_outlined),
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('System-wide Popup Alert', style: Theme.of(context).textTheme.bodyMedium),
+                                Text(
+                                  !service.hasOverlayPermission
+                                      ? 'Overlay Permission Required'
+                                      : (service.systemPopupEnabled ? 'Enabled' : 'Disabled'),
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: !service.hasOverlayPermission
+                                        ? Colors.orange
+                                        : (service.systemPopupEnabled ? Colors.green : Colors.grey),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onPressed: () async {
+                              await service.checkOverlayPermission();
+                              if (!service.hasOverlayPermission) {
+                                await service.requestOverlayPermission();
+                              } else {
+                                await service.setSystemPopupEnabled(!service.systemPopupEnabled);
+                              }
+                            },
+                          ),
+                      ],
+                    );
+                  },
+                ),
               ],
             ),
           ),

@@ -10,6 +10,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:provider/provider.dart';
 
+import 'package:flauncher/providers/notifications_service.dart';
 import '../mocks.dart';
 import '../mocks.mocks.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -20,6 +21,7 @@ import 'package:flauncher/l10n/app_localizations.dart';
 void main() {
   late MockAppsService mockAppsService;
   late MockSettingsService mockSettingsService;
+  late MockNotificationsService mockNotificationsService;
   late App mockApp;
   late Category mockCategory;
 
@@ -43,6 +45,8 @@ void main() {
     when(mockSettingsService.appHighlightAnimationEnabled).thenReturn(true);
     when(mockSettingsService.appSelectorTransitionAnimationEnabled).thenReturn(true);
     when(mockSettingsService.accentColorHex).thenReturn('000000');
+    mockNotificationsService = MockNotificationsService();
+    when(mockNotificationsService.getNotificationCount(any)).thenReturn(0);
   });
 
   Widget createWidgetUnderTest({
@@ -53,6 +57,7 @@ void main() {
       providers: [
         ChangeNotifierProvider<AppsService>.value(value: mockAppsService),
         ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
+        ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
       ],
       child: Directionality(
         textDirection: TextDirection.ltr,

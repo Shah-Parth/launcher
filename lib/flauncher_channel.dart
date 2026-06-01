@@ -24,6 +24,7 @@ class FLauncherChannel {
   static const _methodChannel = MethodChannel('me.efesser.flauncher/method');
   static const _appsEventChannel = EventChannel('me.efesser.flauncher/event_apps');
   static const _networkEventChannel = EventChannel('me.efesser.flauncher/event_network');
+  static const _notificationsEventChannel = EventChannel('me.efesser.flauncher/event_notifications');
 
   Future<List<Map<dynamic, dynamic>>> getApplications() async {
     List<Map<dynamic, dynamic>>? applications = await _methodChannel.invokeListMethod("getApplications");
@@ -130,4 +131,31 @@ class FLauncherChannel {
       return false;
     }
   }
+
+  Future<bool> checkNotificationListenerPermission() async =>
+      await _methodChannel.invokeMethod("checkNotificationListenerPermission");
+
+  Future<void> requestNotificationListenerPermission() async =>
+      await _methodChannel.invokeMethod("requestNotificationListenerPermission");
+
+  Future<bool> checkOverlayPermission() async =>
+      await _methodChannel.invokeMethod("checkOverlayPermission");
+
+  Future<void> requestOverlayPermission() async =>
+      await _methodChannel.invokeMethod("requestOverlayPermission");
+
+  Future<List<Map<dynamic, dynamic>>> getActiveNotifications() async {
+    try {
+      final List<dynamic> list = await _methodChannel.invokeMethod("getActiveNotifications");
+      return list.cast<Map<dynamic, dynamic>>();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  StreamSubscription addNotificationsChangedListener(void Function(List<Map<dynamic, dynamic>>) listener) =>
+      _notificationsEventChannel.receiveBroadcastStream().listen((event) {
+        final List<dynamic> eventList = event;
+        listener(eventList.cast<Map<dynamic, dynamic>>());
+      });
 }

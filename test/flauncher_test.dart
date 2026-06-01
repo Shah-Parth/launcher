@@ -26,6 +26,7 @@ import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
+import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
@@ -578,6 +579,12 @@ WallpaperService mkWallpaperService([bool wallpaper = true]) {
   return wallpaperService;
 }
 
+NotificationsService mkNotificationsService() {
+  final notificationsService = MockNotificationsService();
+  when(notificationsService.getNotificationCount(any)).thenReturn(0);
+  return notificationsService;
+}
+
 AppsService mkAppService() {
   final appsService = MockAppsService();
   when(appsService.initialized).thenReturn(true);
@@ -611,6 +618,7 @@ Future<void> _pumpWidgetWithProviders(
         ChangeNotifierProvider<WallpaperService>.value(value: wallpaperService),
         ChangeNotifierProvider<AppsService>.value(value: appsService),
         ChangeNotifierProvider<SettingsService>.value(value: settingsService),
+        ChangeNotifierProvider<NotificationsService>.value(value: mkNotificationsService()),
         ChangeNotifierProvider(create: (_) => LauncherState()),
         ChangeNotifierProvider(create: (_) => NetworkService(FLauncherChannel())),
       ],

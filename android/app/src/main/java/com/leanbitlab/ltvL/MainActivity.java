@@ -66,10 +66,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import android.service.notification.StatusBarNotification;
+import android.content.ComponentName;
+
 public class MainActivity extends FlutterActivity {
     private final String METHOD_CHANNEL = "me.efesser.flauncher/method";
     private final String APPS_EVENT_CHANNEL = "me.efesser.flauncher/event_apps";
     private final String NETWORK_EVENT_CHANNEL = "me.efesser.flauncher/event_network";
+    private final String NOTIFICATIONS_EVENT_CHANNEL = "me.efesser.flauncher/event_notifications";
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -134,6 +138,11 @@ public class MainActivity extends FlutterActivity {
                 case "openWifiSettings" -> result.success(openWifiSettings());
                 case "getTvInputs" -> result.success(getTvInputs());
                 case "launchTvInput" -> result.success(launchTvInput(call.arguments()));
+                case "checkNotificationListenerPermission" -> result.success(checkNotificationListenerPermission());
+                case "requestNotificationListenerPermission" -> result.success(requestNotificationListenerPermission());
+                case "getActiveNotifications" -> result.success(getActiveNotifications());
+                case "checkOverlayPermission" -> result.success(checkOverlayPermission());
+                case "requestOverlayPermission" -> result.success(requestOverlayPermission());
                 default -> throw new IllegalArgumentException();
             }
         });
@@ -143,6 +152,36 @@ public class MainActivity extends FlutterActivity {
 
         new EventChannel(messenger, NETWORK_EVENT_CHANNEL).setStreamHandler(
                 new NetworkEventStreamHandler(this));
+
+        new EventChannel(messenger, NOTIFICATIONS_EVENT_CHANNEL).setStreamHandler(
+                new EventChannel.StreamHandler() {
+                    private LauncherNotificationListenerService.NotificationListener listener;
+
+                    @Override
+                    public void onListen(Object arguments, EventChannel.EventSink events) {
+                        listener = () -> {
+                            runOnUiThread(() -> {
+                                try {
+                                    events.success(getActiveNotifications());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            });
+                        };
+                        LauncherNotificationListenerService.registerListener(listener);
+                        // Send current state immediately
+                        listener.onNotificationChanged();
+                    }
+
+                    @Override
+                    public void onCancel(Object arguments) {
+                        if (listener != null) {
+                            LauncherNotificationListenerService.unregisterListener(listener);
+                            listener = null;
+                        }
+                    }
+                }
+        );
     }
 
     private List<Map<String, Serializable>> getApplications() {
@@ -804,6 +843,89 @@ public class MainActivity extends FlutterActivity {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private boolean checkNotificationListenerPermission() {
+        String packageName = getPackageName();
+        String flat = Settings.Secure.getString(getContentResolver(), "enabled_notification_listeners");
+        if (flat != null) {
+            String[] names = flat.split(":");
+            for (String name : names) {
+                ComponentName cn = ComponentName.unflattenFromString(name);
+                if (cn != null && cn.getPackageName().equals(packageName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean requestNotificationListenerPermission() {
+        try {
+            Intent intent = new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private List<Map<String, Object>> getActiveNotifications() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        LauncherNotificationListenerService service = LauncherNotificationListenerService.getInstance();
+        if (service == null) {
+            return list;
+        }
+        try {
+            StatusBarNotification[] sbns = service.getActiveNotifications();
+            if (sbns != null) {
+                Map<String, Integer> counts = new HashMap<>();
+                for (StatusBarNotification sbn : sbns) {
+                    if (sbn.isClearable()) {
+                        String pkg = sbn.getPackageName();
+                        counts.put(pkg, counts.getOrDefault(pkg, 0) + 1);
+                    }
+                }
+                for (Map.Entry<String, Integer> entry : counts.entrySet()) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("packageName", entry.getKey());
+                    map.put("count", entry.getValue());
+                    list.add(map);
+                }
+            }
+        return list;
+    }
+
+    private boolean checkOverlayPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Settings.canDrawOverlays(this);
+        }
+        return true;
+    }
+
+    private boolean requestOverlayPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            try {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        Uri.parse("package:" + getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                return true;
+            } catch (Exception e) {
+                try {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    return true;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 }

@@ -4,7 +4,7 @@ import 'package:flauncher/widgets/side_panel_dialog.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/models/tv_input.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 
 class InputsPanel extends StatelessWidget {
   const InputsPanel({Key? key}) : super(key: key);
@@ -56,7 +56,7 @@ class InputsPanel extends StatelessWidget {
                                 IconData iconData;
                                 switch (input.type) {
                                   case TvInputType.hdmi:
-                                    iconData = Icons.hdmi_outlined;
+                                    iconData = Icons.settings_input_hdmi;
                                     break;
                                   case TvInputType.tuner:
                                     iconData = Icons.settings_input_antenna_outlined;

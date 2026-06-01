@@ -36,6 +36,7 @@
 
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <queries>
         <intent>
@@ -87,6 +88,16 @@
             <meta-data
                 android:name="android.service.dream"
                 android:resource="@xml/screensaver" />
+        </service>
+
+        <service
+            android:name=".LauncherNotificationListenerService"
+            android:label="LTvLauncher Notification Service"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
         </service>
 
         <meta-data

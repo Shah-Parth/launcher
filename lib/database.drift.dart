@@ -231,7 +231,7 @@ class $CategoriesTable extends Categories
       GeneratedColumn<int>('sort', aliasedName, false,
               type: DriftSqlType.int,
               requiredDuringInsert: false,
-              defaultValue: Constant(Category.Sort.index))
+              defaultValue: const Constant(0))
           .withConverter<CategorySort>($CategoriesTable.$convertersort);
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
@@ -239,7 +239,7 @@ class $CategoriesTable extends Categories
       GeneratedColumn<int>('type', aliasedName, false,
               type: DriftSqlType.int,
               requiredDuringInsert: false,
-              defaultValue: Constant(Category.Type.index))
+              defaultValue: const Constant(0))
           .withConverter<CategoryType>($CategoriesTable.$convertertype);
   static const VerificationMeta _rowHeightMeta =
       const VerificationMeta('rowHeight');
@@ -248,7 +248,7 @@ class $CategoriesTable extends Categories
       'row_height', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(Category.RowHeight));
+      defaultValue: const Constant(110));
   static const VerificationMeta _columnsCountMeta =
       const VerificationMeta('columnsCount');
   @override
@@ -256,7 +256,7 @@ class $CategoriesTable extends Categories
       'columns_count', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: false,
-      defaultValue: const Constant(Category.ColumnsCount));
+      defaultValue: const Constant(6));
   static const VerificationMeta _orderMeta = const VerificationMeta('order');
   @override
   late final GeneratedColumn<int> order = GeneratedColumn<int>(
