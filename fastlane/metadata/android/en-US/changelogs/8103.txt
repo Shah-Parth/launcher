@@ -6,3 +6,7 @@
 - Bug Fix: Fixed ethernet data usage reporting, and fixed wallpaper not immediately updating after settings change.
 - Security: Disabled insecure Android auto-backups.
 - Testing: Substantially increased unit and widget test coverage across models, widgets, and services.
+- Added system-wide floating notification overlay popups (requires Android overlay permission).
+- Added "System-wide Popup Alert" settings switch toggle under Notification Access.
+- Added premium "Get it on Downloader" badge to the README supporting permanent numeric code 7259827.
+
