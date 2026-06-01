@@ -19,7 +19,7 @@ This customized version introduces usability enhancements and some UX improvemen
   <img alt="Get it on IzzyOnDroid" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="50">
 </a>
 <a href="https://go.aftvnews.com">
-  <img alt="Downloader Code: 7259827" src="https://img.shields.io/badge/Downloader_Code-7259827-orange?style=for-the-badge" height="50">
+  <img alt="Downloader Code: 7259827" src="assets/get_it_on_downloader.png" height="50">
 </a>
 
 ## Key Features & Enhancements
