@@ -895,6 +895,9 @@ public class MainActivity extends FlutterActivity {
                     list.add(map);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return list;
     }
 
