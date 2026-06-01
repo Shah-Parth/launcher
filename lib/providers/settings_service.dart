@@ -43,6 +43,7 @@ const String _showNetworkIndicatorInStatusBarKey = "show_network_indicator_in_st
 const String _accentColorKey = "accent_color";
 const String _screensaverClockStyleKey = "screensaver_clock_style";
 const String _timeBasedWallpaperEnabledKey = "time_based_wallpaper_enabled";
+const String _showInputsWidgetInStatusBarKey = "show_inputs_widget_in_status_bar";
 
 // WiFi usage period options
 const String DATA_USAGE_DAILY = "daily";
@@ -91,6 +92,7 @@ class SettingsService extends ChangeNotifier {
   late String _accentColorHex;
   late String _screensaverClockStyle;
   late bool _timeBasedWallpaperEnabled;
+  late bool _showInputsWidgetInStatusBar;
 
   bool get appHighlightAnimationEnabled => _appHighlightAnimationEnabled;
 
@@ -126,6 +128,8 @@ class SettingsService extends ChangeNotifier {
 
   bool get showNetworkIndicatorInStatusBar => _showNetworkIndicatorInStatusBar;
 
+  bool get showInputsWidgetInStatusBar => _showInputsWidgetInStatusBar;
+
   String get accentColorHex => _accentColorHex;
 
   String get screensaverClockStyle => _screensaverClockStyle;
@@ -156,6 +160,7 @@ class SettingsService extends ChangeNotifier {
     _accentColorHex = _sharedPreferences.getString(_accentColorKey) ?? ACCENT_COLOR_PURPLE;
     _screensaverClockStyle = _sharedPreferences.getString(_screensaverClockStyleKey) ?? "minimal";
     _timeBasedWallpaperEnabled = _sharedPreferences.getBool(_timeBasedWallpaperEnabledKey) ?? false;
+    _showInputsWidgetInStatusBar = _sharedPreferences.getBool(_showInputsWidgetInStatusBarKey) ?? true;
   }
 
   Future<void> setAppHighlightAnimationEnabled(bool value) async {
@@ -275,6 +280,12 @@ class SettingsService extends ChangeNotifier {
   Future<void> setTimeBasedWallpaperEnabled(bool enabled) async {
     await _sharedPreferences.setBool(_timeBasedWallpaperEnabledKey, enabled);
     _timeBasedWallpaperEnabled = enabled;
+    notifyListeners();
+  }
+
+  Future<void> setShowInputsWidgetInStatusBar(bool show) async {
+    await _sharedPreferences.setBool(_showInputsWidgetInStatusBarKey, show);
+    _showInputsWidgetInStatusBar = show;
     notifyListeners();
   }
 }

@@ -71,6 +71,12 @@ class StatusBarPanelPage extends StatelessWidget {
                   title: Text('Network Indicator'),
                   secondary: Icon(Icons.signal_wifi_4_bar)
                 ),
+                RoundedSwitchListTile(
+                  value: settingsService.showInputsWidgetInStatusBar,
+                  onChanged: (value) => settingsService.setShowInputsWidgetInStatusBar(value),
+                  title: Text(localizations.inputs),
+                  secondary: Icon(Icons.tv_outlined),
+                ),
               ],
             ),
           ),

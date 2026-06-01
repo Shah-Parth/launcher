@@ -120,4 +120,30 @@ void main() async {
       expect(settingsService.dateFormat, expected);
     });
   });
+
+  group("showInputsWidgetInStatusBar", () {
+    test("default is true", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final settingsService = SettingsService(sharedPreferences);
+      expect(settingsService.showInputsWidgetInStatusBar, isTrue);
+    });
+
+    test("sets and gets value", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final settingsService = SettingsService(sharedPreferences);
+      await settingsService.setShowInputsWidgetInStatusBar(false);
+      expect(settingsService.showInputsWidgetInStatusBar, isFalse);
+    });
+
+    test("notifies listeners", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final settingsService = SettingsService(sharedPreferences);
+      bool notified = false;
+      settingsService.addListener(() {
+        notified = true;
+      });
+      await settingsService.setShowInputsWidgetInStatusBar(false);
+      expect(notified, isTrue);
+    });
+  });
 }

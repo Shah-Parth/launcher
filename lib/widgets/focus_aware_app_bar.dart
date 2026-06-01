@@ -88,26 +88,31 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                 focusNode: _settingsFocusNode,
                 onPressed: () => showDialog(context: context, builder: (_) => const SettingsPanel()),
               ),
-              Consumer<TvInputsService>(
-                builder: (context, tvInputsService, _) {
-                  if (tvInputsService.hasInputs) {
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(width: 16),
-                        _FocusableIconButton(
-                          icon: Icons.tv_outlined,
-                          focusNode: _inputsFocusNode,
-                          onPressed: () => showDialog(
-                            context: context,
-                            builder: (_) => const InputsPanel(),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
+              Selector<SettingsService, bool>(
+                selector: (_, settings) => settings.showInputsWidgetInStatusBar,
+                builder: (context, showInputs, _) => showInputs
+                  ? Consumer<TvInputsService>(
+                      builder: (context, tvInputsService, _) {
+                        if (tvInputsService.hasInputs) {
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const SizedBox(width: 16),
+                              _FocusableIconButton(
+                                icon: Icons.tv_outlined,
+                                focusNode: _inputsFocusNode,
+                                onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (_) => const InputsPanel(),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    )
+                  : const SizedBox.shrink(),
               ),
               const SizedBox(width: 16),
               // Network indicator (conditionally shown)
