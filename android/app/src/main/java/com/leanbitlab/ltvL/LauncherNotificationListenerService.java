@@ -10,6 +10,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.view.WindowManager;
+import android.service.notification.NotificationListenerService;
+import android.service.notification.StatusBarNotification;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LauncherNotificationListenerService extends NotificationListenerService {
     public interface NotificationListener {
