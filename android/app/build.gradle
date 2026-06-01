@@ -21,6 +21,18 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+// Force Flutter to only build for ARMv7 and ARMv8a by default
+if (!project.hasProperty('target-platform')) {
+    project.ext.set('target-platform', 'android-arm,android-arm64')
+} else {
+    def platforms = project.property('target-platform').split(',')
+    def filtered = platforms.findAll { it == 'android-arm' || it == 'android-arm64' }.join(',')
+    if (filtered) {
+        project.ext.set('target-platform', filtered)
+    }
+}
+
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -59,6 +71,9 @@ android {
         targetSdk 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        ndk {
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
     }
 
     signingConfigs {
@@ -96,6 +111,8 @@ android {
         abi {
             // https://stackoverflow.com/a/39950584/21037183
             enable gradle.startParameter.taskNames.any { it.contains("assembleRelease") }
+            reset()
+            include "armeabi-v7a", "arm64-v8a"
             universalApk true
         }
     }

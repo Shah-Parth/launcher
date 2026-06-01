@@ -25,6 +25,7 @@ import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/network_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
@@ -559,6 +560,7 @@ SettingsService mkSettingsService() {
   when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
   when(settingsService.showCategoryTitles).thenReturn(true);
   when(settingsService.autoHideAppBarEnabled).thenReturn(false);
+  when(settingsService.showInputsWidgetInStatusBar).thenReturn(true);
   when(settingsService.showNetworkIndicatorInStatusBar).thenReturn(true);
   when(settingsService.showDataWidgetInStatusBar).thenReturn(true);
   when(settingsService.showDateInStatusBar).thenReturn(true);
@@ -577,6 +579,12 @@ WallpaperService mkWallpaperService([bool wallpaper = true]) {
   when(wallpaperService.wallpaper).thenReturn(wallpaper ? Image.asset('assets/icon.png').image : null);
   when(wallpaperService.version).thenReturn(0);
   return wallpaperService;
+}
+
+TvInputsService mkTvInputsService() {
+  final tvInputsService = MockTvInputsService();
+  when(tvInputsService.hasInputs).thenReturn(false);
+  return tvInputsService;
 }
 
 NotificationsService mkNotificationsService() {
@@ -618,6 +626,7 @@ Future<void> _pumpWidgetWithProviders(
         ChangeNotifierProvider<WallpaperService>.value(value: wallpaperService),
         ChangeNotifierProvider<AppsService>.value(value: appsService),
         ChangeNotifierProvider<SettingsService>.value(value: settingsService),
+        ChangeNotifierProvider<TvInputsService>.value(value: mkTvInputsService()),
         ChangeNotifierProvider<NotificationsService>.value(value: mkNotificationsService()),
         ChangeNotifierProvider(create: (_) => LauncherState()),
         ChangeNotifierProvider(create: (_) => NetworkService(FLauncherChannel())),

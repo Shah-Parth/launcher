@@ -1,9 +1,9 @@
 # LTvLauncher
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/banner_dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/banner_light.svg">
-  <img alt="LTvLauncher Banner" src="assets/banner_light.svg">
+  <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner_dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset=".github/assets/banner_light.svg">
+  <img alt="LTvLauncher Banner" src=".github/assets/banner_light.svg">
 </picture>
 
 [![Version](https://img.shields.io/github/v/release/LeanBitLab/LtvLauncher?style=for-the-badge&color=7C4DFF&label=Version)](https://github.com/LeanBitLab/LtvLauncher/releases/latest) [![Downloads](https://img.shields.io/github/downloads/LeanBitLab/LtvLauncher/total?style=for-the-badge&color=7C4DFF&label=Downloads)](https://github.com/LeanBitLab/LtvLauncher/releases) [![Stars](https://img.shields.io/github/stars/LeanBitLab/LtvLauncher?style=for-the-badge&color=7C4DFF)](https://github.com/LeanBitLab/LtvLauncher/stargazers)
@@ -19,7 +19,7 @@ This customized version introduces usability enhancements and some UX improvemen
   <img alt="Get it on IzzyOnDroid" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="50">
 </a>
 <a href="https://go.aftvnews.com">
-  <img alt="Downloader Code: 7259827" src="assets/get_it_on_downloader.png" height="50">
+  <img alt="Downloader Code: 7259827" src=".github/assets/get_it_on_downloader.png" height="50">
 </a>
 
 ## Key Features & Enhancements
