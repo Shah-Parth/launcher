@@ -1,1 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="112" height="20" role="img" aria-label="Downloads: 11.0k"><title>Downloads: 11.0k</title><filter id="blur"><feGaussianBlur in="SourceGraphic" stdDeviation="16"/></filter><linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><clipPath id="r"><rect width="112" height="20" rx="3" fill="#fff"/></clipPath><g clip-path="url(#r)"><rect width="71" height="20" fill="#555"/><rect x="71" width="41" height="20" fill="#7c4dff"/><rect width="112" height="20" fill="url(#s)"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text aria-hidden="true" x="365" y="150" fill="#010101" fill-opacity=".80" filter="url(#blur)" transform="scale(.1)" textLength="610">Downloads</text><text aria-hidden="true" x="365" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="610">Downloads</text><text x="365" y="140" transform="scale(.1)" fill="#fff" textLength="610">Downloads</text><text aria-hidden="true" x="905" y="150" fill="#010101" fill-opacity=".80" filter="url(#blur)" transform="scale(.1)" textLength="310">11.0k</text><text aria-hidden="true" x="905" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="310">11.0k</text><text x="905" y="140" transform="scale(.1)" fill="#fff" textLength="310">11.0k</text></g></svg>
+<svg width="111.6" height="20" viewBox="0 0 1116 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Downloads: 11.0k">
+  <title>Downloads: 11.0k</title>
+  <linearGradient id="a" x2="0" y2="100%">
+    <stop offset="0" stop-opacity=".1" stop-color="#EEE"/>
+    <stop offset="1" stop-opacity=".1"/>
+  </linearGradient>
+  <mask id="m"><rect width="1116" height="200" rx="30" fill="#FFF"/></mask>
+  <g mask="url(#m)">
+    <rect width="701" height="200" fill="#555"/>
+    <rect width="415" height="200" fill="#7C4DFF" x="701"/>
+    <rect width="1116" height="200" fill="url(#a)"/>
+  </g>
+  <g aria-hidden="true" fill="#fff" text-anchor="start" font-family="Verdana,DejaVu Sans,sans-serif" font-size="110">
+    <text x="60" y="148" textLength="601" fill="#000" opacity="0.25">Downloads</text>
+    <text x="50" y="138" textLength="601">Downloads</text>
+    <text x="756" y="148" textLength="315" fill="#000" opacity="0.25">11.0k</text>
+    <text x="746" y="138" textLength="315">11.0k</text>
+  </g>
+  
+</svg>
