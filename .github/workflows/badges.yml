@@ -71,6 +71,9 @@ jobs:
                   f.write(f'version={version}\n')
                   f.write(f'downloads={downloads_str}\n')
           EOF
+          echo "=== fetch_stats.py ==="
+          cat -v fetch_stats.py
+          echo "======================"
           python3 fetch_stats.py && rm fetch_stats.py
 
       - name: Set up Java
@@ -116,6 +119,9 @@ jobs:
                         lh += int(line.split(':')[1])
             print(f'{(lh/lf)*100:.1f}' if lf > 0 else '0.0')
             EOF
+            echo "=== coverage.py ==="
+            cat -v coverage.py
+            echo "==================="
             PERCENTAGE=$(python3 coverage.py && rm coverage.py)
           else
             PERCENTAGE="0.0"
@@ -135,6 +141,9 @@ jobs:
           else:
               print('red')
           EOF
+          echo "=== color.py ==="
+          cat -v color.py
+          echo "================"
           COLOR=$(python3 color.py && rm color.py)
           echo "color=$COLOR" >> $GITHUB_OUTPUT
         env:
@@ -173,6 +182,9 @@ jobs:
             print(f'summary={summary}')
             print(f'color={color}')
             EOF
+            echo "=== stats.py ==="
+            cat -v stats.py
+            echo "================"
             python3 stats.py >> $GITHUB_OUTPUT && rm stats.py
           else
             echo "summary=no tests" >> $GITHUB_OUTPUT
