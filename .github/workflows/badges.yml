@@ -22,9 +22,7 @@ jobs:
       - name: Fetch GitHub Stats
         id: stats
         run: |
-          python3 -c "
-          import textwrap
-          exec(textwrap.dedent('''
+          python3 -c "import textwrap; exec(textwrap.dedent('''
               import urllib.request
               import json
               import os
@@ -105,9 +103,7 @@ jobs:
         id: coverage
         run: |
           if [ -f coverage/lcov.info ]; then
-            PERCENTAGE=$(python3 -c "
-            import textwrap
-            exec(textwrap.dedent('''
+            PERCENTAGE=$(python3 -c "import textwrap; exec(textwrap.dedent('''
                 lf = 0
                 lh = 0
                 with open('coverage/lcov.info') as f:
@@ -124,9 +120,7 @@ jobs:
           echo "percent=$PERCENTAGE" >> $GITHUB_OUTPUT
           
           # Color logic based on percentage
-          COLOR=$(python3 -c "
-          import textwrap
-          exec(textwrap.dedent('''
+          COLOR=$(python3 -c "import textwrap; exec(textwrap.dedent('''
               import os
               p = float(os.environ.get('PERCENTAGE', '0.0'))
               if p >= 90:
@@ -146,9 +140,7 @@ jobs:
         id: test_stats
         run: |
           if [ -f test-reports/results.json ]; then
-            python3 -c "
-            import textwrap
-            exec(textwrap.dedent('''
+            python3 -c "import textwrap; exec(textwrap.dedent('''
                 import json
                 import os
                 success = 0
