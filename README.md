@@ -24,8 +24,9 @@ This customized version introduces usability enhancements and some UX improvemen
   <img alt="Downloader Code: 7259827" src=".github/assets/get_it_on_downloader.png" height="50">
 </a>
 <a href="https://github.com/LeanBitLab/LtvLauncher/releases">
-  <img alt="Pre-release: v2026.05.01-pre" src="https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/prerelease.png?v=1" height="50">
+  <img alt="Pre-release: v2026.05.01-pre" src="https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/prerelease.png?v=2" height="50">
 </a>
+
 
 
 
