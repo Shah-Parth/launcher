@@ -6,7 +6,6 @@ on:
       - master
   schedule:
     - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight
-
   workflow_dispatch:
 
 permissions:
@@ -19,10 +18,6 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-
-      - name: Fetch GitHub Stats
-        id: stats
-        run: python3 .github/scripts/fetch_stats.py
 
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -49,7 +44,6 @@ jobs:
       - name: Generate Database Migrations Schema
         run: flutter pub run drift_dev schema generate drift_schemas/ test/generated_migrations/
 
-
       - name: Run Tests with Coverage and Reports
         run: |
           mkdir -p test-reports
@@ -62,30 +56,6 @@ jobs:
       - name: Calculate Test Statistics
         id: test_stats
         run: python3 .github/scripts/calculate_test_stats.py
-
-      - name: Create Version Badge
-        uses: emibcn/badge-action@v2.0.2
-        with:
-          label: 'Version'
-          status: '${{ steps.stats.outputs.version }}'
-          color: '7C4DFF'
-          path: '.github/badges/version.svg'
-
-      - name: Create Downloads Badge
-        uses: emibcn/badge-action@v2.0.2
-        with:
-          label: 'Downloads'
-          status: '${{ steps.stats.outputs.downloads }}'
-          color: '7C4DFF'
-          path: '.github/badges/downloads.svg'
-
-      - name: Create Stars Badge
-        uses: emibcn/badge-action@v2.0.2
-        with:
-          label: 'Stars'
-          status: '${{ steps.stats.outputs.stars }}'
-          color: '7C4DFF'
-          path: '.github/badges/stars.svg'
 
       - name: Create Coverage Badge
         uses: emibcn/badge-action@v2.0.2
@@ -106,5 +76,5 @@ jobs:
       - name: Commit and Push Badges
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: auto-update badges"
-          file_pattern: ".github/badges/*.svg"
+          commit_message: "chore: auto-update test and coverage badges"
+          file_pattern: ".github/badges/coverage.svg .github/badges/tests.svg"
