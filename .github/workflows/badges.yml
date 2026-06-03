@@ -1,0 +1,139 @@
+name: Update Badges
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-badges:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Install SQLite
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sqlite3 libsqlite3-dev
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Generate Mocks
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Run Tests with Coverage and Reports
+        run: |
+          mkdir -p test-reports
+          flutter test --coverage --file-reporter json:test-reports/results.json > test-reports/test_run.log || true
+
+      - name: Calculate Coverage Percentage
+        id: coverage
+        run: |
+          if [ -f coverage/lcov.info ]; then
+            PERCENTAGE=$(python3 -c "
+            lf = 0
+            lh = 0
+            with open('coverage/lcov.info') as f:
+                for line in f:
+                    if line.startswith('LF:'):
+                        lf += int(line.split(':')[1])
+                    elif line.startswith('LH:'):
+                        lh += int(line.split(':')[1])
+            print(f'{(lh/lf)*100:.1f}' if lf > 0 else '0.0')
+            ")
+          else
+            PERCENTAGE="0.0"
+          fi
+          echo "percent=$PERCENTAGE" >> $GITHUB_OUTPUT
+          
+          # Color logic based on percentage
+          COLOR=$(python3 -c "
+          p = float('$PERCENTAGE')
+          if p >= 90:
+              print('green')
+          elif p >= 75:
+              print('yellowgreen')
+          elif p >= 50:
+              print('yellow')
+          else:
+              print('red')
+          ")
+          echo "color=$COLOR" >> $GITHUB_OUTPUT
+
+      - name: Calculate Test Statistics
+        id: test_stats
+        run: |
+          if [ -f test-reports/results.json ]; then
+            STATS=$(python3 -c "
+            import json
+            success = 0
+            failed = 0
+            with open('test-reports/results.json') as f:
+                for line in f:
+                    try:
+                        data = json.loads(line)
+                        if data.get('type') == 'testDone':
+                            if data.get('hidden', False):
+                                continue
+                            res = data.get('result')
+                            if res == 'success':
+                                success += 1
+                            elif res in ('failure', 'error'):
+                                failed += 1
+                    except Exception:
+                        pass
+            total = success + failed
+            if failed > 0:
+                summary = f'{success}/{total} passed'
+                color = 'red'
+            else:
+                summary = f'{success} passed'
+                color = 'green'
+            print(f'summary={summary}')
+            print(f'color={color}')
+            ")
+            echo \"$STATS\" >> $GITHUB_OUTPUT
+          else
+            echo "summary=no tests" >> $GITHUB_OUTPUT
+            echo "color=grey" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Coverage Badge
+        uses: emibcn/badge-action@v2.0.2
+        with:
+          label: 'Coverage'
+          status: '${{ steps.coverage.outputs.percent }}%'
+          color: '${{ steps.coverage.outputs.color }}'
+          path: '.github/badges/coverage.svg'
+
+      - name: Create Tests Badge
+        uses: emibcn/badge-action@v2.0.2
+        with:
+          label: 'Tests'
+          status: '${{ steps.test_stats.outputs.summary }}'
+          color: '${{ steps.test_stats.outputs.color }}'
+          path: '.github/badges/tests.svg'
+
+      - name: Commit and Push Badges
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: auto-update badges"
+          file_pattern: ".github/badges/*.svg"
