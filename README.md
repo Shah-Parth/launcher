@@ -15,16 +15,16 @@
 This customized version introduces usability enhancements and some UX improvements by [LeanBitLab](https://github.com/LeanBitLab).
 
 <a href="https://github.com/LeanBitLab/LtvLauncher/releases/latest">
-  <img alt="Get it on GitHub" src="https://raw.githubusercontent.com/rubenpgrady/get-it-on-github/refs/heads/main/get-it-on-github.png" height="65">
+  <img alt="Get it on GitHub" src="https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/assets/get_it_on_github.png?v=1" height="65">
 </a>
 <a href="https://apt.izzysoft.de/fdroid/index/apk/com.leanbitlab.ltvL">
-  <img alt="Get it on IzzyOnDroid" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="65">
+  <img alt="Get it on IzzyOnDroid" src="https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/assets/IzzyOnDroid.png?v=1" height="65">
 </a>
 <a href="https://go.aftvnews.com">
-  <img alt="Downloader Code: 7259827" src=".github/assets/get_it_on_downloader.png" height="65">
+  <img alt="Downloader Code: 7259827" src="https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/assets/get_it_on_downloader.png?v=1" height="65">
 </a>
 <a href="https://github.com/LeanBitLab/LtvLauncher/releases">
-  <img alt="Pre-release" src="https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/prerelease.png?v=2" height="65">
+  <img alt="Pre-release" src="https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/prerelease.png?v=3" height="65">
 </a>
 
 
