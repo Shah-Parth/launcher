@@ -83,17 +83,12 @@ class GeneralSettingsPage extends StatelessWidget {
                       children: [
                         FocusableSettingsTile(
                           leading: const Icon(Icons.notifications_active_outlined),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Notification Access', style: Theme.of(context).textTheme.bodyMedium),
-                              Text(
-                                service.hasPermission ? 'Granted' : 'Permission Required',
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: service.hasPermission ? Colors.green : Colors.orange,
-                                ),
-                              ),
-                            ],
+                          title: Text('Notification Access', style: Theme.of(context).textTheme.bodyMedium),
+                          trailing: Text(
+                            service.hasPermission ? 'Granted' : 'Permission Required',
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: service.hasPermission ? Colors.green : Colors.orange,
+                            ),
                           ),
                           onPressed: () async {
                             if (!service.hasPermission) {
@@ -106,21 +101,16 @@ class GeneralSettingsPage extends StatelessWidget {
                         if (service.hasPermission)
                           FocusableSettingsTile(
                             leading: const Icon(Icons.picture_in_picture_alt_outlined),
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('System-wide Popup Alert', style: Theme.of(context).textTheme.bodyMedium),
-                                Text(
-                                  !service.hasOverlayPermission
-                                      ? 'Overlay Permission Required'
-                                      : (service.systemPopupEnabled ? 'Enabled' : 'Disabled'),
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: !service.hasOverlayPermission
-                                        ? Colors.orange
-                                        : (service.systemPopupEnabled ? Colors.green : Colors.grey),
-                                  ),
-                                ),
-                              ],
+                            title: Text('System-wide Popup Alert', style: Theme.of(context).textTheme.bodyMedium),
+                            trailing: Text(
+                              !service.hasOverlayPermission
+                                  ? 'Overlay Permission Required'
+                                  : (service.systemPopupEnabled ? 'Enabled' : 'Disabled'),
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: !service.hasOverlayPermission
+                                    ? Colors.orange
+                                    : (service.systemPopupEnabled ? Colors.green : Colors.grey),
+                              ),
                             ),
                             onPressed: () async {
                               await service.checkOverlayPermission();

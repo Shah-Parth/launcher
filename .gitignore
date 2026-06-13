@@ -114,3 +114,8 @@ test/mocks.mocks.dart
 commitlint.config.js
 AGENTS.md
 AGENTS.original.md
+
+.env
+
+# AI agent config (personal, not shared)
+.pi/
