@@ -16,17 +16,40 @@ class AccessibilityPage extends StatefulWidget {
   State<AccessibilityPage> createState() => _AccessibilityPageState();
 }
 
-class _AccessibilityPageState extends State<AccessibilityPage> {
+class _AccessibilityPageState extends State<AccessibilityPage> with WidgetsBindingObserver {
+  bool _accessibilityEnabled = false;
+
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _refreshStatus();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshStatus();
+    }
   }
 
   Future<void> _refreshStatus() async {
     final appsService = context.read<AppsService>();
     final launcherState = context.read<LauncherState>();
     await launcherState.refresh(appsService);
+
+    final bool enabled = await FLauncherChannel().checkAccessibilityPermission();
+    if (mounted) {
+      setState(() {
+        _accessibilityEnabled = enabled;
+      });
+    }
   }
 
   @override
@@ -79,6 +102,40 @@ class _AccessibilityPageState extends State<AccessibilityPage> {
                     textAlign: TextAlign.center,
                   ),
                 ),
+                const SizedBox(height: 16),
+                const Divider(),
+                const SizedBox(height: 8),
+                FocusableSettingsTile(
+                  leading: Icon(
+                    _accessibilityEnabled ? Icons.settings_accessibility : Icons.accessibility_new,
+                    color: _accessibilityEnabled ? Colors.green : Colors.orange,
+                  ),
+                  title: Text(
+                    'Home Button Hijack (Google TV)',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  trailing: Text(
+                    _accessibilityEnabled ? 'Enabled' : 'Disabled',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: _accessibilityEnabled ? Colors.green : Colors.orange,
+                        ),
+                  ),
+                  onPressed: () async {
+                    await FLauncherChannel().requestAccessibilityPermission();
+                  },
+                ),
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Text(
+                    'If you are using Google TV, enable "Home Button Hijack" under Accessibility settings to make the Home button open this launcher.',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Colors.white54,
+                        ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 16),
               ],
             ),
           ),

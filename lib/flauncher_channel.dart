@@ -144,6 +144,12 @@ class FLauncherChannel {
   Future<void> requestOverlayPermission() async =>
       await _methodChannel.invokeMethod("requestOverlayPermission");
 
+  Future<bool> checkAccessibilityPermission() async =>
+      await _methodChannel.invokeMethod("checkAccessibilityPermission");
+
+  Future<void> requestAccessibilityPermission() async =>
+      await _methodChannel.invokeMethod("requestAccessibilityPermission");
+
   Future<List<Map<dynamic, dynamic>>> getActiveNotifications() async {
     try {
       final List<dynamic> list = await _methodChannel.invokeMethod("getActiveNotifications");

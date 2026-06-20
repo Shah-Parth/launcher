@@ -139,6 +139,8 @@ public class MainActivity extends FlutterActivity {
                 case "dismissAllNotifications" -> result.success(dismissAllNotifications());
                 case "checkOverlayPermission" -> result.success(checkOverlayPermission());
                 case "requestOverlayPermission" -> result.success(requestOverlayPermission());
+                case "checkAccessibilityPermission" -> result.success(isAccessibilityServiceEnabled());
+                case "requestAccessibilityPermission" -> result.success(openAccessibilitySettings());
                 case "getWatchNextPrograms" -> result.success(getWatchNextPrograms());
                 case "getWatchNextPoster" -> {
                     String posterArtUri = call.argument("posterArtUri");
@@ -977,5 +979,40 @@ public class MainActivity extends FlutterActivity {
             e.printStackTrace();
             return false;
         }
+    }
+
+    private boolean isAccessibilityServiceEnabled() {
+        String service = getPackageName() + "/" + LauncherAccessibilityService.class.getName();
+        int accessibilityEnabled = 0;
+        try {
+            accessibilityEnabled = Settings.Secure.getInt(
+                getContentResolver(),
+                Settings.Secure.ACCESSIBILITY_ENABLED
+            );
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (accessibilityEnabled == 1) {
+            String settingValue = Settings.Secure.getString(
+                getContentResolver(),
+                Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES
+            );
+            if (settingValue != null) {
+                String[] services = settingValue.split(":");
+                for (String s : services) {
+                    if (s.equalsIgnoreCase(service)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean openAccessibilitySettings() {
+        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        return tryStartActivity(intent);
     }
 }
