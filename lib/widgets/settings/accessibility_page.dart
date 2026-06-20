@@ -111,7 +111,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> with WidgetsBindi
                     color: _accessibilityEnabled ? Colors.green : Colors.orange,
                   ),
                   title: Text(
-                    'Home Button Hijack (Google TV)',
+                    'Home Button Fix (Google TV)',
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   trailing: Text(
@@ -128,7 +128,7 @@ class _AccessibilityPageState extends State<AccessibilityPage> with WidgetsBindi
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text(
-                    'If you are using Google TV, enable "Home Button Hijack" under Accessibility settings to make the Home button open this launcher.',
+                    'If you are using Google TV, enable "Home Button Fix" under Accessibility settings to make the Home button open this launcher.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: Colors.white54,
                         ),

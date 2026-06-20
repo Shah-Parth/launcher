@@ -104,7 +104,7 @@
 
         <service
             android:name=".LauncherAccessibilityService"
-            android:label="LTvLauncher Button Hijack"
+            android:label="LTvLauncher Home Button Fix"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="true">
             <intent-filter>
