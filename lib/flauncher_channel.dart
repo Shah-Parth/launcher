@@ -158,4 +158,22 @@ class FLauncherChannel {
         final List<dynamic> eventList = event;
         listener(eventList.cast<Map<dynamic, dynamic>>());
       });
+
+  Future<bool> dismissNotification(String key) async {
+    try {
+      final bool success = await _methodChannel.invokeMethod("dismissNotification", {"key": key});
+      return success;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> dismissAllNotifications() async {
+    try {
+      final bool success = await _methodChannel.invokeMethod("dismissAllNotifications");
+      return success;
+    } catch (_) {
+      return false;
+    }
+  }
 }

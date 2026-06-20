@@ -4,9 +4,36 @@ import 'package:flutter/foundation.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+class NotificationItem {
+  final String key;
+  final String packageName;
+  final String title;
+  final String text;
+  final bool isClearable;
+
+  NotificationItem({
+    required this.key,
+    required this.packageName,
+    required this.title,
+    required this.text,
+    required this.isClearable,
+  });
+
+  factory NotificationItem.fromMap(Map<dynamic, dynamic> map) {
+    return NotificationItem(
+      key: map['key'] as String? ?? '',
+      packageName: map['packageName'] as String? ?? '',
+      title: map['title'] as String? ?? '',
+      text: map['text'] as String? ?? '',
+      isClearable: map['isClearable'] as bool? ?? false,
+    );
+  }
+}
+
 class NotificationsService extends ChangeNotifier {
   final FLauncherChannel _channel;
   Map<String, int> _notificationCounts = {};
+  List<NotificationItem> _notifications = [];
   bool _hasPermission = false;
   bool _hasOverlayPermission = false;
   bool _systemPopupEnabled = false;
@@ -20,6 +47,7 @@ class NotificationsService extends ChangeNotifier {
   }
 
   Map<String, int> get notificationCounts => Map.unmodifiable(_notificationCounts);
+  List<NotificationItem> get notifications => List.unmodifiable(_notifications);
   bool get hasPermission => _hasPermission;
   bool get hasOverlayPermission => _hasOverlayPermission;
   bool get systemPopupEnabled => _systemPopupEnabled;
@@ -84,11 +112,30 @@ class NotificationsService extends ChangeNotifier {
 
   void _updateNotificationCounts(List<Map<dynamic, dynamic>> list) {
     final Map<String, int> newCounts = {};
+    final List<NotificationItem> newNotifications = [];
+
     for (final item in list) {
       final String? pkg = item['packageName'] as String?;
       final int? count = item['count'] as int?;
-      if (pkg != null && count != null) {
-        newCounts[pkg] = count;
+      if (pkg != null) {
+        if (count != null) {
+          newCounts[pkg] = count;
+          for (int i = 0; i < count; i++) {
+            newNotifications.add(NotificationItem(
+              key: '${pkg}_$i',
+              packageName: pkg,
+              title: 'Notification',
+              text: 'Content',
+              isClearable: true,
+            ));
+          }
+        } else {
+          final notification = NotificationItem.fromMap(item);
+          newNotifications.add(notification);
+          if (notification.isClearable) {
+            newCounts[pkg] = (newCounts[pkg] ?? 0) + 1;
+          }
+        }
       }
     }
 
@@ -105,15 +152,31 @@ class NotificationsService extends ChangeNotifier {
       }
     }
 
+    if (!changed) {
+      if (_notifications.length != newNotifications.length) {
+        changed = true;
+      } else {
+        for (int i = 0; i < _notifications.length; i++) {
+          if (_notifications[i].key != newNotifications[i].key ||
+              _notifications[i].title != newNotifications[i].title ||
+              _notifications[i].text != newNotifications[i].text ||
+              _notifications[i].isClearable != newNotifications[i].isClearable) {
+            changed = true;
+            break;
+          }
+        }
+      }
+    }
+
     if (changed) {
       _notificationCounts = newCounts;
+      _notifications = newNotifications;
       notifyListeners();
     }
   }
 
   Future<void> requestPermission() async {
     await _channel.requestNotificationListenerPermission();
-    // Re-check after returning from settings (handled externally or via polling/resume)
   }
 
   Future<void> checkOverlayPermission() async {
@@ -135,6 +198,20 @@ class NotificationsService extends ChangeNotifier {
     _systemPopupEnabled = enabled;
     await _prefs?.setBool('system_notifications_popup', enabled);
     notifyListeners();
+  }
+
+  Future<void> dismiss(String key) async {
+    final bool success = await _channel.dismissNotification(key);
+    if (success) {
+      await refreshNotifications();
+    }
+  }
+
+  Future<void> dismissAll() async {
+    final bool success = await _channel.dismissAllNotifications();
+    if (success) {
+      await refreshNotifications();
+    }
   }
 
   @override

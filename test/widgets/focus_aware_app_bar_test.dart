@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
+import 'package:flauncher/providers/notifications_service.dart';
 import 'package:provider/provider.dart';
 import 'package:mockito/mockito.dart';
 import '../mocks.mocks.dart';
@@ -10,10 +11,13 @@ import '../mocks.mocks.dart';
 void main() {
   late MockSettingsService mockSettingsService;
   late MockTvInputsService mockTvInputsService;
+  late MockNotificationsService mockNotificationsService;
 
   setUp(() {
     mockSettingsService = MockSettingsService();
     mockTvInputsService = MockTvInputsService();
+    mockNotificationsService = MockNotificationsService();
+
     // Default mock setup
     when(mockSettingsService.autoHideAppBarEnabled).thenReturn(false);
     when(mockSettingsService.showNetworkIndicatorInStatusBar).thenReturn(false);
@@ -25,6 +29,9 @@ void main() {
     when(mockSettingsService.timeFormat).thenReturn(SettingsService.defaultTimeFormat);
 
     when(mockTvInputsService.hasInputs).thenReturn(false);
+
+    when(mockNotificationsService.hasPermission).thenReturn(false);
+    when(mockNotificationsService.notifications).thenReturn([]);
   });
 
   Widget createWidgetUnderTest() {
@@ -42,6 +49,7 @@ void main() {
         providers: [
           ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
           ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+          ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
         ],
         child: createWidgetUnderTest(),
       )
@@ -60,6 +68,7 @@ void main() {
         providers: [
           ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
           ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+          ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
         ],
         child: createWidgetUnderTest(),
       )
@@ -90,6 +99,7 @@ void main() {
         providers: [
           ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
           ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+          ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
         ],
         child: createWidgetUnderTest(),
       )
@@ -116,6 +126,7 @@ void main() {
         providers: [
           ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService2),
           ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+          ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
         ],
         child: createWidgetUnderTest(),
       )

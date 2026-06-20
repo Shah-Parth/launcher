@@ -195,4 +195,64 @@ void main() {
       verify(mockChannel.requestOverlayPermission()).called(1);
     });
   });
+
+  group('Notification Dismissal', () {
+    test('dismiss cancels notification and refreshes', () async {
+      when(mockChannel.checkNotificationListenerPermission())
+          .thenAnswer((_) async => true);
+      when(mockChannel.getActiveNotifications())
+          .thenAnswer((_) async => [
+                {'packageName': 'com.android.settings', 'key': 'key_1', 'isClearable': true},
+              ]);
+      when(mockChannel.dismissNotification(any))
+          .thenAnswer((_) async => true);
+
+      notificationsService = NotificationsService(mockChannel);
+      while (!notificationsService.initialized) {
+        await Future.delayed(Duration.zero);
+      }
+
+      expect(notificationsService.notifications.length, 1);
+      expect(notificationsService.notifications[0].key, 'key_1');
+
+      // Stub empty return for refresh
+      when(mockChannel.getActiveNotifications())
+          .thenAnswer((_) async => []);
+
+      await notificationsService.dismiss('key_1');
+
+      verify(mockChannel.dismissNotification('key_1')).called(1);
+      verify(mockChannel.getActiveNotifications()).called(2); // Initial + refresh
+      expect(notificationsService.notifications, isEmpty);
+    });
+
+    test('dismissAll cancels all notifications and refreshes', () async {
+      when(mockChannel.checkNotificationListenerPermission())
+          .thenAnswer((_) async => true);
+      when(mockChannel.getActiveNotifications())
+          .thenAnswer((_) async => [
+                {'packageName': 'com.android.settings', 'key': 'key_1', 'isClearable': true},
+                {'packageName': 'com.leanbitlab.ltvL', 'key': 'key_2', 'isClearable': true},
+              ]);
+      when(mockChannel.dismissAllNotifications())
+          .thenAnswer((_) async => true);
+
+      notificationsService = NotificationsService(mockChannel);
+      while (!notificationsService.initialized) {
+        await Future.delayed(Duration.zero);
+      }
+
+      expect(notificationsService.notifications.length, 2);
+
+      // Stub empty return for refresh
+      when(mockChannel.getActiveNotifications())
+          .thenAnswer((_) async => []);
+
+      await notificationsService.dismissAll();
+
+      verify(mockChannel.dismissAllNotifications()).called(1);
+      verify(mockChannel.getActiveNotifications()).called(2); // Initial + refresh
+      expect(notificationsService.notifications, isEmpty);
+    });
+  });
 }

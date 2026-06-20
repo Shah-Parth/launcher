@@ -1,6 +1,8 @@
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flauncher/widgets/settings/inputs_panel.dart';
+import 'package:flauncher/widgets/settings/notifications_panel.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
+import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -27,21 +29,25 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
   bool focused = false;
   late FocusNode _settingsFocusNode;
   late FocusNode _inputsFocusNode;
+  late FocusNode _notificationsFocusNode;
 
   FocusNode get settingsFocusNode => _settingsFocusNode;
   FocusNode get inputsFocusNode => _inputsFocusNode;
+  FocusNode get notificationsFocusNode => _notificationsFocusNode;
 
   @override
   void initState() {
     super.initState();
     _settingsFocusNode = FocusNode();
     _inputsFocusNode = FocusNode();
+    _notificationsFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
     _settingsFocusNode.dispose();
     _inputsFocusNode.dispose();
+    _notificationsFocusNode.dispose();
     super.dispose();
   }
 
@@ -113,6 +119,29 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                       },
                     )
                   : const SizedBox.shrink(),
+              ),
+              Consumer<NotificationsService>(
+                builder: (context, notificationsService, _) {
+                  if (notificationsService.hasPermission) {
+                    final count = notificationsService.notifications.length;
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(width: 16),
+                        _FocusableIconButton(
+                          icon: count > 0 ? Icons.notifications_active_outlined : Icons.notifications_outlined,
+                          focusNode: _notificationsFocusNode,
+                          badgeCount: count,
+                          onPressed: () => showDialog(
+                            context: context,
+                            builder: (_) => const NotificationsPanel(),
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
               const SizedBox(width: 16),
               // Network indicator (conditionally shown)
@@ -199,8 +228,9 @@ class _FocusableIconButton extends StatefulWidget {
   final IconData icon;
   final VoidCallback onPressed;
   final FocusNode? focusNode;
+  final int badgeCount;
 
-  const _FocusableIconButton({required this.icon, required this.onPressed, this.focusNode});
+  const _FocusableIconButton({required this.icon, required this.onPressed, this.focusNode, this.badgeCount = 0});
 
   @override
   State<_FocusableIconButton> createState() => _FocusableIconButtonState();
@@ -233,11 +263,21 @@ class _FocusableIconButtonState extends State<_FocusableIconButton> {
                 ? const [BoxShadow(color: Colors.black54, blurRadius: 8, spreadRadius: 1)]
                 : null,
             ),
-            child: Icon(widget.icon,
-              shadows: const [
-                Shadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 2))
-              ],
-            ),
+            child: widget.badgeCount > 0
+              ? Badge(
+                  label: Text(widget.badgeCount.toString()),
+                  backgroundColor: Colors.red,
+                  child: Icon(widget.icon,
+                    shadows: const [
+                      Shadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 2))
+                    ],
+                  ),
+                )
+              : Icon(widget.icon,
+                  shadows: const [
+                    Shadow(color: Colors.black54, blurRadius: 8, offset: Offset(0, 2))
+                  ],
+                ),
           ),
         ),
       ),

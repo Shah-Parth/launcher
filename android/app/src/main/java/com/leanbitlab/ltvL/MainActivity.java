@@ -141,6 +141,11 @@ public class MainActivity extends FlutterActivity {
                 case "checkNotificationListenerPermission" -> result.success(checkNotificationListenerPermission());
                 case "requestNotificationListenerPermission" -> result.success(requestNotificationListenerPermission());
                 case "getActiveNotifications" -> result.success(getActiveNotifications());
+                case "dismissNotification" -> {
+                    String key = call.argument("key");
+                    result.success(dismissNotification(key));
+                }
+                case "dismissAllNotifications" -> result.success(dismissAllNotifications());
                 case "checkOverlayPermission" -> result.success(checkOverlayPermission());
                 case "requestOverlayPermission" -> result.success(requestOverlayPermission());
                 default -> throw new IllegalArgumentException();
@@ -881,17 +886,23 @@ public class MainActivity extends FlutterActivity {
         try {
             StatusBarNotification[] sbns = service.getActiveNotifications();
             if (sbns != null) {
-                Map<String, Integer> counts = new HashMap<>();
                 for (StatusBarNotification sbn : sbns) {
-                    if (sbn.isClearable()) {
-                        String pkg = sbn.getPackageName();
-                        counts.put(pkg, counts.getOrDefault(pkg, 0) + 1);
-                    }
-                }
-                for (Map.Entry<String, Integer> entry : counts.entrySet()) {
                     Map<String, Object> map = new HashMap<>();
-                    map.put("packageName", entry.getKey());
-                    map.put("count", entry.getValue());
+                    map.put("key", sbn.getKey());
+                    map.put("packageName", sbn.getPackageName());
+                    
+                    android.app.Notification notification = sbn.getNotification();
+                    String title = "";
+                    String text = "";
+                    if (notification != null && notification.extras != null) {
+                        CharSequence titleChar = notification.extras.getCharSequence(android.app.Notification.EXTRA_TITLE);
+                        CharSequence textChar = notification.extras.getCharSequence(android.app.Notification.EXTRA_TEXT);
+                        if (titleChar != null) title = titleChar.toString();
+                        if (textChar != null) text = textChar.toString();
+                    }
+                    map.put("title", title);
+                    map.put("text", text);
+                    map.put("isClearable", sbn.isClearable());
                     list.add(map);
                 }
             }
@@ -899,6 +910,34 @@ public class MainActivity extends FlutterActivity {
             e.printStackTrace();
         }
         return list;
+    }
+
+    private boolean dismissNotification(String key) {
+        LauncherNotificationListenerService service = LauncherNotificationListenerService.getInstance();
+        if (service == null || key == null) {
+            return false;
+        }
+        try {
+            service.cancelNotification(key);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private boolean dismissAllNotifications() {
+        LauncherNotificationListenerService service = LauncherNotificationListenerService.getInstance();
+        if (service == null) {
+            return false;
+        }
+        try {
+            service.cancelAllNotifications();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean checkOverlayPermission() {

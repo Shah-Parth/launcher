@@ -590,6 +590,8 @@ TvInputsService mkTvInputsService() {
 NotificationsService mkNotificationsService() {
   final notificationsService = MockNotificationsService();
   when(notificationsService.getNotificationCount(any)).thenReturn(0);
+  when(notificationsService.hasPermission).thenReturn(false);
+  when(notificationsService.notifications).thenReturn([]);
   return notificationsService;
 }
 
