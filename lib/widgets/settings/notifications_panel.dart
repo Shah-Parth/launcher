@@ -145,8 +145,7 @@ class NotificationsPanel extends StatelessWidget {
                                         ],
                                       ),
                                       trailing: notification.isClearable
-                                          ? IconButton(
-                                              icon: const Icon(Icons.close, size: 18),
+                                          ? _DismissButton(
                                               onPressed: () async {
                                                 await notificationsService.dismiss(notification.key);
                                               },
@@ -164,12 +163,119 @@ class NotificationsPanel extends StatelessWidget {
                               },
                             ),
                     ),
+                    if (notifications.isNotEmpty && hasClearable) ...[
+                      const SizedBox(height: 8),
+                      _FocusableClearAllButton(
+                        onPressed: () async {
+                          await notificationsService.dismissAll();
+                        },
+                      ),
+                      const SizedBox(height: 8),
+                    ],
                   ],
                 );
               },
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _DismissButton extends StatefulWidget {
+  final VoidCallback onPressed;
+
+  const _DismissButton({Key? key, required this.onPressed}) : super(key: key);
+
+  @override
+  State<_DismissButton> createState() => _DismissButtonState();
+}
+
+class _DismissButtonState extends State<_DismissButton> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      onTap: widget.onPressed,
+      onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
+      borderRadius: BorderRadius.circular(8),
+      focusColor: Colors.transparent,
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+            color: _focused ? theme.colorScheme.primary : Colors.transparent,
+            width: 2,
+          ),
+          color: _focused ? theme.colorScheme.primary.withOpacity(0.15) : Colors.transparent,
+        ),
+        child: const Icon(
+          Icons.close,
+          size: 18,
+        ),
+      ),
+    );
+  }
+}
+
+class _FocusableClearAllButton extends StatefulWidget {
+  final VoidCallback onPressed;
+
+  const _FocusableClearAllButton({Key? key, required this.onPressed}) : super(key: key);
+
+  @override
+  State<_FocusableClearAllButton> createState() => _FocusableClearAllButtonState();
+}
+
+class _FocusableClearAllButtonState extends State<_FocusableClearAllButton> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: InkWell(
+        onTap: widget.onPressed,
+        onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
+        borderRadius: BorderRadius.circular(12),
+        focusColor: Colors.transparent,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: _focused ? theme.colorScheme.primary : Colors.transparent,
+              width: 2,
+            ),
+            color: _focused
+                ? theme.colorScheme.primary.withOpacity(0.15)
+                : theme.cardColor.withOpacity(0.5),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.clear_all,
+                size: 20,
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                "Clear All",
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
