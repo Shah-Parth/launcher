@@ -77,6 +77,12 @@ class StatusBarPanelPage extends StatelessWidget {
                   title: Text(localizations.inputs),
                   secondary: Icon(Icons.tv_outlined),
                 ),
+                RoundedSwitchListTile(
+                  value: settingsService.showNotificationsWidgetInStatusBar,
+                  onChanged: (value) => settingsService.setShowNotificationsWidgetInStatusBar(value),
+                  title: Text('Notification Bell'),
+                  secondary: Icon(Icons.notifications_outlined),
+                ),
               ],
             ),
           ),

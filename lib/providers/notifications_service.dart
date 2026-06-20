@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,7 +30,7 @@ class NotificationItem {
   }
 }
 
-class NotificationsService extends ChangeNotifier {
+class NotificationsService extends ChangeNotifier with WidgetsBindingObserver {
   final FLauncherChannel _channel;
   Map<String, int> _notificationCounts = {};
   List<NotificationItem> _notifications = [];
@@ -44,6 +44,7 @@ class NotificationsService extends ChangeNotifier {
 
   NotificationsService(this._channel) {
     _init();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   Map<String, int> get notificationCounts => Map.unmodifiable(_notificationCounts);
@@ -215,7 +216,16 @@ class NotificationsService extends ChangeNotifier {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      checkPermission();
+      checkOverlayPermission();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _subscription?.cancel();
     super.dispose();
   }

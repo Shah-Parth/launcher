@@ -120,28 +120,33 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                     )
                   : const SizedBox.shrink(),
               ),
-              Consumer<NotificationsService>(
-                builder: (context, notificationsService, _) {
-                  if (notificationsService.hasPermission) {
-                    final count = notificationsService.notifications.length;
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(width: 16),
-                        _FocusableIconButton(
-                          icon: count > 0 ? Icons.notifications_active_outlined : Icons.notifications_outlined,
-                          focusNode: _notificationsFocusNode,
-                          badgeCount: count,
-                          onPressed: () => showDialog(
-                            context: context,
-                            builder: (_) => const NotificationsPanel(),
-                          ),
-                        ),
-                      ],
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
+              Selector<SettingsService, bool>(
+                selector: (_, settings) => settings.showNotificationsWidgetInStatusBar,
+                builder: (context, showNotifications, _) => showNotifications
+                  ? Consumer<NotificationsService>(
+                      builder: (context, notificationsService, _) {
+                        if (notificationsService.hasPermission) {
+                          final count = notificationsService.notifications.length;
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const SizedBox(width: 16),
+                              _FocusableIconButton(
+                                icon: count > 0 ? Icons.notifications_active_outlined : Icons.notifications_outlined,
+                                focusNode: _notificationsFocusNode,
+                                badgeCount: count,
+                                onPressed: () => showDialog(
+                                  context: context,
+                                  builder: (_) => const NotificationsPanel(),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    )
+                  : const SizedBox.shrink(),
               ),
               const SizedBox(width: 16),
               // Network indicator (conditionally shown)

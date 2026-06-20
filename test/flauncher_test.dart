@@ -572,6 +572,7 @@ SettingsService mkSettingsService() {
   when(settingsService.hideHighlightOutlineOnHomescreen).thenReturn(false);
   when(settingsService.appSelectorTransitionAnimationEnabled).thenReturn(true);
   when(settingsService.showContinueWatching).thenReturn(false);
+  when(settingsService.showNotificationsWidgetInStatusBar).thenReturn(true);
   return settingsService;
 }
 

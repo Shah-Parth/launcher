@@ -45,6 +45,7 @@ const String _screensaverClockStyleKey = "screensaver_clock_style";
 const String _timeBasedWallpaperEnabledKey = "time_based_wallpaper_enabled";
 const String _showInputsWidgetInStatusBarKey = "show_inputs_widget_in_status_bar";
 const String _showContinueWatchingKey = "show_continue_watching";
+const String _showNotificationsWidgetInStatusBarKey = "show_notifications_widget_in_status_bar";
 
 // WiFi usage period options
 const String DATA_USAGE_DAILY = "daily";
@@ -95,6 +96,7 @@ class SettingsService extends ChangeNotifier {
   late bool _timeBasedWallpaperEnabled;
   late bool _showInputsWidgetInStatusBar;
   late bool _showContinueWatching;
+  late bool _showNotificationsWidgetInStatusBar;
 
   bool get appHighlightAnimationEnabled => _appHighlightAnimationEnabled;
 
@@ -132,6 +134,7 @@ class SettingsService extends ChangeNotifier {
 
   bool get showInputsWidgetInStatusBar => _showInputsWidgetInStatusBar;
   bool get showContinueWatching => _showContinueWatching;
+  bool get showNotificationsWidgetInStatusBar => _showNotificationsWidgetInStatusBar;
 
   String get accentColorHex => _accentColorHex;
 
@@ -165,6 +168,7 @@ class SettingsService extends ChangeNotifier {
     _timeBasedWallpaperEnabled = _sharedPreferences.getBool(_timeBasedWallpaperEnabledKey) ?? false;
     _showInputsWidgetInStatusBar = _sharedPreferences.getBool(_showInputsWidgetInStatusBarKey) ?? true;
     _showContinueWatching = _sharedPreferences.getBool(_showContinueWatchingKey) ?? true;
+    _showNotificationsWidgetInStatusBar = _sharedPreferences.getBool(_showNotificationsWidgetInStatusBarKey) ?? true;
   }
 
   Future<void> setAppHighlightAnimationEnabled(bool value) async {
@@ -296,6 +300,12 @@ class SettingsService extends ChangeNotifier {
   Future<void> setShowContinueWatching(bool show) async {
     await _sharedPreferences.setBool(_showContinueWatchingKey, show);
     _showContinueWatching = show;
+    notifyListeners();
+  }
+
+  Future<void> setShowNotificationsWidgetInStatusBar(bool show) async {
+    await _sharedPreferences.setBool(_showNotificationsWidgetInStatusBarKey, show);
+    _showNotificationsWidgetInStatusBar = show;
     notifyListeners();
   }
 }

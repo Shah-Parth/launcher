@@ -25,6 +25,7 @@ void main() {
     when(mockSettingsService.showDateInStatusBar).thenReturn(true);
     when(mockSettingsService.showTimeInStatusBar).thenReturn(true);
     when(mockSettingsService.showInputsWidgetInStatusBar).thenReturn(true);
+    when(mockSettingsService.showNotificationsWidgetInStatusBar).thenReturn(true);
     when(mockSettingsService.dateFormat).thenReturn(SettingsService.defaultDateFormat);
     when(mockSettingsService.timeFormat).thenReturn(SettingsService.defaultTimeFormat);
 
@@ -118,6 +119,7 @@ void main() {
     when(mockSettingsService2.showDateInStatusBar).thenReturn(true);
     when(mockSettingsService2.showTimeInStatusBar).thenReturn(true);
     when(mockSettingsService2.showInputsWidgetInStatusBar).thenReturn(false);
+    when(mockSettingsService2.showNotificationsWidgetInStatusBar).thenReturn(true);
     when(mockSettingsService2.dateFormat).thenReturn(SettingsService.defaultDateFormat);
     when(mockSettingsService2.timeFormat).thenReturn(SettingsService.defaultTimeFormat);
 
