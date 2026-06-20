@@ -9,4 +9,8 @@
 - Added system-wide floating notification overlay popups (requires Android overlay permission).
 - Added "System-wide Popup Alert" settings switch toggle under Notification Access.
 - Added premium "Get it on Downloader" badge to the README supporting permanent numeric code 7259827.
-
+- Add support for 'Continue Watching' (Watch Next) row on home screen.
+- Add status bar settings toggle to show/hide the notification bell icon.
+- Improve system-wide popup alert permission status detection on app resume.
+- Add visible focus outline selector for notification dismissal button.
+- Add a focusable 'Clear All' button at the bottom of the notifications side panel.
