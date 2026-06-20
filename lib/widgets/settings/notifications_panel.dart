@@ -4,6 +4,7 @@ import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flauncher/widgets/side_panel_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class NotificationsPanel extends StatelessWidget {
@@ -94,188 +95,86 @@ class NotificationsPanel extends StatelessWidget {
                                     color: theme.cardColor.withOpacity(0.5),
                                     borderRadius: BorderRadius.circular(12),
                                     clipBehavior: Clip.antiAlias,
-                                    child: FocusableSettingsTile(
-                                      autofocus: index == 0,
-                                      leading: FutureBuilder<dynamic>(
-                                        future: appsService.getAppIcon(notification.packageName),
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            return ClipRRect(
-                                              borderRadius: BorderRadius.circular(6),
-                                              child: Image.memory(
-                                                snapshot.data,
-                                                width: 36,
-                                                height: 36,
-                                              ),
-                                            );
-                                          }
-                                          return const Icon(Icons.android, size: 36);
-                                        },
-                                      ),
-                                      title: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            appName,
-                                            style: theme.textTheme.labelMedium?.copyWith(
-                                              color: theme.colorScheme.primary,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 2),
-                                          if (notification.title.isNotEmpty)
+                                    child: Focus(
+                                      onKeyEvent: (node, event) {
+                                        if (event is KeyDownEvent &&
+                                            event.logicalKey == LogicalKeyboardKey.arrowLeft &&
+                                            notification.isClearable) {
+                                          notificationsService.dismiss(notification.key);
+                                          return KeyEventResult.handled;
+                                        }
+                                        return KeyEventResult.ignored;
+                                      },
+                                      child: FocusableSettingsTile(
+                                        autofocus: index == 0,
+                                        leading: FutureBuilder<dynamic>(
+                                          future: appsService.getAppIcon(notification.packageName),
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              return ClipRRect(
+                                                borderRadius: BorderRadius.circular(6),
+                                                child: Image.memory(
+                                                  snapshot.data,
+                                                  width: 36,
+                                                  height: 36,
+                                                ),
+                                              );
+                                            }
+                                            return const Icon(Icons.android, size: 36);
+                                          },
+                                        ),
+                                        title: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
                                             Text(
-                                              notification.title,
-                                              style: theme.textTheme.bodyMedium?.copyWith(
+                                              appName,
+                                              style: theme.textTheme.labelMedium?.copyWith(
+                                                color: theme.colorScheme.primary,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                          if (notification.text.isNotEmpty)
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 2.0),
-                                              child: Text(
-                                                notification.text,
-                                                style: theme.textTheme.bodySmall?.copyWith(
-                                                  color: theme.hintColor,
+                                            const SizedBox(height: 2),
+                                            if (notification.title.isNotEmpty)
+                                              Text(
+                                                notification.title,
+                                                style: theme.textTheme.bodyMedium?.copyWith(
+                                                  fontWeight: FontWeight.bold,
                                                 ),
-                                                maxLines: 3,
-                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                            ),
-                                        ],
+                                            if (notification.text.isNotEmpty)
+                                              Padding(
+                                                padding: const EdgeInsets.only(top: 2.0),
+                                                child: Text(
+                                                  notification.text,
+                                                  style: theme.textTheme.bodySmall?.copyWith(
+                                                    color: theme.hintColor,
+                                                  ),
+                                                  maxLines: 3,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                        trailing: null,
+                                        onPressed: () {
+                                          if (app != null) {
+                                            Navigator.of(context).pop();
+                                            appsService.launchApp(app);
+                                          }
+                                        },
                                       ),
-                                      trailing: notification.isClearable
-                                          ? _DismissButton(
-                                              onPressed: () async {
-                                                await notificationsService.dismiss(notification.key);
-                                              },
-                                            )
-                                          : null,
-                                      onPressed: () {
-                                        if (app != null) {
-                                          Navigator.of(context).pop();
-                                          appsService.launchApp(app);
-                                        }
-                                      },
                                     ),
                                   ),
                                 );
                               },
                             ),
                     ),
-                    if (notifications.isNotEmpty && hasClearable) ...[
-                      const SizedBox(height: 8),
-                      _FocusableClearAllButton(
-                        onPressed: () async {
-                          await notificationsService.dismissAll();
-                        },
-                      ),
-                      const SizedBox(height: 8),
-                    ],
                   ],
                 );
               },
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _DismissButton extends StatefulWidget {
-  final VoidCallback onPressed;
-
-  const _DismissButton({Key? key, required this.onPressed}) : super(key: key);
-
-  @override
-  State<_DismissButton> createState() => _DismissButtonState();
-}
-
-class _DismissButtonState extends State<_DismissButton> {
-  bool _focused = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      onTap: widget.onPressed,
-      onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
-      borderRadius: BorderRadius.circular(8),
-      focusColor: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(
-            color: _focused ? theme.colorScheme.primary : Colors.transparent,
-            width: 2,
-          ),
-          color: _focused ? theme.colorScheme.primary.withOpacity(0.15) : Colors.transparent,
-        ),
-        child: const Icon(
-          Icons.close,
-          size: 18,
-        ),
-      ),
-    );
-  }
-}
-
-class _FocusableClearAllButton extends StatefulWidget {
-  final VoidCallback onPressed;
-
-  const _FocusableClearAllButton({Key? key, required this.onPressed}) : super(key: key);
-
-  @override
-  State<_FocusableClearAllButton> createState() => _FocusableClearAllButtonState();
-}
-
-class _FocusableClearAllButtonState extends State<_FocusableClearAllButton> {
-  bool _focused = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: InkWell(
-        onTap: widget.onPressed,
-        onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
-        borderRadius: BorderRadius.circular(12),
-        focusColor: Colors.transparent,
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: _focused ? theme.colorScheme.primary : Colors.transparent,
-              width: 2,
-            ),
-            color: _focused
-                ? theme.colorScheme.primary.withOpacity(0.15)
-                : theme.cardColor.withOpacity(0.5),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.clear_all,
-                size: 20,
-                color: theme.colorScheme.primary,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                "Clear All",
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: theme.colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
