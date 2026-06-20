@@ -23,6 +23,7 @@ class MockFlauncherChannel extends Mock implements FLauncherChannel {
 }
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   test('NetworkService initial load', () async {
     final mockChannel = MockFlauncherChannel();
     final service = NetworkService(mockChannel);

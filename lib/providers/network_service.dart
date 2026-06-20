@@ -57,7 +57,7 @@ enum CellularNetworkType
   Nr,       // 20
 }
 
-class NetworkService extends ChangeNotifier
+class NetworkService extends ChangeNotifier with WidgetsBindingObserver
 {
   final FLauncherChannel  _channel;
 
@@ -68,6 +68,8 @@ class NetworkService extends ChangeNotifier
   int                 _dailyDataUsage; // In bytes
   bool                _hasUsageStatsPermission;
   Timer?              _usageTimer;
+  int                 _callCount = 0;
+  int                 _usageCallCount = 0;
 
 
   NetworkService(this._channel) :
@@ -92,36 +94,41 @@ class NetworkService extends ChangeNotifier
         });
 
     _checkPermissionAndStartPolling();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      refreshPermissionAndUsage();
+    }
   }
 
   void _checkPermissionAndStartPolling() async {
-    _hasUsageStatsPermission = await _channel.checkUsageStatsPermission();
+    final localCallCount = ++_callCount;
+    final bool allowed = await _channel.checkUsageStatsPermission();
+    if (localCallCount != _callCount) return;
+
+    _hasUsageStatsPermission = allowed;
     if (_hasUsageStatsPermission) {
       _fetchUsage();
-      _usageTimer = Timer.periodic(const Duration(minutes: 5), (_) => _fetchUsage());
+      if (_usageTimer == null || !_usageTimer!.isActive) {
+        _usageTimer = Timer.periodic(const Duration(minutes: 5), (_) => _fetchUsage());
+      }
+    } else {
+      _usageTimer?.cancel();
+      _usageTimer = null;
     }
     notifyListeners();
   }
 
   Future<void> requestPermission() async {
     await _channel.requestUsageStatsPermission();
-    // Wait a bit for user to return, or just rely on Lifecycle, but here we can't easily hook into lifecycle.
-    // We can assume if they clicked it, they might come back.
-    // Ideally we recheck when app resumes. For now let's just recheck after a delay or expose a method to recheck.
   }
 
   // Call this when app resumes
   Future<void> refreshPermissionAndUsage() async {
-    _hasUsageStatsPermission = await _channel.checkUsageStatsPermission();
-    if (_hasUsageStatsPermission) {
-      _fetchUsage();
-      if (_usageTimer == null || !_usageTimer!.isActive) {
-         _usageTimer = Timer.periodic(const Duration(minutes: 5), (_) => _fetchUsage());
-      }
-    } else {
-      _usageTimer?.cancel();
-    }
-    notifyListeners();
+    _checkPermissionAndStartPolling();
   }
 
   Future<void> openWifiSettings() async {
@@ -129,9 +136,10 @@ class NetworkService extends ChangeNotifier
   }
 
   Future<void> _fetchUsage() async {
-     // This will be called with the current period from the widget
-     // For now, default to daily
+     final localCallCount = ++_usageCallCount;
      int usage = await _channel.getDailyDataUsage();
+     if (localCallCount != _usageCallCount) return;
+
      if (usage != -1) {
        _dailyDataUsage = usage;
        notifyListeners();
@@ -153,6 +161,7 @@ class NetworkService extends ChangeNotifier
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _usageTimer?.cancel();
     super.dispose();
   }

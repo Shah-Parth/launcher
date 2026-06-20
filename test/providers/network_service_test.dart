@@ -7,6 +7,7 @@ import 'dart:async';
 import '../mocks.mocks.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   late MockFLauncherChannel mockChannel;
   late NetworkService networkService;
 
