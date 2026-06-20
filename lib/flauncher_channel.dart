@@ -176,4 +176,31 @@ class FLauncherChannel {
       return false;
     }
   }
+
+  Future<List<Map<dynamic, dynamic>>> getWatchNextPrograms() async {
+    try {
+      final List<dynamic>? list = await _methodChannel.invokeMethod("getWatchNextPrograms");
+      return list?.cast<Map<dynamic, dynamic>>() ?? [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<Uint8List?> getWatchNextPoster(String posterArtUri) async {
+    try {
+      final Uint8List? bytes = await _methodChannel.invokeMethod("getWatchNextPoster", {"posterArtUri": posterArtUri});
+      return bytes;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<bool> launchWatchNextProgram(String intentUri) async {
+    try {
+      final bool success = await _methodChannel.invokeMethod("launchWatchNextProgram", {"intentUri": intentUri});
+      return success;
+    } catch (_) {
+      return false;
+    }
+  }
 }

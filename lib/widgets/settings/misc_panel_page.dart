@@ -61,6 +61,12 @@ class MiscPanelPage extends StatelessWidget {
                 title: Text(localizations.appSelectorTransitionAnimation, style: Theme.of(context).textTheme.bodyMedium),
                 secondary: Icon(Icons.animation),
               ),
+              RoundedSwitchListTile(
+                value: settingsService.showContinueWatching,
+                onChanged: (value) => settingsService.setShowContinueWatching(value),
+                title: Text("Show Continue Watching on Home", style: Theme.of(context).textTheme.bodyMedium),
+                secondary: const Icon(Icons.play_circle_outline),
+              ),
             ],
           ),
         ),

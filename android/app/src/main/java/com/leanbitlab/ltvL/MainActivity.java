@@ -148,6 +148,15 @@ public class MainActivity extends FlutterActivity {
                 case "dismissAllNotifications" -> result.success(dismissAllNotifications());
                 case "checkOverlayPermission" -> result.success(checkOverlayPermission());
                 case "requestOverlayPermission" -> result.success(requestOverlayPermission());
+                case "getWatchNextPrograms" -> result.success(getWatchNextPrograms());
+                case "getWatchNextPoster" -> {
+                    String posterArtUri = call.argument("posterArtUri");
+                    result.success(getWatchNextPoster(posterArtUri));
+                }
+                case "launchWatchNextProgram" -> {
+                    String intentUri = call.argument("intentUri");
+                    result.success(launchWatchNextProgram(intentUri));
+                }
                 default -> throw new IllegalArgumentException();
             }
         });
@@ -970,4 +979,88 @@ public class MainActivity extends FlutterActivity {
         return true;
     }
 
+    private List<Map<String, Object>> getWatchNextPrograms() {
+        List<Map<String, Object>> list = new ArrayList<>();
+        try {
+            String[] projection = {
+                TvContract.WatchNextPrograms._ID,
+                TvContract.WatchNextPrograms.COLUMN_PACKAGE_NAME,
+                TvContract.WatchNextPrograms.COLUMN_TITLE,
+                TvContract.WatchNextPrograms.COLUMN_SHORT_DESCRIPTION,
+                TvContract.WatchNextPrograms.COLUMN_WATCH_NEXT_TYPE,
+                TvContract.WatchNextPrograms.COLUMN_LAST_ENGAGEMENT_TIME_UTC_MILLIS,
+                TvContract.WatchNextPrograms.COLUMN_LAST_PLAYBACK_POSITION_MILLIS,
+                TvContract.WatchNextPrograms.COLUMN_DURATION_MILLIS,
+                TvContract.WatchNextPrograms.COLUMN_INTENT_URI,
+                TvContract.WatchNextPrograms.COLUMN_POSTER_ART_URI
+            };
+
+            android.database.Cursor cursor = getContentResolver().query(
+                TvContract.WatchNextPrograms.CONTENT_URI,
+                projection,
+                null,
+                null,
+                TvContract.WatchNextPrograms.COLUMN_LAST_ENGAGEMENT_TIME_UTC_MILLIS + " DESC"
+            );
+
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", cursor.getLong(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms._ID)));
+                    map.put("packageName", cursor.getString(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_PACKAGE_NAME)));
+                    map.put("title", cursor.getString(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_TITLE)));
+                    map.put("description", cursor.getString(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_SHORT_DESCRIPTION)));
+                    map.put("watchNextType", cursor.getInt(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_WATCH_NEXT_TYPE)));
+                    map.put("lastEngagementTime", cursor.getLong(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_LAST_ENGAGEMENT_TIME_UTC_MILLIS)));
+                    map.put("playbackPosition", cursor.getInt(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_LAST_PLAYBACK_POSITION_MILLIS)));
+                    map.put("duration", cursor.getInt(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_DURATION_MILLIS)));
+                    map.put("intentUri", cursor.getString(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_INTENT_URI)));
+                    map.put("posterArtUri", cursor.getString(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_POSTER_ART_URI)));
+                    list.add(map);
+                }
+                cursor.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    private byte[] getWatchNextPoster(String posterArtUri) {
+        if (posterArtUri == null || posterArtUri.isEmpty()) {
+            return null;
+        }
+        try {
+            Uri uri = Uri.parse(posterArtUri);
+            java.io.InputStream inputStream = getContentResolver().openInputStream(uri);
+            if (inputStream != null) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+                inputStream.close();
+                return outputStream.toByteArray();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private boolean launchWatchNextProgram(String intentUri) {
+        if (intentUri == null || intentUri.isEmpty()) {
+            return false;
+        }
+        try {
+            Intent intent = Intent.parseUri(intentUri, Intent.URI_INTENT_SCHEME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

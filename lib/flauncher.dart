@@ -28,6 +28,7 @@ import 'package:flauncher/widgets/launcher_alternative_view.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flauncher/widgets/continue_watching_row.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 import 'models/category.dart';
@@ -74,7 +75,15 @@ class _FLauncherState extends State<FLauncher> {
                 child: Consumer<AppsService>(
                   builder: (context, appsService, _) {
                     if (appsService.initialized) {
-                      return SingleChildScrollView(child: _sections(appsService.launcherSections));
+                      return SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const ContinueWatchingRow(),
+                            _sections(appsService.launcherSections),
+                          ],
+                        ),
+                      );
                     }
                     else {
                       return _emptyState(context);

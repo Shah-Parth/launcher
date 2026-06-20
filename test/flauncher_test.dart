@@ -28,6 +28,7 @@ import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
+import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
@@ -570,6 +571,7 @@ SettingsService mkSettingsService() {
   when(settingsService.themes).thenReturn('classic');
   when(settingsService.hideHighlightOutlineOnHomescreen).thenReturn(false);
   when(settingsService.appSelectorTransitionAnimationEnabled).thenReturn(true);
+  when(settingsService.showContinueWatching).thenReturn(false);
   return settingsService;
 }
 
@@ -593,6 +595,12 @@ NotificationsService mkNotificationsService() {
   when(notificationsService.hasPermission).thenReturn(false);
   when(notificationsService.notifications).thenReturn([]);
   return notificationsService;
+}
+
+WatchNextService mkWatchNextService() {
+  final watchNextService = MockWatchNextService();
+  when(watchNextService.programs).thenReturn([]);
+  return watchNextService;
 }
 
 AppsService mkAppService() {
@@ -630,6 +638,7 @@ Future<void> _pumpWidgetWithProviders(
         ChangeNotifierProvider<SettingsService>.value(value: settingsService),
         ChangeNotifierProvider<TvInputsService>.value(value: mkTvInputsService()),
         ChangeNotifierProvider<NotificationsService>.value(value: mkNotificationsService()),
+        ChangeNotifierProvider<WatchNextService>.value(value: mkWatchNextService()),
         ChangeNotifierProvider(create: (_) => LauncherState()),
         ChangeNotifierProvider(create: (_) => NetworkService(FLauncherChannel())),
       ],

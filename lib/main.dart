@@ -28,6 +28,7 @@ import 'package:flauncher/providers/brightness_service.dart';
 import 'package:flauncher/providers/wallpaper_service.dart';
 import 'package:flauncher/providers/tv_inputs_service.dart';
 import 'package:flauncher/providers/notifications_service.dart';
+import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,6 +63,7 @@ Future<void> main() async {
             lazy: false),
         ChangeNotifierProvider(create: (_) => TvInputsService(fLauncherChannel)),
         ChangeNotifierProvider(create: (_) => NotificationsService(fLauncherChannel)),
+        ChangeNotifierProvider(create: (_) => WatchNextService(fLauncherChannel)),
       ],
       child: FLauncherApp()
     )
