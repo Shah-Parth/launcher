@@ -102,16 +102,29 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
 
         android.app.Notification notification = sbn.getNotification();
         if (notification == null) return;
+
+        // Filter out service and media transport notifications
+        String category = notification.category;
+        if (android.app.Notification.CATEGORY_SERVICE.equals(category) ||
+            android.app.Notification.CATEGORY_TRANSPORT.equals(category)) {
+            return;
+        }
+
         Bundle extras = notification.extras;
         if (extras == null) return;
+
+        // Filter out media sessions (playback)
+        if (extras.containsKey(android.app.Notification.EXTRA_MEDIA_SESSION)) {
+            return;
+        }
 
         CharSequence titleChar = extras.getCharSequence(Notification.EXTRA_TITLE);
         CharSequence textChar = extras.getCharSequence(Notification.EXTRA_TEXT);
 
-        final String title = titleChar != null ? titleChar.toString() : null;
-        final String text = textChar != null ? textChar.toString() : null;
+        final String title = titleChar != null ? titleChar.toString().trim() : "";
+        final String text = textChar != null ? textChar.toString().trim() : "";
 
-        if ((title == null || title.trim().isEmpty()) && (text == null || text.trim().isEmpty())) {
+        if (title.isEmpty() && text.isEmpty()) {
             return;
         }
 
@@ -121,10 +134,18 @@ public class LauncherNotificationListenerService extends NotificationListenerSer
         Drawable appIcon = null;
         try {
             android.content.pm.ApplicationInfo appInfo = pm.getApplicationInfo(packageName, 0);
-            appLabel = pm.getApplicationLabel(appInfo).toString();
+            appLabel = pm.getApplicationLabel(appInfo).toString().trim();
             appIcon = pm.getApplicationIcon(appInfo);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        // Filter out generic app running notifications where title/text are just the app label
+        if (title.equalsIgnoreCase(appLabel) && (text.isEmpty() || text.equalsIgnoreCase(appLabel))) {
+            return;
+        }
+        if (title.equalsIgnoreCase(packageName) && (text.isEmpty() || text.equalsIgnoreCase(packageName))) {
+            return;
         }
 
         final String finalAppLabel = appLabel;
