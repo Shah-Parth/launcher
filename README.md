@@ -98,10 +98,13 @@ This customized version introduces usability enhancements and some UX improvemen
 
 ## Set LTvLauncher as default launcher
 
-### Method 1: Remap the Home button
-This is the "safer" and easiest way. Use [key Mapper](https://github.com/keymapperorg/KeyMapper) to remap the Home button of the remote to launch LTvLauncher.
+### Method 1: Via Built-in Settings (Recommended)
+This is the easiest and native way. Go to **Settings -> Accessibility -> Set as default launcher**. This will open the system home picker or default apps settings directly where you can select **LTvLauncher** as your default home app.
 
-### Method 2: Disable the default launcher
+### Method 2: Remap the Home button
+This is the safest fallback if your device blocks changing the default launcher. Use [Key Mapper](https://github.com/keymapperorg/KeyMapper) to remap the Home button of the remote to launch LTvLauncher.
+
+### Method 3: Disable the default launcher via ADB
 **:warning: Disclaimer :warning:**
 
 **You are doing this at your own risk, and you'll be responsible in any case of malfunction on your device.**
