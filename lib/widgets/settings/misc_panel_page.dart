@@ -1,5 +1,6 @@
 
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +64,19 @@ class MiscPanelPage extends StatelessWidget {
               ),
               RoundedSwitchListTile(
                 value: settingsService.showContinueWatching,
-                onChanged: (value) => settingsService.setShowContinueWatching(value),
+                onChanged: (value) async {
+                  if (value) {
+                    final watchNextService = Provider.of<WatchNextService>(context, listen: false);
+                    final hasPermission = await watchNextService.checkPermission();
+                    if (!hasPermission) {
+                      final granted = await watchNextService.requestPermission();
+                      if (!granted) {
+                        return;
+                      }
+                    }
+                  }
+                  settingsService.setShowContinueWatching(value);
+                },
                 title: Text("Show Continue Watching on Home", style: Theme.of(context).textTheme.bodyMedium),
                 secondary: const Icon(Icons.play_circle_outline),
               ),

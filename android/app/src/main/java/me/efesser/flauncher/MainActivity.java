@@ -74,6 +74,7 @@ public class MainActivity extends FlutterActivity {
     private final String APPS_EVENT_CHANNEL = "me.efesser.flauncher/event_apps";
     private final String NETWORK_EVENT_CHANNEL = "me.efesser.flauncher/event_network";
     private final String NOTIFICATIONS_EVENT_CHANNEL = "me.efesser.flauncher/event_notifications";
+    private MethodChannel.Result pendingPermissionResult;
 
     @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
@@ -147,6 +148,17 @@ public class MainActivity extends FlutterActivity {
                 case "requestOverlayPermission" -> result.success(requestOverlayPermission());
                 case "checkAccessibilityPermission" -> result.success(isAccessibilityServiceEnabled());
                 case "requestAccessibilityPermission" -> result.success(openAccessibilitySettings());
+                case "checkWatchNextPermission" -> result.success(checkWatchNextPermission());
+                case "requestWatchNextPermission" -> {
+                    if (checkWatchNextPermission()) {
+                        result.success(true);
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        pendingPermissionResult = result;
+                        requestPermissions(new String[]{"android.permission.READ_TV_LISTINGS"}, 1002);
+                    } else {
+                        result.success(true);
+                    }
+                }
                 case "getWatchNextPrograms" -> result.success(getWatchNextPrograms());
                 case "getWatchNextPoster" -> {
                     String posterArtUri = call.argument("posterArtUri");
@@ -1094,5 +1106,30 @@ public class MainActivity extends FlutterActivity {
             return tryStartActivity(intent);
         } catch (Exception ignored) {}
         return false;
+    }
+
+    private boolean checkWatchNextPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return checkSelfPermission("android.permission.READ_TV_LISTINGS") == PackageManager.PERMISSION_GRANTED;
+        }
+        return true;
+    }
+
+    private void requestWatchNextPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{"android.permission.READ_TV_LISTINGS"}, 1002);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1002) {
+            if (pendingPermissionResult != null) {
+                boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                pendingPermissionResult.success(granted);
+                pendingPermissionResult = null;
+            }
+        }
     }
 }

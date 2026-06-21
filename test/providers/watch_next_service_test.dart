@@ -13,6 +13,7 @@ void main() {
     mockChannel = MockFLauncherChannel();
     // Default stubs
     when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => []);
+    when(mockChannel.checkWatchNextPermission()).thenAnswer((_) async => true);
   });
 
   group('WatchNextService Initialization', () {

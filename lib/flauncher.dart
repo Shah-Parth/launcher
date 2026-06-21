@@ -29,6 +29,8 @@ import 'package:flauncher/widgets/focus_aware_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/widgets/continue_watching_row.dart';
+import 'package:flauncher/providers/watch_next_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 
 import 'models/category.dart';
@@ -99,8 +101,12 @@ class _FLauncherState extends State<FLauncher> {
   );
 
   Widget _sections(List<LauncherSection> sections) {
+    final settingsService = Provider.of<SettingsService>(context, listen: false);
+    final watchNextService = Provider.of<WatchNextService>(context, listen: false);
+    final bool continueWatchingActive = settingsService.showContinueWatching && watchNextService.programs.isNotEmpty;
+
     List<Widget> children = [];
-    bool firstCategoryFound = false;
+    bool firstCategoryFound = continueWatchingActive;
 
     for (var section in sections) {
       final Key sectionKey = Key(section.id.toString());

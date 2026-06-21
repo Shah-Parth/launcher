@@ -215,4 +215,22 @@ class FLauncherChannel {
       return false;
     }
   }
+
+  Future<bool> checkWatchNextPermission() async {
+    try {
+      final bool? allowed = await _methodChannel.invokeMethod<bool>("checkWatchNextPermission");
+      return allowed ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> requestWatchNextPermission() async {
+    try {
+      final bool? allowed = await _methodChannel.invokeMethod<bool>("requestWatchNextPermission");
+      return allowed ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
 }

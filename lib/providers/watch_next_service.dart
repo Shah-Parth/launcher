@@ -27,6 +27,15 @@ class WatchNextService extends ChangeNotifier {
 
   Future<void> refresh() async {
     try {
+      final bool hasPermission = await checkPermission();
+      if (!hasPermission) {
+        if (_programs.isNotEmpty) {
+          _programs = [];
+          notifyListeners();
+        }
+        return;
+      }
+
       final List<Map<dynamic, dynamic>> list = await _channel.getWatchNextPrograms();
       final List<WatchNextProgram> newPrograms = [];
       for (final map in list) {
@@ -53,6 +62,18 @@ class WatchNextService extends ChangeNotifier {
     } catch (e) {
       // Log or ignore
     }
+  }
+
+  Future<bool> checkPermission() async {
+    return await _channel.checkWatchNextPermission();
+  }
+
+  Future<bool> requestPermission() async {
+    final bool granted = await _channel.requestWatchNextPermission();
+    if (granted) {
+      await refresh();
+    }
+    return granted;
   }
 
   Future<bool> launch(WatchNextProgram program) async {

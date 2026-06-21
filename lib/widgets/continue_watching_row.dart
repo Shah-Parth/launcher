@@ -2,6 +2,7 @@ import 'package:flauncher/models/watch_next_program.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
+import 'package:flauncher/actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -23,45 +24,48 @@ class ContinueWatchingRow extends StatelessWidget {
           return const SizedBox.shrink();
         }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 16, bottom: 8, top: 8),
-              child: Text(
-                "Continue Watching",
-                style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  shadows: [
-                    const Shadow(
-                      color: Colors.black54,
-                      offset: Offset(1, 1),
-                      blurRadius: 8,
-                    )
-                  ],
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 16, bottom: 8),
+                child: Text(
+                  "Continue Watching",
+                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    shadows: [
+                      const Shadow(
+                        color: Colors.black54,
+                        offset: Offset(1, 1),
+                        blurRadius: 8,
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 150, // Height of card + padding
-              child: ListView.builder(
-                clipBehavior: Clip.none,
-                padding: const EdgeInsets.all(8),
-                scrollDirection: Axis.horizontal,
-                itemCount: programs.length,
-                itemBuilder: (context, index) {
-                  final program = programs[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: WatchNextCard(
-                      program: program,
-                      appsService: appsService,
-                      watchNextService: watchNextService,
-                    ),
-                  );
-                },
+              SizedBox(
+                height: 150, // Height of card + padding
+                child: ListView.builder(
+                  clipBehavior: Clip.none,
+                  padding: const EdgeInsets.all(8),
+                  scrollDirection: Axis.horizontal,
+                  itemCount: programs.length,
+                  itemBuilder: (context, index) {
+                    final program = programs[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: WatchNextCard(
+                        program: program,
+                        appsService: appsService,
+                        watchNextService: watchNextService,
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -96,6 +100,14 @@ class _WatchNextCardState extends State<WatchNextCard> {
       setState(() {
         _focused = _focusNode.hasFocus;
       });
+      if (_focusNode.hasFocus) {
+        Scrollable.ensureVisible(
+          context,
+          alignment: 0.5,
+          curve: Curves.easeInOut,
+          duration: const Duration(milliseconds: 100),
+        );
+      }
     });
   }
 
@@ -136,6 +148,9 @@ class _WatchNextCardState extends State<WatchNextCard> {
               event.logicalKey == LogicalKeyboardKey.enter ||
               event.logicalKey == LogicalKeyboardKey.gameButtonA) {
             _onPressed();
+            return KeyEventResult.handled;
+          } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+            Actions.invoke(context, const MoveFocusToSettingsIntent());
             return KeyEventResult.handled;
           }
         }
