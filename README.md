@@ -101,10 +101,17 @@ This customized version introduces usability enhancements and some UX improvemen
 ### Method 1: Via Built-in Settings (Recommended)
 This is the easiest and native way. Go to **Settings -> Accessibility -> Set as default launcher**. This will open the system home picker or default apps settings directly where you can select **LTvLauncher** as your default home app.
 
-### Method 2: Remap the Home button
-This is the safest fallback if your device blocks changing the default launcher. Use [Key Mapper](https://github.com/keymapperorg/KeyMapper) to remap the Home button of the remote to launch LTvLauncher.
+### Method 2: Home Button Fix (Google TV / Fire TV)
+If your device blocks changing the default launcher (common on Google TV and newer Fire TV updates), you can use our built-in Home Button Fix:
+1. Open **Settings -> Accessibility**.
+2. Tap **Home Button Fix (Google TV)**.
+3. Turn on the accessibility service for **LTvLauncher** in the system settings.
+Once enabled, the launcher will intercept Home button presses to automatically return to **LTvLauncher**.
 
-### Method 3: Disable the default launcher via ADB
+### Method 3: Remap the Home button
+This is another fallback if the built-in options don't suit your setup. Use [Key Mapper](https://github.com/keymapperorg/KeyMapper) to remap the Home button of the remote to launch LTvLauncher.
+
+### Method 4: Disable the default launcher via ADB
 **:warning: Disclaimer :warning:**
 
 **You are doing this at your own risk, and you'll be responsible in any case of malfunction on your device.**
