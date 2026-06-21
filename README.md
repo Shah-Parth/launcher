@@ -33,6 +33,11 @@ This customized version introduces usability enhancements and some UX improvemen
 
 ## Key Features & Enhancements
 
+- **Multiple Backups & Restore Dialog** - Export backups with unique timestamps and restore them via a D-pad friendly in-app backup selection dialog.
+- **System-wide Notification Overlays** - Display notification alerts globally over other apps.
+- **Status Bar Inputs Toggle** - Easily toggle the visibility of the inputs widget in the status bar.
+- **TV Input Selector** - Directly switch between input sources (HDMI, AV, etc.) from the launcher.
+- **Accessibility Settings Page** - Manage launcher-specific accessibility settings.
 - **Data Usage Widget** - Track daily Internet consumption (WiFi, Ethernet, Mobile) directly from the status bar.
 - **Inbuilt OLED Screensaver** - Minimal screensaver with 30s clock position shifting to prevent burn-in.
 - **Easy WiFi Access** - Network indicator doubles as a shortcut to system WiFi settings.
