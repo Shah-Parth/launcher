@@ -138,5 +138,19 @@
                 "type": "String"
             }
         }
+    },
+    "shareBackup": "Compartir copia",
+    "shareBackupDescription": "Comparta la copia de seguridad con otros dispositivos en la red local",
+    "stopSharing": "Detener uso compartido",
+    "localNetworkSharingActive": "¡El uso compartido en red local está activo!",
+    "localNetworkSharingInstructions": "Conecte otro dispositivo a la misma red Wi-Fi y abra la siguiente URL en un navegador web:",
+    "localNetworkSharingDetails": "Aquí puede descargar la configuración/diseño de su TV o subir un archivo de copia de seguridad a esta TV.",
+    "failedToStartServer": "Error al iniciar el servidor de uso compartido: {error}",
+    "@failedToStartServer": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
     }
 }

@@ -291,4 +291,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String exportError(String error) {
     return 'Failed to export backup: $error';
   }
+
+  @override
+  String get shareBackup => 'Share Backup';
+
+  @override
+  String get shareBackupDescription => 'Share backup with other devices on local network';
+
+  @override
+  String get stopSharing => 'Stop Sharing';
+
+  @override
+  String get localNetworkSharingActive => 'Local network sharing is active!';
+
+  @override
+  String get localNetworkSharingInstructions => 'Connect another device to the same Wi-Fi network and open the following URL in a web browser:';
+
+  @override
+  String get localNetworkSharingDetails => 'Here you can download your TV settings/layout or upload a backup file back to this TV.';
+
+  @override
+  String failedToStartServer(String error) {
+    return 'Failed to start sharing server: $error';
+  }
 }

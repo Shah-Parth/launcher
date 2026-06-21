@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'focusable_settings_tile.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class AccessibilityPage extends StatefulWidget {
   static const String routeName = "accessibility";
@@ -121,7 +122,10 @@ class _AccessibilityPageState extends State<AccessibilityPage> with WidgetsBindi
                         ),
                   ),
                   onPressed: () async {
-                    await FLauncherChannel().requestAccessibilityPermission();
+                    final success = await FLauncherChannel().requestAccessibilityPermission();
+                    if (!success && context.mounted) {
+                      _showAccessibilityPermissionGuide(context);
+                    }
                   },
                 ),
                 const SizedBox(height: 16),
@@ -141,6 +145,47 @@ class _AccessibilityPageState extends State<AccessibilityPage> with WidgetsBindi
           ),
         ),
       ],
+    );
+  }
+
+  Future<void> _showAccessibilityPermissionGuide(BuildContext context) async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    final packageName = packageInfo.packageName;
+    if (!context.mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Accessibility Permission'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'On this device, the Accessibility settings screen could not be opened automatically.\n\n'
+              'To enable Home Button Fix, you can grant permission manually by running this ADB command from a computer connected to the TV:',
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: SelectableText(
+                'adb shell settings put secure enabled_accessibility_services $packageName/$packageName.LauncherAccessibilityService',
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 }

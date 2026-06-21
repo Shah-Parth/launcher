@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flauncher/providers/notifications_service.dart';
 import 'focusable_settings_tile.dart';
 import 'brightness_settings_page.dart';
@@ -98,7 +99,10 @@ class GeneralSettingsPage extends StatelessWidget {
                           ),
                           onPressed: () async {
                             if (!service.hasPermission) {
-                              await service.requestPermission();
+                              final success = await service.requestPermission();
+                              if (!success && context.mounted) {
+                                _showNotificationPermissionGuide(context);
+                              }
                             } else {
                               await service.checkPermission();
                             }
@@ -121,7 +125,10 @@ class GeneralSettingsPage extends StatelessWidget {
                             onPressed: () async {
                               await service.checkOverlayPermission();
                               if (!service.hasOverlayPermission) {
-                                await service.requestOverlayPermission();
+                                final success = await service.requestOverlayPermission();
+                                if (!success && context.mounted) {
+                                  _showOverlayPermissionGuide(context);
+                                }
                               } else {
                                 await service.setSystemPopupEnabled(!service.systemPopupEnabled);
                               }
@@ -136,6 +143,88 @@ class GeneralSettingsPage extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Future<void> _showNotificationPermissionGuide(BuildContext context) async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    final packageName = packageInfo.packageName;
+    if (!context.mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Notification Access'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'On this device, the Notification Access settings screen could not be opened automatically.\n\n'
+              'To enable notifications, you can grant permission manually by running this ADB command from a computer connected to the TV:',
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: SelectableText(
+                'adb shell cmd notification allow_listener $packageName/$packageName.LauncherNotificationListenerService',
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showOverlayPermissionGuide(BuildContext context) async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    final packageName = packageInfo.packageName;
+    if (!context.mounted) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Overlay Permission'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'On this device, the Overlay Permission settings screen could not be opened automatically.\n\n'
+              'To enable overlay popups, you can grant permission manually by running this ADB command from a computer connected to the TV:',
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.black26,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: SelectableText(
+                'adb shell appops set $packageName SYSTEM_ALERT_WINDOW allow',
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 

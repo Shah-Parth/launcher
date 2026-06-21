@@ -142,5 +142,19 @@
                 "type": "String"
             }
         }
+    },
+    "shareBackup": "Share Backup",
+    "shareBackupDescription": "Share backup with other devices on local network",
+    "stopSharing": "Stop Sharing",
+    "localNetworkSharingActive": "Local network sharing is active!",
+    "localNetworkSharingInstructions": "Connect another device to the same Wi-Fi network and open the following URL in a web browser:",
+    "localNetworkSharingDetails": "Here you can download your TV settings/layout or upload a backup file back to this TV.",
+    "failedToStartServer": "Failed to start sharing server: {error}",
+    "@failedToStartServer": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
     }
 }

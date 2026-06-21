@@ -6,6 +6,7 @@ import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
+import 'package:share_plus/share_plus.dart';
 
 class BackupRestorePage extends StatelessWidget {
   static const String routeName = "backup_restore_panel";
@@ -35,12 +36,40 @@ class BackupRestorePage extends StatelessWidget {
                   title: Text(localizations.importBackup, style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => _confirmImport(context, localizations),
                 ),
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.share),
+                  title: Text(localizations.shareBackup, style: Theme.of(context).textTheme.bodyMedium),
+                  onPressed: () => _share(context, localizations),
+                ),
               ],
             ),
           ),
         ),
       ],
     );
+  }
+
+  Future<void> _share(BuildContext context, AppLocalizations localizations) async {
+    try {
+      final pathStr = await context.read<BackupService>().exportBackup();
+      await Share.shareXFiles([XFile(pathStr)], text: 'LTvLauncher Backup');
+    } catch (e) {
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Share Failed"),
+            content: Text("Failed to share backup: $e"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text("OK"),
+              ),
+            ],
+          ),
+        );
+      }
+    }
   }
 
   Future<void> _export(BuildContext context, AppLocalizations localizations) async {

@@ -135,20 +135,26 @@ class FLauncherChannel {
   Future<bool> checkNotificationListenerPermission() async =>
       await _methodChannel.invokeMethod("checkNotificationListenerPermission");
 
-  Future<void> requestNotificationListenerPermission() async =>
-      await _methodChannel.invokeMethod("requestNotificationListenerPermission");
+  Future<bool> requestNotificationListenerPermission() async {
+    final bool? success = await _methodChannel.invokeMethod<bool>("requestNotificationListenerPermission");
+    return success ?? false;
+  }
 
   Future<bool> checkOverlayPermission() async =>
       await _methodChannel.invokeMethod("checkOverlayPermission");
 
-  Future<void> requestOverlayPermission() async =>
-      await _methodChannel.invokeMethod("requestOverlayPermission");
+  Future<bool> requestOverlayPermission() async {
+    final bool? success = await _methodChannel.invokeMethod<bool>("requestOverlayPermission");
+    return success ?? false;
+  }
 
   Future<bool> checkAccessibilityPermission() async =>
       await _methodChannel.invokeMethod("checkAccessibilityPermission");
 
-  Future<void> requestAccessibilityPermission() async =>
-      await _methodChannel.invokeMethod("requestAccessibilityPermission");
+  Future<bool> requestAccessibilityPermission() async {
+    final bool? success = await _methodChannel.invokeMethod<bool>("requestAccessibilityPermission");
+    return success ?? false;
+  }
 
   Future<List<Map<dynamic, dynamic>>> getActiveNotifications() async {
     try {

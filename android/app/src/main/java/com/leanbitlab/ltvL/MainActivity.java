@@ -126,10 +126,7 @@ public class MainActivity extends FlutterActivity {
                     result.success(null);
                 }
                 case "checkWriteSettingsPermission" -> result.success(checkWriteSettingsPermission());
-                case "requestWriteSettingsPermission" -> {
-                    requestWriteSettingsPermission();
-                    result.success(null);
-                }
+                case "requestWriteSettingsPermission" -> result.success(requestWriteSettingsPermission());
                 case "setSystemBrightness" -> {
                     int brightness = call.argument("brightness");
                     result.success(setSystemBrightness(brightness));
@@ -159,6 +156,7 @@ public class MainActivity extends FlutterActivity {
                     String intentUri = call.argument("intentUri");
                     result.success(launchWatchNextProgram(intentUri));
                 }
+                case "getPackageName" -> result.success(getPackageName());
                 default -> throw new IllegalArgumentException();
             }
         });
@@ -728,12 +726,31 @@ public class MainActivity extends FlutterActivity {
         return true;
     }
 
-    private void requestWriteSettingsPermission() {
+    private boolean requestWriteSettingsPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            tryStartActivity(intent);
+            try {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS,
+                        Uri.parse("package:" + getPackageName()));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (tryStartActivity(intent)) {
+                    return true;
+                }
+            } catch (Exception ignored) {}
+            try {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (tryStartActivity(intent)) {
+                    return true;
+                }
+            } catch (Exception ignored) {}
+            try {
+                Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                return tryStartActivity(intent);
+            } catch (Exception ignored) {}
+            return false;
         }
+        return true;
     }
 
     private boolean setSystemBrightness(int brightness) {
@@ -884,7 +901,15 @@ public class MainActivity extends FlutterActivity {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            try {
+                Intent intent = new Intent(Settings.ACTION_SETTINGS);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return false;
+            }
         }
     }
 
@@ -1096,8 +1121,18 @@ public class MainActivity extends FlutterActivity {
     }
 
     private boolean openAccessibilitySettings() {
-        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        return tryStartActivity(intent);
+        try {
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (tryStartActivity(intent)) {
+                return true;
+            }
+        } catch (Exception ignored) {}
+        try {
+            Intent intent = new Intent(Settings.ACTION_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            return tryStartActivity(intent);
+        } catch (Exception ignored) {}
+        return false;
     }
 }

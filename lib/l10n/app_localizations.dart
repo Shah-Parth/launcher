@@ -634,6 +634,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to export backup: {error}'**
   String exportError(String error);
+
+  /// No description provided for @shareBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Backup'**
+  String get shareBackup;
+
+  /// No description provided for @shareBackupDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Share backup with other devices on local network'**
+  String get shareBackupDescription;
+
+  /// No description provided for @stopSharing.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop Sharing'**
+  String get stopSharing;
+
+  /// No description provided for @localNetworkSharingActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Local network sharing is active!'**
+  String get localNetworkSharingActive;
+
+  /// No description provided for @localNetworkSharingInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect another device to the same Wi-Fi network and open the following URL in a web browser:'**
+  String get localNetworkSharingInstructions;
+
+  /// No description provided for @localNetworkSharingDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Here you can download your TV settings/layout or upload a backup file back to this TV.'**
+  String get localNetworkSharingDetails;
+
+  /// No description provided for @failedToStartServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to start sharing server: {error}'**
+  String failedToStartServer(String error);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

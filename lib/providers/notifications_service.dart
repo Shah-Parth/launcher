@@ -176,8 +176,8 @@ class NotificationsService extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  Future<void> requestPermission() async {
-    await _channel.requestNotificationListenerPermission();
+  Future<bool> requestPermission() async {
+    return await _channel.requestNotificationListenerPermission();
   }
 
   Future<void> checkOverlayPermission() async {
@@ -191,8 +191,8 @@ class NotificationsService extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  Future<void> requestOverlayPermission() async {
-    await _channel.requestOverlayPermission();
+  Future<bool> requestOverlayPermission() async {
+    return await _channel.requestOverlayPermission();
   }
 
   Future<void> setSystemPopupEnabled(bool enabled) async {

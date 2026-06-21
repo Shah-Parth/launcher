@@ -291,4 +291,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String exportError(String error) {
     return 'Error al exportar la copia de seguridad: $error';
   }
+
+  @override
+  String get shareBackup => 'Compartir copia';
+
+  @override
+  String get shareBackupDescription => 'Comparta la copia de seguridad con otros dispositivos en la red local';
+
+  @override
+  String get stopSharing => 'Detener uso compartido';
+
+  @override
+  String get localNetworkSharingActive => '¡El uso compartido en red local está activo!';
+
+  @override
+  String get localNetworkSharingInstructions => 'Conecte otro dispositivo a la misma red Wi-Fi y abra la siguiente URL en un navegador web:';
+
+  @override
+  String get localNetworkSharingDetails => 'Aquí puede descargar la configuración/diseño de su TV o subir un archivo de copia de seguridad a esta TV.';
+
+  @override
+  String failedToStartServer(String error) {
+    return 'Error al iniciar el servidor de uso compartido: $error';
+  }
 }
