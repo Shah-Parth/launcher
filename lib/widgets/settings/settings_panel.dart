@@ -36,6 +36,7 @@ import 'package:flauncher/widgets/settings/general_settings_page.dart';
 import 'package:flauncher/widgets/settings/screensaver_clock_style_page.dart';
 import 'package:flauncher/widgets/settings/themes_page.dart';
 import 'package:flauncher/widgets/settings/accessibility_page.dart';
+import 'package:flauncher/widgets/settings/backup_restore_page.dart';
 import 'package:flauncher/models/app.dart';
 import 'package:flutter/material.dart';
 
@@ -110,6 +111,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return _FastPageRoute(builder: (_) => BrightnessSettingsPage());
                     case AccessibilityPage.routeName:
                       return _FastPageRoute(builder: (_) => const AccessibilityPage());
+                    case BackupRestorePage.routeName:
+                      return _FastPageRoute(builder: (_) => const BackupRestorePage());
                     case AppDetailsPage.routeName:
                       return _FastPageRoute(
                           builder: (_) => AppDetailsPage(application: settings.arguments as App));

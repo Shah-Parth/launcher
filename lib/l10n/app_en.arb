@@ -113,5 +113,34 @@
     "setAsDefaultLauncher": "Set as default launcher",
     "defaultLauncherDescription": "When set as the default launcher, the Home button will always return to LTvLauncher. The TV will also boot directly into LTvLauncher.",
     "inputs": "Inputs",
-    "inputSources": "Input Sources"
+    "inputSources": "Input Sources",
+    "backupAndRestore": "Backup & Restore",
+    "exportBackup": "Export Backup",
+    "importBackup": "Import Backup",
+    "exportSuccess": "Backup exported successfully to {path}",
+    "@exportSuccess": {
+        "placeholders": {
+            "path": {
+                "type": "String"
+            }
+        }
+    },
+    "importSuccess": "Backup imported successfully",
+    "importConfirm": "Are you sure you want to import the backup? This will overwrite your current settings and layout.",
+    "importError": "Failed to import backup: {error}",
+    "@importError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "exportError": "Failed to export backup: {error}",
+    "@exportError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    }
 }

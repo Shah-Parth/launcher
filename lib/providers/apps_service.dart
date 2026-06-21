@@ -259,6 +259,8 @@ class AppsService extends ChangeNotifier {
     });
   }
 
+  Future<void> refreshState() => _refreshState(shouldNotifyListeners: true);
+
   Future<void> _refreshState({bool shouldNotifyListeners = true}) async {
     Future<List<App>> appsFromDatabaseFuture = _database.getApplications();
     Future<List<AppCategory>> appsCategoriesFuture =

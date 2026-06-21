@@ -146,6 +146,10 @@ class SettingsService extends ChangeNotifier {
   }
 
   SettingsService(this._sharedPreferences) {
+    reload();
+  }
+
+  void reload() {
     _appHighlightAnimationEnabled = _sharedPreferences.getBool(_appHighlightAnimationEnabledKey) ?? true;
     _appKeyClickEnabled = _sharedPreferences.getBool(_appKeyClickEnabledKey) ?? true;
     _autoHideAppBarEnabled = _sharedPreferences.getBool(_autoHideAppBarKey) ?? false;
@@ -169,6 +173,7 @@ class SettingsService extends ChangeNotifier {
     _showInputsWidgetInStatusBar = _sharedPreferences.getBool(_showInputsWidgetInStatusBarKey) ?? true;
     _showContinueWatching = _sharedPreferences.getBool(_showContinueWatchingKey) ?? true;
     _showNotificationsWidgetInStatusBar = _sharedPreferences.getBool(_showNotificationsWidgetInStatusBarKey) ?? true;
+    notifyListeners();
   }
 
   Future<void> setAppHighlightAnimationEnabled(bool value) async {

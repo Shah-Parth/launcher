@@ -586,6 +586,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Input Sources'**
   String get inputSources;
+
+  /// No description provided for @backupAndRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup & Restore'**
+  String get backupAndRestore;
+
+  /// No description provided for @exportBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Backup'**
+  String get exportBackup;
+
+  /// No description provided for @importBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Import Backup'**
+  String get importBackup;
+
+  /// No description provided for @exportSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup exported successfully to {path}'**
+  String exportSuccess(String path);
+
+  /// No description provided for @importSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup imported successfully'**
+  String get importSuccess;
+
+  /// No description provided for @importConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to import the backup? This will overwrite your current settings and layout.'**
+  String get importConfirm;
+
+  /// No description provided for @importError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to import backup: {error}'**
+  String importError(String error);
+
+  /// No description provided for @exportError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to export backup: {error}'**
+  String exportError(String error);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

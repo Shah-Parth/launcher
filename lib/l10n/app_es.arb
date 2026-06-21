@@ -109,5 +109,34 @@
     "setAsDefaultLauncher": "Establecer como lanzador predeterminado",
     "defaultLauncherDescription": "Cuando se establece como lanzador predeterminado, el botón de inicio siempre regresará a LTvLauncher. El TV también iniciará directamente en LTvLauncher.",
     "inputs": "Entradas",
-    "inputSources": "Fuentes de Entrada"
+    "inputSources": "Fuentes de Entrada",
+    "backupAndRestore": "Copia de seguridad y restauración",
+    "exportBackup": "Exportar copia de seguridad",
+    "importBackup": "Importar copia de seguridad",
+    "exportSuccess": "Copia de seguridad exportada con éxito a {path}",
+    "@exportSuccess": {
+        "placeholders": {
+            "path": {
+                "type": "String"
+            }
+        }
+    },
+    "importSuccess": "Copia de seguridad importada con éxito",
+    "importConfirm": "¿Está seguro de que desea importar la copia de seguridad? Esto sobrescribirá su configuración y diseño actuales.",
+    "importError": "Error al importar la copia de seguridad: {error}",
+    "@importError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    },
+    "exportError": "Error al exportar la copia de seguridad: {error}",
+    "@exportError": {
+        "placeholders": {
+            "error": {
+                "type": "String"
+            }
+        }
+    }
 }

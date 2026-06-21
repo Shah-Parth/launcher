@@ -261,4 +261,34 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get inputSources => 'Input Sources';
+
+  @override
+  String get backupAndRestore => 'Backup & Restore';
+
+  @override
+  String get exportBackup => 'Export Backup';
+
+  @override
+  String get importBackup => 'Import Backup';
+
+  @override
+  String exportSuccess(String path) {
+    return 'Backup exported successfully to $path';
+  }
+
+  @override
+  String get importSuccess => 'Backup imported successfully';
+
+  @override
+  String get importConfirm => 'Are you sure you want to import the backup? This will overwrite your current settings and layout.';
+
+  @override
+  String importError(String error) {
+    return 'Failed to import backup: $error';
+  }
+
+  @override
+  String exportError(String error) {
+    return 'Failed to export backup: $error';
+  }
 }

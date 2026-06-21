@@ -261,4 +261,34 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get inputSources => 'Fuentes de Entrada';
+
+  @override
+  String get backupAndRestore => 'Copia de seguridad y restauración';
+
+  @override
+  String get exportBackup => 'Exportar copia de seguridad';
+
+  @override
+  String get importBackup => 'Importar copia de seguridad';
+
+  @override
+  String exportSuccess(String path) {
+    return 'Copia de seguridad exportada con éxito a $path';
+  }
+
+  @override
+  String get importSuccess => 'Copia de seguridad importada con éxito';
+
+  @override
+  String get importConfirm => '¿Está seguro de que desea importar la copia de seguridad? Esto sobrescribirá su configuración y diseño actuales.';
+
+  @override
+  String importError(String error) {
+    return 'Error al importar la copia de seguridad: $error';
+  }
+
+  @override
+  String exportError(String error) {
+    return 'Error al exportar la copia de seguridad: $error';
+  }
 }
