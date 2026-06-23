@@ -135,6 +135,10 @@ class NetworkService extends ChangeNotifier with WidgetsBindingObserver
     await _channel.openWifiSettings();
   }
 
+  Future<void> openVpnSettings() async {
+    await _channel.openVpnSettings();
+  }
+
   Future<void> _fetchUsage() async {
      final localCallCount = ++_usageCallCount;
      int usage = await _channel.getDailyDataUsage();

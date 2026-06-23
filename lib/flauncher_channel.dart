@@ -97,6 +97,14 @@ class FLauncherChannel {
   Future<void> openWifiSettings() async =>
       await _methodChannel.invokeMethod("openWifiSettings");
 
+  Future<void> openVpnSettings() async {
+    try {
+      await _methodChannel.invokeMethod("openVpnSettings");
+    } catch (_) {
+      // Ignore error in non-Android or test environments
+    }
+  }
+
   Future<void> openDefaultLauncherSettings() async =>
       await _methodChannel.invokeMethod("openDefaultLauncherSettings");
 

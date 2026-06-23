@@ -248,4 +248,21 @@ void main() {
 
     expect(usage, -1);
   });
+
+  test("openVpnSettings", () async {
+    final channel = MethodChannel('me.efesser.flauncher/method');
+    bool called = false;
+    channel.setMockMethodCallHandler((call) async {
+      if (call.method == "openVpnSettings") {
+        called = true;
+        return;
+      }
+      fail("Unhandled method name");
+    });
+    final fLauncherChannel = FLauncherChannel();
+
+    await fLauncherChannel.openVpnSettings();
+
+    expect(called, isTrue);
+  });
 }

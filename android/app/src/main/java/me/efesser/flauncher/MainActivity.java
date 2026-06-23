@@ -134,6 +134,7 @@ public class MainActivity extends FlutterActivity {
                 }
                 case "openDefaultLauncherSettings" -> result.success(openDefaultLauncherSettings());
                 case "openWifiSettings" -> result.success(openWifiSettings());
+                case "openVpnSettings" -> result.success(openVpnSettings());
                 case "getTvInputs" -> result.success(getTvInputs());
                 case "launchTvInput" -> result.success(launchTvInput(call.arguments()));
                 case "checkNotificationListenerPermission" -> result.success(checkNotificationListenerPermission());
@@ -789,6 +790,23 @@ public class MainActivity extends FlutterActivity {
         }
 
         // 4. Final fallback - open main settings
+        return launchActivityFromAction(Settings.ACTION_SETTINGS);
+    }
+
+    private boolean openVpnSettings() {
+        // 1. Try standard VPN settings
+        Intent vpnIntent = new Intent(Settings.ACTION_VPN_SETTINGS);
+        if (tryStartActivity(vpnIntent)) {
+            return true;
+        }
+
+        // 2. Fallback to general wireless settings
+        Intent wirelessIntent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+        if (tryStartActivity(wirelessIntent)) {
+            return true;
+        }
+
+        // 3. Final fallback - open main settings
         return launchActivityFromAction(Settings.ACTION_SETTINGS);
     }
 

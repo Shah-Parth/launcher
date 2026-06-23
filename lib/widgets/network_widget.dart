@@ -66,7 +66,13 @@ class NetworkWidget extends StatelessWidget
         }
 
         return InkWell(
-          onTap: () => networkService.openWifiSettings(),
+          onTap: () {
+            if (networkType == NetworkType.Vpn) {
+              networkService.openVpnSettings();
+            } else {
+              networkService.openWifiSettings();
+            }
+          },
           borderRadius: BorderRadius.circular(8),
           child: Padding(
             padding: const EdgeInsets.all(4.0),
