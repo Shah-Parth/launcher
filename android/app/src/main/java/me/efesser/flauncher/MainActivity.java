@@ -169,6 +169,10 @@ public class MainActivity extends FlutterActivity {
                     result.success(launchWatchNextProgram(intentUri));
                 }
                 case "getPackageName" -> result.success(getPackageName());
+                case "playClickSound" -> {
+                    getWindow().getDecorView().playSoundEffect(android.view.SoundEffectConstants.CLICK);
+                    result.success(null);
+                }
                 default -> throw new IllegalArgumentException();
             }
         });

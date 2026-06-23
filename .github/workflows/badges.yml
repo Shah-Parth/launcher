@@ -5,7 +5,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 0 * * 0'  # Run weekly on Sunday at midnight
+    - cron: '0 0 * * *'  # Run daily at midnight
   workflow_dispatch:
 
 permissions:
@@ -73,8 +73,36 @@ jobs:
           color: '${{ steps.test_stats.outputs.color }}'
           path: '.github/badges/tests.svg'
 
+      - name: Fetch GitHub Stats
+        id: stats
+        run: python3 .github/scripts/fetch_stats.py
+
+      - name: Create Version Badge
+        uses: emibcn/badge-action@v2.0.2
+        with:
+          label: 'Version'
+          status: '${{ steps.stats.outputs.version }}'
+          color: '7C4DFF'
+          path: '.github/badges/version.svg'
+
+      - name: Create Downloads Badge
+        uses: emibcn/badge-action@v2.0.2
+        with:
+          label: 'Downloads'
+          status: '${{ steps.stats.outputs.downloads }}'
+          color: '7C4DFF'
+          path: '.github/badges/downloads.svg'
+
+      - name: Create Stars Badge
+        uses: emibcn/badge-action@v2.0.2
+        with:
+          label: 'Stars'
+          status: '${{ steps.stats.outputs.stars }}'
+          color: '7C4DFF'
+          path: '.github/badges/stars.svg'
+
       - name: Commit and Push Badges
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore: auto-update test and coverage badges"
-          file_pattern: ".github/badges/coverage.svg .github/badges/tests.svg"
+          commit_message: "chore: auto-update badges"
+          file_pattern: ".github/badges/coverage.svg .github/badges/tests.svg .github/badges/version.svg .github/badges/downloads.svg .github/badges/stars.svg"

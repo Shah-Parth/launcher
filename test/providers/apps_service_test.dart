@@ -135,6 +135,51 @@ void main() {
       expect(appsInCategory[1].packageName, "app.1");
       expect(appsInCategory[2].packageName, "app.3");
     });
+
+    test("saveApplicationOrderInCategory updates local categoryOrders map", () async {
+      final channel = MockFLauncherChannel();
+      final database = MockFLauncherDatabase();
+
+      final testApp1 = App(packageName: "app.1", name: "App 1", version: "1.0.0", hidden: false);
+      final testApp2 = App(packageName: "app.2", name: "App 2", version: "1.0.0", hidden: false);
+      final category = Category(id: 1, name: "Test Category", order: 0);
+
+      when(channel.getApplications()).thenAnswer((_) => Future.value([
+        {'packageName': 'app.1', 'name': 'App 1', 'version': '1.0.0', 'sideloaded': false},
+        {'packageName': 'app.2', 'name': 'App 2', 'version': '1.0.0', 'sideloaded': false},
+      ]));
+      when(channel.getApplicationIcon(any)).thenAnswer((_) => Future.value(Uint8List(0)));
+      when(channel.getApplicationBanner(any)).thenAnswer((_) => Future.value(Uint8List(0)));
+
+      when(database.getApplications()).thenAnswer((_) => Future.value([testApp1, testApp2]));
+      when(database.getCategories()).thenAnswer((_) => Future.value([category]));
+      when(database.getAppsCategories()).thenAnswer((_) => Future.value([
+        AppCategory(categoryId: 1, appPackageName: "app.1", order: 0),
+        AppCategory(categoryId: 1, appPackageName: "app.2", order: 1),
+      ]));
+      when(database.getLauncherSpacers()).thenAnswer((_) => Future.value([]));
+      when(database.transaction(any)).thenAnswer((realInvocation) => realInvocation.positionalArguments[0]());
+      when(database.wasCreated).thenReturn(false);
+      when(database.replaceAppsCategories(any)).thenAnswer((_) => Future.value());
+
+      final appsService = AppsService(channel, database);
+
+      while (!appsService.initialized) {
+        await Future.delayed(const Duration(milliseconds: 10));
+      }
+
+      final categoryObj = appsService.categories.first;
+      
+      // Let's reorder them locally: move app 1 to the end
+      appsService.reorderApplication(categoryObj, 0, 1);
+      
+      // Now save
+      await appsService.saveApplicationOrderInCategory(categoryObj);
+
+      // Verify that local categoryOrders reflect the new indices (app.2 order is 0, app.1 order is 1)
+      expect(testApp2.categoryOrders[1], 0);
+      expect(testApp1.categoryOrders[1], 1);
+    });
   });
 }
 

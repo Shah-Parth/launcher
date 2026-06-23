@@ -636,6 +636,7 @@ class AppsService extends ChangeNotifier {
     List<AppsCategoriesCompanion> orderedAppCategories = [];
 
     for (int i = 0; i < applications.length; ++i) {
+      applications[i].categoryOrders[categoryFound.id] = i;
       orderedAppCategories.add(AppsCategoriesCompanion(
         categoryId: Value(categoryFound.id),
         appPackageName: Value(applications[i].packageName),

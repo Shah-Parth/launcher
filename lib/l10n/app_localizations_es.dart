@@ -7,7 +7,7 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
-  String get aboutFlauncher => 'Acerca de FLauncher';
+  String get aboutFlauncher => 'Acerca de LTvLauncher';
 
   @override
   String get addCategory => 'Agregar categoría';
@@ -88,7 +88,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get gradient => 'Gradiente';
 
   @override
-  String get favoriteApps => 'Favorite Apps';
+  String get favoriteApps => 'Apps Favoritas';
 
   @override
   String get grid => 'Cuadrícula';
@@ -146,7 +146,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String removeFrom(String name) {
-    return 'Remover de $name';
+    return 'Eliminar de $name';
   }
 
   @override
@@ -156,10 +156,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get reorder => 'Reordenar';
 
   @override
-  String get row => 'Row';
+  String get row => 'Fila';
 
   @override
-  String get rowHeight => 'Row height';
+  String get rowHeight => 'Altura de fila';
 
   @override
   String get save => 'Guardar';
@@ -233,13 +233,13 @@ class AppLocalizationsEs extends AppLocalizations {
   String get withEllipsisAddTo => 'Añadir a...';
 
   @override
-  String get timeBasedWallpaper => 'Time based wallpaper';
+  String get timeBasedWallpaper => 'Fondo de pantalla según hora';
 
   @override
-  String get pickDayWallpaper => 'Pick day wallpaper';
+  String get pickDayWallpaper => 'Elegir fondo de pantalla diurno';
 
   @override
-  String get pickNightWallpaper => 'Pick night wallpaper';
+  String get pickNightWallpaper => 'Elegir fondo de pantalla nocturno';
 
   @override
   String get accessibility => 'Accesibilidad';

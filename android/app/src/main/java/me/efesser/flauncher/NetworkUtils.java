@@ -45,7 +45,10 @@ public class NetworkUtils
             hasInternetAccess = hasNetworkAccess;
         }
 
-        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
+            networkType = NETWORK_TYPE_VPN;
+        }
+        else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
             networkType = NETWORK_TYPE_CELLULAR;
         }
         else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
@@ -72,9 +75,6 @@ public class NetworkUtils
             }
 
             networkType = NETWORK_TYPE_WIFI;
-        }
-        else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
-            networkType = NETWORK_TYPE_VPN;
         }
         else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
             networkType = NETWORK_TYPE_WIRED;
