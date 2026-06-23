@@ -1,5 +1,5 @@
 {
-    "aboutFlauncher": "Acerca de FLauncher",
+    "aboutFlauncher": "Acerca de LTvLauncher",
     "addCategory": "Agregar categoría",
     "addSection": "Agregar sección",
     "alphabetical": "Alfabético",
@@ -45,6 +45,7 @@
         }
     },
     "gradient": "Gradiente",
+    "favoriteApps": "Apps Favoritas",
     "grid": "Cuadrícula",
     "height": "Altura",
     "hide": "Ocultar",
@@ -63,7 +64,7 @@
     "open": "Abrir",
     "orSelectFormatSpecifiers": "O seleccione especificadores de formato",
     "picture": "Imagen",
-    "removeFrom": "Remover de {name}",
+    "removeFrom": "Eliminar de {name}",
     "@removeFrom": {
         "placeholders": {
             "name": { "type": "String" }
@@ -71,8 +72,8 @@
     },
     "renameCategory": "Renombrar categoría",
     "reorder": "Reordenar",
-    "row": "Row",
-    "rowHeight": "Row height",
+    "row": "Fila",
+    "rowHeight": "Altura de fila",
     "save": "Guardar",
     "spacer": "Espaciador",
     "spacerMaxHeightRequirement": "Debe ser mayor a cero y menor o igual a 500",
@@ -103,6 +104,9 @@
     "uninstall": "Desinstalar",
     "wallpaper": "Fondo de pantalla",
     "withEllipsisAddTo": "Añadir a...",
+    "timeBasedWallpaper": "Fondo de pantalla según hora",
+    "pickDayWallpaper": "Elegir fondo de pantalla diurno",
+    "pickNightWallpaper": "Elegir fondo de pantalla nocturno",
     "accessibility": "Accesibilidad",
     "defaultLauncherIsDefault": "LTvLauncher es el lanzador predeterminado",
     "defaultLauncherNotDefault": "LTvLauncher no es el lanzador predeterminado",
