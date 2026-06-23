@@ -314,4 +314,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String failedToStartServer(String error) {
     return 'Failed to start sharing server: $error';
   }
+
+  @override
+  String get notificationBell => 'Notification Bell';
+
+  @override
+  String get autoHideNotificationBell => 'Auto-hide Notification Bell';
 }

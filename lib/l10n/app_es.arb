@@ -156,5 +156,7 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "notificationBell": "Campana de notificaciones",
+    "autoHideNotificationBell": "Ocultar campana de notificaciones automáticamente"
 }

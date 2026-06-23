@@ -314,4 +314,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String failedToStartServer(String error) {
     return 'Error al iniciar el servidor de uso compartido: $error';
   }
+
+  @override
+  String get notificationBell => 'Campana de notificaciones';
+
+  @override
+  String get autoHideNotificationBell => 'Ocultar campana de notificaciones automáticamente';
 }

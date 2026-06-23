@@ -26,6 +26,7 @@ void main() {
     when(mockSettingsService.showTimeInStatusBar).thenReturn(true);
     when(mockSettingsService.showInputsWidgetInStatusBar).thenReturn(true);
     when(mockSettingsService.showNotificationsWidgetInStatusBar).thenReturn(true);
+    when(mockSettingsService.autoHideNotificationsWidget).thenReturn(false);
     when(mockSettingsService.dateFormat).thenReturn(SettingsService.defaultDateFormat);
     when(mockSettingsService.timeFormat).thenReturn(SettingsService.defaultTimeFormat);
 
@@ -120,6 +121,7 @@ void main() {
     when(mockSettingsService2.showTimeInStatusBar).thenReturn(true);
     when(mockSettingsService2.showInputsWidgetInStatusBar).thenReturn(false);
     when(mockSettingsService2.showNotificationsWidgetInStatusBar).thenReturn(true);
+    when(mockSettingsService2.autoHideNotificationsWidget).thenReturn(false);
     when(mockSettingsService2.dateFormat).thenReturn(SettingsService.defaultDateFormat);
     when(mockSettingsService2.timeFormat).thenReturn(SettingsService.defaultTimeFormat);
 
@@ -136,5 +138,54 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byIcon(Icons.tv_outlined), findsNothing);
+  });
+
+  testWidgets('FocusAwareAppBar auto-hide notification bell logic', (WidgetTester tester) async {
+    // Case 1: autoHideNotificationsWidget is true, notification count is 0
+    when(mockSettingsService.autoHideNotificationsWidget).thenReturn(true);
+    when(mockNotificationsService.hasPermission).thenReturn(true);
+    when(mockNotificationsService.notifications).thenReturn([]);
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
+          ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+          ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
+        ],
+        child: createWidgetUnderTest(),
+      )
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.notifications_outlined), findsNothing);
+    expect(find.byIcon(Icons.notifications_active_outlined), findsNothing);
+
+    // Case 2: autoHideNotificationsWidget is true, notification count is > 0
+    await tester.pumpWidget(Container()); // fully unmount previous tree
+    await tester.pumpAndSettle();
+
+    final item = NotificationItem(
+      key: '1',
+      packageName: 'com.example',
+      title: 'Title',
+      text: 'Text',
+      isClearable: true,
+    );
+    when(mockNotificationsService.notifications).thenReturn([item]);
+
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<SettingsService>.value(value: mockSettingsService),
+          ChangeNotifierProvider<TvInputsService>.value(value: mockTvInputsService),
+          ChangeNotifierProvider<NotificationsService>.value(value: mockNotificationsService),
+        ],
+        child: createWidgetUnderTest(),
+      )
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.notifications_active_outlined), findsOneWidget);
   });
 }

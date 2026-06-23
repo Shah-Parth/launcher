@@ -676,6 +676,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to start sharing server: {error}'**
   String failedToStartServer(String error);
+
+  /// No description provided for @notificationBell.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Bell'**
+  String get notificationBell;
+
+  /// No description provided for @autoHideNotificationBell.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-hide Notification Bell'**
+  String get autoHideNotificationBell;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

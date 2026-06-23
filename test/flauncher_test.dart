@@ -573,6 +573,7 @@ SettingsService mkSettingsService() {
   when(settingsService.appSelectorTransitionAnimationEnabled).thenReturn(true);
   when(settingsService.showContinueWatching).thenReturn(false);
   when(settingsService.showNotificationsWidgetInStatusBar).thenReturn(true);
+  when(settingsService.autoHideNotificationsWidget).thenReturn(false);
   return settingsService;
 }
 

@@ -156,5 +156,7 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "notificationBell": "Notification Bell",
+    "autoHideNotificationBell": "Auto-hide Notification Bell"
 }

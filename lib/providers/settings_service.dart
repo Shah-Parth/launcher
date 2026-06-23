@@ -46,6 +46,7 @@ const String _timeBasedWallpaperEnabledKey = "time_based_wallpaper_enabled";
 const String _showInputsWidgetInStatusBarKey = "show_inputs_widget_in_status_bar";
 const String _showContinueWatchingKey = "show_continue_watching";
 const String _showNotificationsWidgetInStatusBarKey = "show_notifications_widget_in_status_bar";
+const String _autoHideNotificationsWidgetKey = "auto_hide_notifications_widget";
 
 // WiFi usage period options
 const String DATA_USAGE_DAILY = "daily";
@@ -97,6 +98,7 @@ class SettingsService extends ChangeNotifier {
   late bool _showInputsWidgetInStatusBar;
   late bool _showContinueWatching;
   late bool _showNotificationsWidgetInStatusBar;
+  late bool _autoHideNotificationsWidget;
 
   bool get appHighlightAnimationEnabled => _appHighlightAnimationEnabled;
 
@@ -135,6 +137,7 @@ class SettingsService extends ChangeNotifier {
   bool get showInputsWidgetInStatusBar => _showInputsWidgetInStatusBar;
   bool get showContinueWatching => _showContinueWatching;
   bool get showNotificationsWidgetInStatusBar => _showNotificationsWidgetInStatusBar;
+  bool get autoHideNotificationsWidget => _autoHideNotificationsWidget;
 
   String get accentColorHex => _accentColorHex;
 
@@ -173,6 +176,7 @@ class SettingsService extends ChangeNotifier {
     _showInputsWidgetInStatusBar = _sharedPreferences.getBool(_showInputsWidgetInStatusBarKey) ?? true;
     _showContinueWatching = _sharedPreferences.getBool(_showContinueWatchingKey) ?? true;
     _showNotificationsWidgetInStatusBar = _sharedPreferences.getBool(_showNotificationsWidgetInStatusBarKey) ?? true;
+    _autoHideNotificationsWidget = _sharedPreferences.getBool(_autoHideNotificationsWidgetKey) ?? false;
     notifyListeners();
   }
 
@@ -311,6 +315,12 @@ class SettingsService extends ChangeNotifier {
   Future<void> setShowNotificationsWidgetInStatusBar(bool show) async {
     await _sharedPreferences.setBool(_showNotificationsWidgetInStatusBarKey, show);
     _showNotificationsWidgetInStatusBar = show;
+    notifyListeners();
+  }
+
+  Future<void> setAutoHideNotificationsWidget(bool value) async {
+    await _sharedPreferences.setBool(_autoHideNotificationsWidgetKey, value);
+    _autoHideNotificationsWidget = value;
     notifyListeners();
   }
 }

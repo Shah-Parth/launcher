@@ -80,9 +80,16 @@ class StatusBarPanelPage extends StatelessWidget {
                 RoundedSwitchListTile(
                   value: settingsService.showNotificationsWidgetInStatusBar,
                   onChanged: (value) => settingsService.setShowNotificationsWidgetInStatusBar(value),
-                  title: Text('Notification Bell'),
+                  title: Text(localizations.notificationBell),
                   secondary: Icon(Icons.notifications_outlined),
                 ),
+                if (settingsService.showNotificationsWidgetInStatusBar)
+                  RoundedSwitchListTile(
+                    value: settingsService.autoHideNotificationsWidget,
+                    onChanged: (value) => settingsService.setAutoHideNotificationsWidget(value),
+                    title: Text(localizations.autoHideNotificationBell),
+                    secondary: Icon(Icons.notifications_paused_outlined),
+                  ),
               ],
             ),
           ),
