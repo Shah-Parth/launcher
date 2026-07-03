@@ -197,9 +197,9 @@ class BackupService {
           lastLaunchedAt: Value(lla != null ? DateTime.fromMillisecondsSinceEpoch(lla) : null),
         );
       }).toList();
-      for (final companion in appsCompanions) {
-        await _database.into(_database.apps).insert(companion);
-      }
+      await _database.batch((batch) {
+        batch.insertAll(_database.apps, appsCompanions);
+      });
 
       // Insert Categories
       final List<dynamic> categoriesJson = backupData["categories"] as List;
@@ -215,9 +215,9 @@ class BackupService {
           order: Value(map["order"] as int),
         );
       }).toList();
-      for (final companion in categoriesCompanions) {
-        await _database.into(_database.categories).insert(companion);
-      }
+      await _database.batch((batch) {
+        batch.insertAll(_database.categories, categoriesCompanions);
+      });
 
       // Insert AppsCategories
       final List<dynamic> appsCategoriesJson = backupData["appsCategories"] as List;
@@ -229,9 +229,9 @@ class BackupService {
           order: Value(map["order"] as int),
         );
       }).toList();
-      for (final companion in appsCategoriesCompanions) {
-        await _database.into(_database.appsCategories).insert(companion);
-      }
+      await _database.batch((batch) {
+        batch.insertAll(_database.appsCategories, appsCategoriesCompanions);
+      });
 
       // Insert Spacers
       final List<dynamic> spacersJson = backupData["spacers"] as List;
@@ -243,9 +243,9 @@ class BackupService {
           order: Value(map["order"] as int),
         );
       }).toList();
-      for (final companion in spacersCompanions) {
-        await _database.into(_database.launcherSpacers).insert(companion);
-      }
+      await _database.batch((batch) {
+        batch.insertAll(_database.launcherSpacers, spacersCompanions);
+      });
     });
   }
 }
