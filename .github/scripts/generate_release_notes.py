@@ -1,6 +1,31 @@
 import os
 import subprocess
 
+def get_version_code():
+    try:
+        with open("pubspec.yaml", "r") as f:
+            for line in f:
+                if line.strip().startswith("version:"):
+                    parts = line.strip().split(":")
+                    version_str = parts[1].strip()
+                    if "+" in version_str:
+                        return version_str.split("+")[1].strip()
+    except Exception:
+        pass
+    return None
+
+def get_fastlane_changelog(version_code):
+    if not version_code:
+        return None
+    changelog_path = f"fastlane/metadata/android/en-US/changelogs/{version_code}.txt"
+    if os.path.exists(changelog_path):
+        try:
+            with open(changelog_path, "r") as f:
+                return f.read().strip()
+        except Exception:
+            pass
+    return None
+
 def get_git_changelog(current_tag):
     # Check if the tag exists in git
     tag_exists = False
@@ -59,7 +84,13 @@ def main():
         except Exception:
             tag_name = "v-dev"
 
-    changelog = get_git_changelog(tag_name)
+    # Try loading Fastlane changelog first
+    version_code = get_version_code()
+    changelog = get_fastlane_changelog(version_code)
+    
+    # Fallback to git changelog if Fastlane is missing/empty
+    if not changelog:
+        changelog = get_git_changelog(tag_name)
     
     size_universal = get_file_size("build/app/outputs/flutter-apk/app-release.apk")
     size_armv7 = get_file_size("build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk")
