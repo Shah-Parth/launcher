@@ -30,6 +30,25 @@ This customized version introduces usability enhancements and some UX improvemen
 
 
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center">Home Screen</td>
+    <td align="center">Settings 1</td>
+    <td align="center">Settings 2</td>
+    <td align="center">Settings 3</td>
+    <td align="center">Screensaver</td>
+  </tr>
+  <tr>
+    <td><img src="docs/images/screenshot_1.png" width="100%" alt="Home Screen"/></td>
+    <td><img src="docs/images/screenshot_2.png" width="100%" alt="Settings 1"/></td>
+    <td><img src="docs/images/screenshot_3.png" width="100%" alt="Settings 2"/></td>
+    <td><img src="docs/images/screenshot_4.png" width="100%" alt="Settings 3"/></td>
+    <td><img src="docs/images/screensaver.gif" width="100%" alt="Screensaver"/></td>
+  </tr>
+</table>
+
 
 ## Key Features & Enhancements
 
@@ -75,25 +94,6 @@ This customized version introduces usability enhancements and some UX improvemen
 - [x] Support for non-TV (sideloaded) apps
 - [x] Navigation sound feedback
 - [x] Official support for `armeabi-v7a`, `arm64-v8a`, and `x86_64` devices.
-
-## Screenshots
-
-<table>
-  <tr>
-    <td align="center">Home Screen</td>
-    <td align="center">Settings 1</td>
-    <td align="center">Settings 2</td>
-    <td align="center">Settings 3</td>
-    <td align="center">Screensaver</td>
-  </tr>
-  <tr>
-    <td><img src="docs/images/screenshot_1.png" width="100%" alt="Home Screen"/></td>
-    <td><img src="docs/images/screenshot_2.png" width="100%" alt="Settings 1"/></td>
-    <td><img src="docs/images/screenshot_3.png" width="100%" alt="Settings 2"/></td>
-    <td><img src="docs/images/screenshot_4.png" width="100%" alt="Settings 3"/></td>
-    <td><img src="docs/images/screensaver.gif" width="100%" alt="Screensaver"/></td>
-  </tr>
-</table>
 
 
 ## Set LTvLauncher as default launcher
