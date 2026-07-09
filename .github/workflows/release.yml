@@ -57,7 +57,7 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           if [ ! -z "$KEYSTORE_BASE64" ]; then
-            echo "$KEYSTORE_BASE64" | base64 -di > android/my-release-key.jks
+            python3 -c "import os, base64; open('android/my-release-key.jks', 'wb').write(base64.b64decode(os.environ['KEYSTORE_BASE64'].strip()))"
             echo "storeFile=../my-release-key.jks" >> android/local.properties
             echo "storePassword=$KEYSTORE_PASSWORD" >> android/local.properties
             echo "keyAlias=$KEY_ALIAS" >> android/local.properties
