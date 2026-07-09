@@ -50,7 +50,9 @@ jobs:
         run: flutter pub run drift_dev schema generate drift_schemas/ test/generated_migrations/
 
       - name: Configure Keystore Signing
-        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        if: ${{ env.KEYSTORE_BASE64 != '' }}
         run: |
           echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/my-release-key.jks
           echo "storeFile=../my-release-key.jks" >> android/local.properties
