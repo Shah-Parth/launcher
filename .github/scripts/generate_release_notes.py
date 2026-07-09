@@ -1,0 +1,75 @@
+import os
+import subprocess
+
+def get_git_changelog(current_tag):
+    try:
+        # Find the previous tag before the current tag
+        prev_tag = subprocess.check_output(
+            ['git', 'describe', '--tags', '--abbrev=0', f'{current_tag}^'],
+            stderr=subprocess.DEVNULL
+        ).decode().strip()
+    except Exception:
+        prev_tag = ""
+
+    if prev_tag:
+        git_log_range = f"{prev_tag}..{current_tag}"
+    else:
+        git_log_range = current_tag
+
+    try:
+        log_output = subprocess.check_output(
+            ['git', 'log', '--pretty=format:- %s', git_log_range]
+        ).decode().strip()
+        
+        changelog_lines = []
+        if log_output:
+            for line in log_output.split('\n'):
+                # Exclude merge commits or chore commits
+                if "Merge" in line or "chore: " in line:
+                    continue
+                changelog_lines.append(line)
+        return "\n".join(changelog_lines) if changelog_lines else "- General improvements and bug fixes"
+    except Exception as e:
+        return f"- New changes in release {current_tag}"
+
+def get_file_size(path):
+    if os.path.exists(path):
+        size_bytes = os.path.getsize(path)
+        return f"{size_bytes / (1024 * 1024):.1f} MB"
+    return "0.0 MB"
+
+def main():
+    tag_name = os.environ.get('TAG_NAME', '')
+    if not tag_name:
+        try:
+            tag_name = subprocess.check_output(
+                ['git', 'describe', '--tags', '--always']
+            ).decode().strip()
+        except Exception:
+            tag_name = "v-dev"
+
+    changelog = get_git_changelog(tag_name)
+    
+    size_universal = get_file_size("build/app/outputs/flutter-apk/app-release.apk")
+    size_armv7 = get_file_size("build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk")
+    size_arm64 = get_file_size("build/app/outputs/flutter-apk/app-arm64-v8a-release.apk")
+
+    release_notes = f"""### ❤️ Support the Project
+If you love using LTvLauncher (ad-free, lightweight, and open source), please consider supporting us! Your contributions help buy testing hardware, cover bills, and keep development active.
+👉 **[Sponsor LeanBitLab on GitHub](https://github.com/sponsors/LeanBitLab)**
+
+### Whats New
+{changelog}
+
+### 📦 Artifacts
+* **app-release.apk ({size_universal})**: Universal build containing all architectures.
+* **app-armeabi-v7a-release.apk ({size_armv7})**: Optimized build for ARMv7 architectures (older Android TVs & Fire TV sticks).
+* **app-arm64-v8a-release.apk ({size_arm64})**: Optimized build for ARM64 architectures (newer Android TVs & NVIDIA Shield).
+"""
+
+    with open("release_notes.md", "w") as f:
+        f.write(release_notes)
+    print("Successfully generated release_notes.md")
+
+if __name__ == "__main__":
+    main()
