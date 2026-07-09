@@ -228,6 +228,37 @@ void main() {
     verify(appsService.saveApplicationOrderInCategory(applicationsCategory));
   });
 
+  testWidgets("AppCard reorder cancels on Back button", (tester) async {
+    final appsService = mkAppService();
+    final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.grid);
+    applicationsCategory.applications.add(fakeApp(
+      packageName: "me.efesser.flauncher",
+      name: "FLauncher",
+      version: "1.0.0",
+    ));
+    applicationsCategory.applications.add(fakeApp(
+      packageName: "me.efesser.flauncher.2",
+      name: "FLauncher 2",
+      version: "1.0.0",
+    ));
+    when(appsService.launcherSections).thenReturn([
+      fakeCategory(name: "Favorites", order: 0),
+      applicationsCategory,
+    ]);
+    await _pumpWidgetWith(tester, appsService);
+
+    await tester.longPress(find.byKey(Key("me.efesser.flauncher")));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text("Reorder"));
+    await tester.pumpAndSettle();
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+    await tester.pump();
+    verify(appsService.reorderApplication(applicationsCategory, 0, 1));
+    await tester.sendKeyEvent(LogicalKeyboardKey.gameButtonB);
+    await tester.pump();
+    verify(appsService.saveApplicationOrderInCategory(applicationsCategory));
+  });
+
   testWidgets("AppCard moves in row", (tester) async {
     final appsService = mkAppService();
     final applicationsCategory = fakeCategory(name: "Applications", order: 1, type: CategoryType.row);
