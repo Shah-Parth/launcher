@@ -636,7 +636,10 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
       } else if (key == LogicalKeyboardKey.arrowDown) {
 
         widget.onMove(AxisDirection.down);
-      } else if (_validationKeys.contains(key) || key == LogicalKeyboardKey.escape) {
+      } else if (_validationKeys.contains(key) ||
+                 key == LogicalKeyboardKey.escape ||
+                 key == LogicalKeyboardKey.goBack ||
+                 key == LogicalKeyboardKey.gameButtonB) {
 
         setState(() => _moving = false);
         widget.onMoveEnd();
