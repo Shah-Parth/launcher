@@ -2,19 +2,30 @@ import os
 import subprocess
 
 def get_git_changelog(current_tag):
+    # Check if the tag exists in git
+    tag_exists = False
+    try:
+        subprocess.check_call(['git', 'rev-parse', current_tag], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        tag_exists = True
+    except Exception:
+        tag_exists = False
+
+    # If tag exists, compare. If not, use HEAD as current commit.
+    current_ref = current_tag if tag_exists else "HEAD"
+
     try:
         # Find the previous tag before the current tag
         prev_tag = subprocess.check_output(
-            ['git', 'describe', '--tags', '--abbrev=0', f'{current_tag}^'],
+            ['git', 'describe', '--tags', '--abbrev=0', f'{current_ref}^'],
             stderr=subprocess.DEVNULL
         ).decode().strip()
     except Exception:
         prev_tag = ""
 
     if prev_tag:
-        git_log_range = f"{prev_tag}..{current_tag}"
+        git_log_range = f"{prev_tag}..{current_ref}"
     else:
-        git_log_range = current_tag
+        git_log_range = current_ref
 
     try:
         log_output = subprocess.check_output(
