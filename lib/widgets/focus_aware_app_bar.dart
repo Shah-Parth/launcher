@@ -279,7 +279,7 @@ class _FocusableIconButtonState extends State<_FocusableIconButton> {
             ),
             child: widget.badgeCount > 0
               ? Badge(
-                  label: Text(widget.badgeCount.toString()),
+                  label: Text(widget.badgeCount.toString(), style: const TextStyle(color: Colors.white)),
                   backgroundColor: Colors.red,
                   child: Icon(widget.icon,
                     shadows: const [
