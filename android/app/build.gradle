@@ -79,11 +79,12 @@ android {
     signingConfigs {
         debug {}
         release {
-            if (localProperties['storeFile'] != null) {
-                storeFile file(localProperties['storeFile'])
-                storePassword localProperties['storePassword']
-                keyAlias localProperties['keyAlias']
-                keyPassword localProperties['keyPassword']
+            def keystoreFile = System.getenv("KEYSTORE_FILE") ?: localProperties['storeFile']
+            if (keystoreFile != null) {
+                storeFile file(keystoreFile)
+                storePassword System.getenv("KEYSTORE_PASSWORD") ?: localProperties['storePassword']
+                keyAlias System.getenv("KEY_ALIAS") ?: localProperties['keyAlias']
+                keyPassword System.getenv("KEY_PASSWORD") ?: localProperties['keyPassword']
             }
         }
     }
