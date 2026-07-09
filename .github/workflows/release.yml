@@ -1,0 +1,82 @@
+name: Release APK
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for the release (e.g. v1.0.0)'
+        required: true
+        default: 'v-dev'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Install SQLite
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y sqlite3 libsqlite3-dev
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Generate Mocks
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Generate Database Migrations Schema
+        run: flutter pub run drift_dev schema generate drift_schemas/ test/generated_migrations/
+
+      - name: Configure Keystore Signing
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ ! -z "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > android/my-release-key.jks
+            echo "storeFile=../my-release-key.jks" >> android/local.properties
+            echo "storePassword=$KEYSTORE_PASSWORD" >> android/local.properties
+            echo "keyAlias=$KEY_ALIAS" >> android/local.properties
+            echo "keyPassword=$KEY_PASSWORD" >> android/local.properties
+          fi
+
+      - name: Build Release APK
+        run: flutter build apk --release
+
+      - name: Rename APK
+        run: |
+          TAG_NAME="${{ github.event.inputs.tag_name || github.ref_name }}"
+          cp build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/LTvLauncher-${TAG_NAME}.apk
+
+      - name: Create GitHub Release and Upload APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
+          files: |
+            build/app/outputs/flutter-apk/LTvLauncher-${{ github.event.inputs.tag_name || github.ref_name }}.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
