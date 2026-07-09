@@ -99,6 +99,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
 
     // Check if we need to restore focus/reorder mode after a move
     WidgetsBinding.instance.addPostFrameCallback((_) {
+       if (!mounted) return;
        final appsService = Provider.of<AppsService>(context, listen: false);
        if (appsService.pendingReorderFocusPackage == widget.application.packageName &&
            appsService.pendingReorderFocusCategoryId == widget.category.id) {
@@ -118,6 +119,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     
     // Check for pending focus on update as well
     WidgetsBinding.instance.addPostFrameCallback((_) {
+       if (!mounted) return;
        final appsService = Provider.of<AppsService>(context, listen: false);
        if (appsService.pendingReorderFocusPackage == widget.application.packageName &&
            appsService.pendingReorderFocusCategoryId == widget.category.id) {

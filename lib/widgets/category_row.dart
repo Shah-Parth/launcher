@@ -66,7 +66,7 @@ class CategoryRow extends StatelessWidget
                   handleUpNavigationToSettings: isFirstSection,
                   isFirstInRow: index == 0,
                   isLastInRow: index == applications.length - 1,
-                  onMove: (direction) => _onMove(context, direction, index),
+                  onMove: (direction) => _onMove(context, direction, applications[index]),
                   onMoveEnd: () => _onMoveEnd(context)
                 )
             )
@@ -104,7 +104,10 @@ class CategoryRow extends StatelessWidget
   int _findChildIndex(Key key) =>
       applications.indexWhere((app) => app.packageName == (key as ValueKey<String>).value);
 
-  void _onMove(BuildContext context, AxisDirection direction, int index) {
+  void _onMove(BuildContext context, AxisDirection direction, App movingApp) {
+    final index = applications.indexOf(movingApp);
+    if (index == -1) return;
+
     int newIndex = 0;
 
     if (direction == AxisDirection.right && index < applications.length - 1) {
@@ -117,7 +120,6 @@ class CategoryRow extends StatelessWidget
     }
 
     final appsService = context.read<AppsService>();
-    final movingApp = applications[index];
     appsService.reorderApplication(category, index, newIndex);
     
     // Set pending focus so the app at the new position will request focus

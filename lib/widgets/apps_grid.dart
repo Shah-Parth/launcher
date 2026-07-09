@@ -70,7 +70,7 @@ class AppsGrid extends StatelessWidget
               handleUpNavigationToSettings: isFirstSection && index < category.columnsCount,
               isFirstInRow: isFirstInRow,
               isLastInRow: isLastInRow,
-              onMove: (direction) => _onMove(context, direction, index),
+              onMove: (direction) => _onMove(context, direction, applications[index]),
               onMoveEnd: () => _saveOrder(context)
             );
           }
@@ -111,7 +111,10 @@ class AppsGrid extends StatelessWidget
     return index >= 0 ? index : null;
   }
 
-  void _onMove(BuildContext context, AxisDirection direction, int index) {
+  void _onMove(BuildContext context, AxisDirection direction, App movingApp) {
+    final index = applications.indexOf(movingApp);
+    if (index == -1) return;
+
     final currentRow = (index / category.columnsCount).floor();
     final totalRows = ((applications.length - 1) / category.columnsCount).floor();
 
@@ -142,7 +145,6 @@ class AppsGrid extends StatelessWidget
     }
     if (newIndex != null) {
       final appsService = context.read<AppsService>();
-      final movingApp = applications[index];
       
       appsService.reorderApplication(category, index, newIndex);
       
