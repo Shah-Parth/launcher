@@ -329,7 +329,7 @@ class AppsService extends ChangeNotifier {
         }
       }
 
-      if (appsCategories.isNotEmpty && !application.hidden) {
+      if (appsCategories.isNotEmpty) {
         List<AppCategory>? currentApplicationCategories =
             appsCategoriesByPackage[application.packageName];
 
@@ -338,7 +338,9 @@ class AppsService extends ChangeNotifier {
             final category = _categoriesById[appCategory.categoryId];
             if (category != null) {
               application.categoryOrders[category.id] = appCategory.order;
-              category.applications.add(application);
+              if (!application.hidden) {
+                category.applications.add(application);
+              }
             }
           }
         }
