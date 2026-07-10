@@ -320,4 +320,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get autoHideNotificationBell => 'Auto-hide Notification Bell';
+
+  @override
+  String get continueWatching => 'Continue Watching';
+
+  @override
+  String get showContinueWatchingOnHome => 'Show Continue Watching on Home';
+
+  @override
+  String get permissionDeniedContinueWatching => 'Permission required to show Continue Watching';
 }

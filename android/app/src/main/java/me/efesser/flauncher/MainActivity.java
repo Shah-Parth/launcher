@@ -154,8 +154,12 @@ public class MainActivity extends FlutterActivity {
                     if (checkWatchNextPermission()) {
                         result.success(true);
                     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        pendingPermissionResult = result;
-                        requestPermissions(new String[]{"android.permission.READ_TV_LISTINGS"}, 1002);
+                        if (pendingPermissionResult != null) {
+                            result.error("ALREADY_REQUESTING", "A permission request is already in progress", null);
+                        } else {
+                            pendingPermissionResult = result;
+                            requestPermissions(new String[]{"android.permission.READ_TV_LISTINGS"}, 1002);
+                        }
                     } else {
                         result.success(true);
                     }
@@ -1000,6 +1004,11 @@ public class MainActivity extends FlutterActivity {
         return true;
     }
 
+    private static String cursorStringOrEmpty(android.database.Cursor cursor, String column) {
+        String val = cursor.getString(cursor.getColumnIndexOrThrow(column));
+        return val != null ? val : "";
+    }
+
     private List<Map<String, Object>> getWatchNextPrograms() {
         List<Map<String, Object>> list = new ArrayList<>();
         try {
@@ -1021,22 +1030,22 @@ public class MainActivity extends FlutterActivity {
                 projection,
                 null,
                 null,
-                TvContract.WatchNextPrograms.COLUMN_LAST_ENGAGEMENT_TIME_UTC_MILLIS + " DESC"
+                TvContract.WatchNextPrograms.COLUMN_LAST_ENGAGEMENT_TIME_UTC_MILLIS + " DESC LIMIT 20"
             );
 
             if (cursor != null) {
                 while (cursor.moveToNext()) {
                     Map<String, Object> map = new HashMap<>();
                     map.put("id", cursor.getLong(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms._ID)));
-                    map.put("packageName", cursor.getString(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_PACKAGE_NAME)));
-                    map.put("title", cursor.getString(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_TITLE)));
-                    map.put("description", cursor.getString(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_SHORT_DESCRIPTION)));
+                    map.put("packageName", cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_PACKAGE_NAME));
+                    map.put("title", cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_TITLE));
+                    map.put("description", cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_SHORT_DESCRIPTION));
                     map.put("watchNextType", cursor.getInt(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_WATCH_NEXT_TYPE)));
                     map.put("lastEngagementTime", cursor.getLong(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_LAST_ENGAGEMENT_TIME_UTC_MILLIS)));
-                    map.put("playbackPosition", cursor.getInt(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_LAST_PLAYBACK_POSITION_MILLIS)));
-                    map.put("duration", cursor.getInt(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_DURATION_MILLIS)));
-                    map.put("intentUri", cursor.getString(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_INTENT_URI)));
-                    map.put("posterArtUri", cursor.getString(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_POSTER_ART_URI)));
+                    map.put("playbackPosition", cursor.getLong(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_LAST_PLAYBACK_POSITION_MILLIS)));
+                    map.put("duration", cursor.getLong(cursor.getColumnIndexOrThrow(TvContract.WatchNextPrograms.COLUMN_DURATION_MILLIS)));
+                    map.put("intentUri", cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_INTENT_URI));
+                    map.put("posterArtUri", cursorStringOrEmpty(cursor, TvContract.WatchNextPrograms.COLUMN_POSTER_ART_URI));
                     list.add(map);
                 }
                 cursor.close();
@@ -1053,16 +1062,16 @@ public class MainActivity extends FlutterActivity {
         }
         try {
             Uri uri = Uri.parse(posterArtUri);
-            java.io.InputStream inputStream = getContentResolver().openInputStream(uri);
-            if (inputStream != null) {
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
+            try (java.io.InputStream inputStream = getContentResolver().openInputStream(uri)) {
+                if (inputStream != null) {
+                    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = inputStream.read(buffer)) != -1) {
+                        outputStream.write(buffer, 0, bytesRead);
+                    }
+                    return outputStream.toByteArray();
                 }
-                inputStream.close();
-                return outputStream.toByteArray();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -1072,6 +1081,12 @@ public class MainActivity extends FlutterActivity {
 
     private boolean launchWatchNextProgram(String intentUri) {
         if (intentUri == null || intentUri.isEmpty()) {
+            return false;
+        }
+        // Security: only allow safe URI schemes
+        String lower = intentUri.toLowerCase();
+        if (!lower.startsWith("intent://") && !lower.startsWith("https://") &&
+            !lower.startsWith("http://") && !lower.startsWith("content://")) {
             return false;
         }
         try {
@@ -1137,11 +1152,7 @@ public class MainActivity extends FlutterActivity {
         return true;
     }
 
-    private void requestWatchNextPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{"android.permission.READ_TV_LISTINGS"}, 1002);
-        }
-    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

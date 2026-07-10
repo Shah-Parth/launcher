@@ -2,7 +2,6 @@
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
-import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -68,16 +67,24 @@ class MiscPanelPage extends StatelessWidget {
                   if (value) {
                     final watchNextService = Provider.of<WatchNextService>(context, listen: false);
                     final hasPermission = await watchNextService.checkPermission();
+                    if (!context.mounted) return;
                     if (!hasPermission) {
                       final granted = await watchNextService.requestPermission();
+                      if (!context.mounted) return;
                       if (!granted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(localizations.permissionDeniedContinueWatching),
+                            duration: const Duration(seconds: 3),
+                          ),
+                        );
                         return;
                       }
                     }
                   }
                   settingsService.setShowContinueWatching(value);
                 },
-                title: Text("Show Continue Watching on Home", style: Theme.of(context).textTheme.bodyMedium),
+                title: Text(localizations.showContinueWatchingOnHome, style: Theme.of(context).textTheme.bodyMedium),
                 secondary: const Icon(Icons.play_circle_outline),
               ),
             ],

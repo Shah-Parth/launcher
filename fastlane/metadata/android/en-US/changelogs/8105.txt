@@ -4,3 +4,4 @@
 - Support using the Back button (and gamepad B button) to exit reorder mode.
 - Auto-hide empty notification bell icon (optional setting).
 - Force notification badge count text color to white.
+- Fix bugs and visually polish Continue Watching.

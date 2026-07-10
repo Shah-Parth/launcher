@@ -688,6 +688,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Auto-hide Notification Bell'**
   String get autoHideNotificationBell;
+
+  /// No description provided for @continueWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue Watching'**
+  String get continueWatching;
+
+  /// No description provided for @showContinueWatchingOnHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Continue Watching on Home'**
+  String get showContinueWatchingOnHome;
+
+  /// No description provided for @permissionDeniedContinueWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission required to show Continue Watching'**
+  String get permissionDeniedContinueWatching;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

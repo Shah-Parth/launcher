@@ -6,6 +6,7 @@ import 'package:flauncher/actions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 
 class ContinueWatchingRow extends StatelessWidget {
   const ContinueWatchingRow({Key? key}) : super(key: key);
@@ -32,7 +33,7 @@ class ContinueWatchingRow extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
                 child: Text(
-                  "Continue Watching",
+                  AppLocalizations.of(context)!.continueWatching,
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     shadows: [
                       const Shadow(
@@ -45,7 +46,7 @@ class ContinueWatchingRow extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                height: 150, // Height of card + padding
+                height: 170, // Increased for larger cards
                 child: ListView.builder(
                   clipBehavior: Clip.none,
                   padding: const EdgeInsets.all(8),
@@ -91,28 +92,41 @@ class WatchNextCard extends StatefulWidget {
 class _WatchNextCardState extends State<WatchNextCard> {
   late final FocusNode _focusNode;
   bool _focused = false;
+  Future<Uint8List>? _iconFuture;
 
   @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
-    _focusNode.addListener(() {
-      setState(() {
-        _focused = _focusNode.hasFocus;
-      });
-      if (_focusNode.hasFocus) {
-        Scrollable.ensureVisible(
-          context,
-          alignment: 0.5,
-          curve: Curves.easeInOut,
-          duration: const Duration(milliseconds: 100),
-        );
-      }
+    _focusNode.addListener(_onFocusChange);
+    _iconFuture = widget.appsService.getAppIcon(widget.program.packageName);
+  }
+
+  @override
+  void didUpdateWidget(covariant WatchNextCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.program.packageName != widget.program.packageName) {
+      _iconFuture = widget.appsService.getAppIcon(widget.program.packageName);
+    }
+  }
+
+  void _onFocusChange() {
+    setState(() {
+      _focused = _focusNode.hasFocus;
     });
+    if (_focusNode.hasFocus) {
+      Scrollable.ensureVisible(
+        context,
+        alignment: 0.5,
+        curve: Curves.easeInOut,
+        duration: const Duration(milliseconds: 100),
+      );
+    }
   }
 
   @override
   void dispose() {
+    _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
     super.dispose();
   }
@@ -125,13 +139,10 @@ class _WatchNextCardState extends State<WatchNextCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final settingsService = Provider.of<SettingsService>(context, listen: false);
-
-    // Accent color
     final accentColor = settingsService.accentColor;
 
-    // Dimensions
-    const double cardWidth = 220;
-    const double cardHeight = 124; // 16:9 ratio approximately
+    const double cardWidth = 260;
+    const double cardHeight = 146;
 
     // Progress percentage
     double progress = 0;
@@ -154,145 +165,213 @@ class _WatchNextCardState extends State<WatchNextCard> {
             return KeyEventResult.handled;
           }
         }
+        // Handle key repeats for directional navigation only
+        if (event is KeyRepeatEvent) {
+          if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+            Actions.invoke(context, const MoveFocusToSettingsIntent());
+            return KeyEventResult.handled;
+          }
+        }
         return KeyEventResult.ignored;
       },
       child: GestureDetector(
         onTap: _onPressed,
-        child: AnimatedScale(
-          scale: _focused ? 1.05 : 1.0,
-          duration: const Duration(milliseconds: 150),
-          child: Container(
-            width: cardWidth,
-            height: cardHeight,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: _focused ? accentColor : Colors.white24,
-                width: _focused ? 3.0 : 1.0,
-              ),
-              boxShadow: _focused
-                  ? [
-                      BoxShadow(
-                        color: accentColor.withOpacity(0.4),
-                        blurRadius: 12,
-                        spreadRadius: 2,
-                      )
-                    ]
-                  : null,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOutCubic,
+          width: cardWidth,
+          height: cardHeight,
+          transform: _focused
+              ? (Matrix4.identity()..scale(1.05, 1.05))
+              : Matrix4.identity(),
+          transformAlignment: Alignment.center,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: _focused ? accentColor : Colors.white10,
+              width: _focused ? 2.5 : 1.0,
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: Stack(
-                children: [
-                  // Poster background
-                  Positioned.fill(
-                    child: widget.program.posterBytes != null
-                        ? Image.memory(
-                            widget.program.posterBytes!,
-                            fit: BoxFit.cover,
-                          )
-                        : Container(
-                            color: Colors.grey[900],
-                            child: const Center(
-                              child: Icon(
-                                Icons.play_arrow,
-                                size: 48,
-                                color: Colors.white24,
-                              ),
+            boxShadow: _focused
+                ? [
+                    BoxShadow(
+                      color: accentColor.withOpacity(0.35),
+                      blurRadius: 16,
+                      spreadRadius: 2,
+                    ),
+                    BoxShadow(
+                      color: accentColor.withOpacity(0.15),
+                      blurRadius: 32,
+                      spreadRadius: 4,
+                    ),
+                  ]
+                : [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Stack(
+              children: [
+                // Poster background
+                Positioned.fill(
+                  child: widget.program.posterBytes != null
+                      ? Image.memory(
+                          widget.program.posterBytes!,
+                          fit: BoxFit.cover,
+                        )
+                      : _emptyPosterFallback(theme),
+                ),
+                // App icon badge (top-right, glass effect)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: FutureBuilder<Uint8List>(
+                    future: _iconFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: Colors.black45,
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.15),
+                              width: 0.5,
                             ),
                           ),
+                          padding: const EdgeInsets.all(3),
+                          child: Image.memory(snapshot.data!),
+                        );
+                      }
+                      return const SizedBox.shrink();
+                    },
                   ),
-                  // App icon branding overlay (small icon top-right)
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: FutureBuilder<dynamic>(
-                      future: widget.appsService.getAppIcon(widget.program.packageName),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              color: Colors.black54,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            padding: const EdgeInsets.all(2),
-                            child: Image.memory(snapshot.data),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  ),
-                  // Title and progress info overlay (bottom)
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          colors: [Colors.black87, Colors.transparent],
-                        ),
+                ),
+                // Title + progress overlay (bottom)
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.9),
+                          Colors.black.withOpacity(0.5),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.6, 1.0],
                       ),
-                      padding: const EdgeInsets.fromLTRB(8, 24, 8, 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            widget.program.title,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              shadows: [
-                                const Shadow(
-                                  color: Colors.black87,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 1),
-                                )
+                    ),
+                    padding: const EdgeInsets.fromLTRB(10, 28, 10, 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          widget.program.title,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            shadows: [
+                              const Shadow(
+                                color: Colors.black87,
+                                blurRadius: 4,
+                                offset: Offset(0, 1),
+                              )
+                            ],
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        if (widget.program.description.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Text(
+                              widget.program.description,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: Colors.white60,
+                                fontSize: 10,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        if (progress > 0)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(2),
+                                    child: LinearProgressIndicator(
+                                      value: progress,
+                                      backgroundColor: Colors.white.withOpacity(0.15),
+                                      valueColor: AlwaysStoppedAnimation<Color>(accentColor),
+                                      minHeight: 4,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Text(
+                                  '${(progress * 100).round()}%',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: Colors.white54,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                               ],
                             ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
                           ),
-                          if (widget.program.description.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 2),
-                              child: Text(
-                                widget.program.description,
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: Colors.white70,
-                                  fontSize: 10,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          if (progress > 0)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(2),
-                                child: LinearProgressIndicator(
-                                  value: progress,
-                                  backgroundColor: Colors.white24,
-                                  valueColor: AlwaysStoppedAnimation<Color>(accentColor),
-                                  minHeight: 3,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _emptyPosterFallback(ThemeData theme) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.grey.shade900,
+            Colors.grey.shade800,
+          ],
+        ),
+      ),
+      child: Center(
+        child: FutureBuilder<Uint8List>(
+          future: _iconFuture,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Opacity(
+                opacity: 0.4,
+                child: Image.memory(snapshot.data!, width: 48, height: 48),
+              );
+            }
+            return Icon(
+              Icons.play_circle_outline,
+              size: 48,
+              color: Colors.white.withOpacity(0.15),
+            );
+          },
         ),
       ),
     );

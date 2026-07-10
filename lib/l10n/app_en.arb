@@ -158,5 +158,8 @@
         }
     },
     "notificationBell": "Notification Bell",
-    "autoHideNotificationBell": "Auto-hide Notification Bell"
+    "autoHideNotificationBell": "Auto-hide Notification Bell",
+    "continueWatching": "Continue Watching",
+    "showContinueWatchingOnHome": "Show Continue Watching on Home",
+    "permissionDeniedContinueWatching": "Permission required to show Continue Watching"
 }

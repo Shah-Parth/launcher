@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:developer';
+import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import '../models/watch_next_program.dart';
@@ -8,6 +10,9 @@ class WatchNextService extends ChangeNotifier {
   List<WatchNextProgram> _programs = [];
   bool _initialized = false;
   Timer? _refreshTimer;
+  int _callCount = 0;
+
+  bool get _isTest => Platform.environment.containsKey('FLUTTER_TEST');
 
   WatchNextService(this._channel) {
     _init();
@@ -26,49 +31,113 @@ class WatchNextService extends ChangeNotifier {
   }
 
   Future<void> refresh() async {
+    final int callSnapshot = ++_callCount;
     try {
       final bool hasPermission = await checkPermission();
+      if (callSnapshot != _callCount) return;
+
       if (!hasPermission) {
         if (_programs.isNotEmpty) {
           _programs = [];
-          notifyListeners();
+          if (callSnapshot == _callCount) notifyListeners();
         }
         return;
       }
 
-      final List<Map<dynamic, dynamic>> list = await _channel.getWatchNextPrograms();
+      List<Map<dynamic, dynamic>> list;
+      try {
+        list = await _channel.getWatchNextPrograms();
+      } catch (e) {
+        if (kReleaseMode) {
+          rethrow;
+        } else {
+          list = const [];
+        }
+      }
+      if (callSnapshot != _callCount) return;
+
+      if (!kReleaseMode && !_isTest && list.isEmpty) {
+        list = _getMockPrograms();
+      }
+
+      // Phase 1: Emit programs immediately with cached posters where available
       final List<WatchNextProgram> newPrograms = [];
       for (final map in list) {
         final program = WatchNextProgram.fromMap(map);
-        if (program.posterArtUri.isNotEmpty) {
-          // Find existing bytes if already loaded to avoid refetching
-          WatchNextProgram? existing;
-          for (final p in _programs) {
-            if (p.id == program.id) {
-              existing = p;
-              break;
-            }
-          }
-          if (existing != null && existing.posterBytes != null) {
-            program.posterBytes = existing.posterBytes;
-          } else {
-            program.posterBytes = await _channel.getWatchNextPoster(program.posterArtUri);
-          }
+        // Reuse existing poster bytes if same program already loaded
+        final existing = _findExisting(program.id);
+        if (existing != null && existing.posterBytes != null) {
+          program.posterBytes = existing.posterBytes;
         }
         newPrograms.add(program);
       }
       _programs = newPrograms;
-      notifyListeners();
+      if (callSnapshot == _callCount) notifyListeners();
+
+      // Phase 2: Fetch missing posters concurrently, then notify again
+      final needsPoster = newPrograms.where(
+        (p) => p.posterArtUri.isNotEmpty && p.posterBytes == null
+      ).toList();
+      if (needsPoster.isNotEmpty) {
+        await Future.wait(
+          needsPoster.map((p) async {
+            try {
+              p.posterBytes = await _channel.getWatchNextPoster(p.posterArtUri);
+            } catch (e) {
+              log('Failed to fetch poster for ${p.title}', name: 'WatchNextService', error: e);
+            }
+          }),
+        );
+        if (callSnapshot == _callCount) notifyListeners();
+      }
     } catch (e) {
-      // Log or ignore
+      log('Failed to refresh watch next programs', name: 'WatchNextService', error: e);
     }
   }
 
+  List<Map<dynamic, dynamic>> _getMockPrograms() {
+    return [
+      {
+        'id': 9991,
+        'packageName': 'com.google.android.youtube',
+        'title': 'Mock Video 1 (YouTube)',
+        'description': 'Description for mock video 1',
+        'watchNextType': 0,
+        'lastEngagementTime': DateTime.now().millisecondsSinceEpoch,
+        'playbackPosition': 500000,
+        'duration': 1000000,
+        'intentUri': 'https://www.youtube.com',
+        'posterArtUri': '',
+      },
+      {
+        'id': 9992,
+        'packageName': 'com.netflix.mediaclient',
+        'title': 'Mock Show 2 (Netflix)',
+        'description': 'S1 E2 • Episode Title',
+        'watchNextType': 1,
+        'lastEngagementTime': DateTime.now().millisecondsSinceEpoch - 100000,
+        'playbackPosition': 200000,
+        'duration': 1800000,
+        'intentUri': 'https://www.netflix.com',
+        'posterArtUri': '',
+      },
+    ];
+  }
+
+  WatchNextProgram? _findExisting(int id) {
+    for (final p in _programs) {
+      if (p.id == id) return p;
+    }
+    return null;
+  }
+
   Future<bool> checkPermission() async {
+    if (!kReleaseMode && !_isTest) return true;
     return await _channel.checkWatchNextPermission();
   }
 
   Future<bool> requestPermission() async {
+    if (!kReleaseMode && !_isTest) return true;
     final bool granted = await _channel.requestWatchNextPermission();
     if (granted) {
       await refresh();
@@ -80,8 +149,13 @@ class WatchNextService extends ChangeNotifier {
     if (program.intentUri.isNotEmpty) {
       return await _channel.launchWatchNextProgram(program.intentUri);
     } else if (program.packageName.isNotEmpty) {
-      await _channel.launchApp(program.packageName);
-      return true;
+      try {
+        await _channel.launchApp(program.packageName);
+        return true;
+      } catch (e) {
+        log('Failed to launch app ${program.packageName}', name: 'WatchNextService', error: e);
+        return false;
+      }
     }
     return false;
   }
