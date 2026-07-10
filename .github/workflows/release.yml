@@ -64,11 +64,11 @@ jobs:
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
           # Build universal APK first
-          flutter build apk --release
+          flutter build apk --release --target-platform=android-arm,android-arm64
           # Rename/save it temporarily
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-release.apk.temp
           # Build split APKs
-          flutter build apk --release --split-per-abi
+          flutter build apk --release --split-per-abi --target-platform=android-arm,android-arm64
           # Restore the universal APK
           mv build/app/outputs/flutter-apk/app-release.apk.temp build/app/outputs/flutter-apk/app-release.apk
 
