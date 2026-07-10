@@ -69,8 +69,10 @@ jobs:
           mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/app-release.apk.temp
           # Build split APKs
           flutter build apk --release --split-per-abi --target-platform=android-arm,android-arm64
-          # Restore the universal APK
-          mv build/app/outputs/flutter-apk/app-release.apk.temp build/app/outputs/flutter-apk/app-release.apk
+          # Rename to final LTvLauncher-* names
+          mv build/app/outputs/flutter-apk/app-release.apk.temp build/app/outputs/flutter-apk/LTvLauncher-universal-release.apk
+          mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk build/app/outputs/flutter-apk/LTvLauncher-armeabi-v7a-release.apk
+          mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build/app/outputs/flutter-apk/LTvLauncher-arm64-v8a-release.apk
 
       - name: Generate Release Notes
         env:
@@ -83,9 +85,9 @@ jobs:
           tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
           body_path: release_notes.md
           files: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-            build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
+            build/app/outputs/flutter-apk/LTvLauncher-universal-release.apk
+            build/app/outputs/flutter-apk/LTvLauncher-armeabi-v7a-release.apk
+            build/app/outputs/flutter-apk/LTvLauncher-arm64-v8a-release.apk
           draft: false
           prerelease: ${{ contains(github.event.inputs.tag_name || github.ref_name, '-') }}
         env:
