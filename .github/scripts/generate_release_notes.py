@@ -103,10 +103,10 @@ If you love using LTvLauncher (ad-free, lightweight, and open source), please co
 ### Whats New
 {changelog}
 
-### 📦 Artifacts
-* **app-release.apk ({size_universal})**: Universal build containing all architectures.
-* **app-armeabi-v7a-release.apk ({size_armv7})**: Optimized build for ARMv7 architectures (older Android TVs & Fire TV sticks).
-* **app-arm64-v8a-release.apk ({size_arm64})**: Optimized build for ARM64 architectures (newer Android TVs & NVIDIA Shield).
+📦 Artifacts
+LTvLauncher-universal-release.apk: Universal build containing all architectures.
+LTvLauncher-armeabi-v7a-release.apk: Optimized build for ARMv7 architectures (older Android TVs & Fire TV sticks).
+LTvLauncher-arm64-v8a-release.apk: Optimized build for ARM64 architectures (newer Android TVs & NVIDIA Shield).
 """
 
     with open("release_notes.md", "w") as f:
