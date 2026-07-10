@@ -23,11 +23,9 @@ This customized version introduces usability enhancements and some UX improvemen
 <a href="https://go.aftvnews.com">
   <img alt="Downloader Code: 7259827" src=".github/assets/get_it_on_downloader.png" height="65">
 </a>
-<!--
 <a href="https://github.com/LeanBitLab/LtvLauncher/releases">
   <img alt="Pre-release" src=".github/badges/prerelease.png" height="65">
 </a>
--->
 
 
 
