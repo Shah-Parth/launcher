@@ -60,6 +60,7 @@ class CategoryRow extends StatelessWidget
                 key: Key(applications[index].packageName),
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: AppCard(
+                  index: index,
                   category: category,
                   application: applications[index],
                   autofocus: index == 0,
@@ -123,7 +124,7 @@ class CategoryRow extends StatelessWidget
     appsService.reorderApplication(category, index, newIndex);
     
     // Set pending focus so the app at the new position will request focus
-    appsService.setPendingReorderFocus(movingApp.packageName, category.id);
+    appsService.setPendingReorderFocus(movingApp.packageName, category.id, newIndex);
   }
 
   void _onMoveEnd(BuildContext context) {

@@ -36,6 +36,7 @@ void main() {
     when(mockAppsService.getAppBanner(any)).thenAnswer((_) async => kTransparentImage);
     when(mockAppsService.hasCustomBanner(any)).thenAnswer((_) async => false);
     when(mockAppsService.pendingReorderFocusPackage).thenReturn(null);
+    when(mockAppsService.pendingReorderFocusIndex).thenReturn(null);
     when(mockAppsService.openAppInfo(any)).thenAnswer((_) async => {});
     when(mockAppsService.isAppInFavorites(any)).thenReturn(false);
 

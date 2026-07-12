@@ -64,6 +64,7 @@ class AppsGrid extends StatelessWidget
 
             return AppCard(
               key: Key(applications[index].packageName),
+              index: index,
               category: category,
               application: applications[index],
               autofocus: index == 0,
@@ -149,7 +150,7 @@ class AppsGrid extends StatelessWidget
       appsService.reorderApplication(category, index, newIndex);
       
       // Set pending focus so the app at the new position will request focus
-      appsService.setPendingReorderFocus(movingApp.packageName, category.id);
+      appsService.setPendingReorderFocus(movingApp.packageName, category.id, newIndex);
     }
   }
 

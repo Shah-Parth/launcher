@@ -63,16 +63,20 @@ class AppsService extends ChangeNotifier {
 
   String? _pendingReorderFocusPackage;
   int? _pendingReorderFocusCategoryId;
+  int? _pendingReorderFocusIndex;
   String? get pendingReorderFocusPackage => _pendingReorderFocusPackage;
   int? get pendingReorderFocusCategoryId => _pendingReorderFocusCategoryId;
+  int? get pendingReorderFocusIndex => _pendingReorderFocusIndex;
   void clearPendingReorderFocusPackage() {
     _pendingReorderFocusPackage = null;
     _pendingReorderFocusCategoryId = null;
+    _pendingReorderFocusIndex = null;
   }
 
-  void setPendingReorderFocus(String packageName, int categoryId) {
+  void setPendingReorderFocus(String packageName, int categoryId, int index) {
     _pendingReorderFocusPackage = packageName;
     _pendingReorderFocusCategoryId = categoryId;
+    _pendingReorderFocusIndex = index;
   }
 
   List<App> get applications => UnmodifiableListView(
@@ -682,9 +686,6 @@ class AppsService extends ChangeNotifier {
     // Remove from current
     await removeFromCategory(app, currentCategory);
 
-    // Set pending focus package so AppCard can reclaim focus and reorder mode
-    _pendingReorderFocusPackage = app.packageName;
-
     // Add to target
     // DB Insert Logic
     // 1. Get current items in target
@@ -696,6 +697,9 @@ class AppsService extends ChangeNotifier {
     } else {
       targetApps.add(app); // Insert at bottom
     }
+
+    int newIndex = direction == AxisDirection.down ? 0 : targetApps.length - 1;
+    setPendingReorderFocus(app.packageName, targetCategory.id, newIndex);
 
     // 3. Update orders for all items in target category
     List<AppsCategoriesCompanion> orderedAppCategories = [];

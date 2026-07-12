@@ -41,6 +41,7 @@ class AppCard extends StatefulWidget
   final bool autofocus;
   final void Function(AxisDirection) onMove;
   final VoidCallback onMoveEnd;
+  final int index;
   final bool handleUpNavigationToSettings;
   final bool isFirstInRow;
   final bool isLastInRow;
@@ -52,6 +53,7 @@ class AppCard extends StatefulWidget
     required this.autofocus,
     required this.onMove,
     required this.onMoveEnd,
+    this.index = 0,
     this.handleUpNavigationToSettings = false,
     this.isFirstInRow = false,
     this.isLastInRow = false,
@@ -102,7 +104,8 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
        if (!mounted) return;
        final appsService = Provider.of<AppsService>(context, listen: false);
        if (appsService.pendingReorderFocusPackage == widget.application.packageName &&
-           appsService.pendingReorderFocusCategoryId == widget.category.id) {
+           appsService.pendingReorderFocusCategoryId == widget.category.id &&
+           widget.index == appsService.pendingReorderFocusIndex) {
           appsService.clearPendingReorderFocusPackage();
           _focusNode.requestFocus();
           
@@ -122,7 +125,8 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
        if (!mounted) return;
        final appsService = Provider.of<AppsService>(context, listen: false);
        if (appsService.pendingReorderFocusPackage == widget.application.packageName &&
-           appsService.pendingReorderFocusCategoryId == widget.category.id) {
+           appsService.pendingReorderFocusCategoryId == widget.category.id &&
+           widget.index == appsService.pendingReorderFocusIndex) {
           appsService.clearPendingReorderFocusPackage();
           _focusNode.requestFocus();
           
