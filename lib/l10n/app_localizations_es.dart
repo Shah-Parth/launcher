@@ -322,11 +322,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get autoHideNotificationBell => 'Ocultar campana de notificaciones automáticamente';
 
   @override
-  String get continueWatching => 'Continue Watching';
+  String get continueWatching => 'Continuar viendo';
 
   @override
-  String get showContinueWatchingOnHome => 'Show Continue Watching on Home';
+  String get showContinueWatchingOnHome => 'Mostrar Continuar viendo en Inicio';
 
   @override
-  String get permissionDeniedContinueWatching => 'Permission required to show Continue Watching';
+  String get permissionDeniedContinueWatching => 'Se requiere permiso para mostrar Continuar viendo';
 }

@@ -158,5 +158,8 @@
         }
     },
     "notificationBell": "Campana de notificaciones",
-    "autoHideNotificationBell": "Ocultar campana de notificaciones automáticamente"
+    "autoHideNotificationBell": "Ocultar campana de notificaciones automáticamente",
+    "continueWatching": "Continuar viendo",
+    "showContinueWatchingOnHome": "Mostrar Continuar viendo en Inicio",
+    "permissionDeniedContinueWatching": "Se requiere permiso para mostrar Continuar viendo"
 }
