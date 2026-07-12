@@ -39,6 +39,7 @@ class FocusKeyboardListener extends StatefulWidget {
 
 class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
   int? _keyDownAt;
+  final Set<LogicalKeyboardKey> _handledKeys = {};
 
   @override
   Widget build(BuildContext context) => Focus(
@@ -60,7 +61,11 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
 
   KeyEventResult _keyDownEvent(BuildContext context, LogicalKeyboardKey key) {
     if (!longPressableKeys.contains(key)) {
-      return widget.onPressed?.call(key) ?? KeyEventResult.ignored;
+      final result = widget.onPressed?.call(key) ?? KeyEventResult.ignored;
+      if (result == KeyEventResult.handled) {
+        _handledKeys.add(key);
+      }
+      return result;
     }
     if (_keyDownAt == null) {
       _keyDownAt = DateTime.now().millisecondsSinceEpoch;
@@ -73,6 +78,9 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
   }
 
   KeyEventResult _keyUpEvent(BuildContext context, LogicalKeyboardKey key) {
+    if (_handledKeys.remove(key)) {
+      return KeyEventResult.handled;
+    }
     if (_keyDownAt != null) {
       _keyDownAt = null;
       return widget.onPressed?.call(key) ?? KeyEventResult.ignored;

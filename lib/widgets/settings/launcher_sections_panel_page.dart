@@ -63,6 +63,7 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
 
             return Expanded(
               child: ReorderableListView.builder(
+                cacheExtent: 2000,
                 buildDefaultDragHandles: false,
                 padding: EdgeInsets.only(bottom: 80),
                 itemCount: sections.length,
