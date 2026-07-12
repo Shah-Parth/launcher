@@ -56,6 +56,9 @@ secretProperties.setProperty("signing_keystore_password", "${System.getenv('FLAU
 secretProperties.setProperty("signing_key_password", "${System.getenv('FLAUNCHER_SIGNING_KEY_PASSWORD')}")
 secretProperties.setProperty("signing_key_alias", "${System.getenv('FLAUNCHER_SIGNING_KEY_ALIAS')}")
 
+def keystoreFilePath = System.getenv("KEYSTORE_FILE") ?: localProperties['storeFile']
+def hasKeystore = keystoreFilePath != null && file(keystoreFilePath).exists()
+
 android {
     dependenciesInfo {
         // Disables dependency metadata when building APKs (for IzzyOnDroid/F-Droid)
@@ -79,9 +82,8 @@ android {
     signingConfigs {
         debug {}
         release {
-            def keystoreFile = System.getenv("KEYSTORE_FILE") ?: localProperties['storeFile']
-            if (keystoreFile != null) {
-                storeFile file(keystoreFile)
+            if (hasKeystore) {
+                storeFile file(keystoreFilePath)
                 storePassword System.getenv("KEYSTORE_PASSWORD") ?: localProperties['storePassword']
                 keyAlias System.getenv("KEY_ALIAS") ?: localProperties['keyAlias']
                 keyPassword System.getenv("KEY_PASSWORD") ?: localProperties['keyPassword']
@@ -101,7 +103,9 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
+            if (hasKeystore) {
+                signingConfig signingConfigs.release
+            }
             ndk {
                 abiFilters 'armeabi-v7a', 'arm64-v8a'
             }
