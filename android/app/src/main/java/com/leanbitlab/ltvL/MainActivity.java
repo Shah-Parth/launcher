@@ -730,9 +730,35 @@ public class MainActivity extends FlutterActivity {
 
     private boolean checkUsageStatsPermission() {
         AppOpsManager appOps = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-        int mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
-                android.os.Process.myUid(), getPackageName());
-        return mode == AppOpsManager.MODE_ALLOWED;
+        int mode;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            mode = appOps.unsafeCheckOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    android.os.Process.myUid(), getPackageName());
+        } else {
+            mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    android.os.Process.myUid(), getPackageName());
+        }
+
+        if (mode == AppOpsManager.MODE_ALLOWED) {
+            return true;
+        }
+
+        if (mode == AppOpsManager.MODE_DEFAULT) {
+            try {
+                NetworkStatsManager networkStatsManager = (NetworkStatsManager) getSystemService(Context.NETWORK_STATS_SERVICE);
+                if (networkStatsManager != null) {
+                    long now = System.currentTimeMillis();
+                    networkStatsManager.querySummaryForDevice(ConnectivityManager.TYPE_WIFI, null, now - 1, now);
+                    return true;
+                }
+            } catch (SecurityException e) {
+                return false;
+            } catch (Exception e) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void requestUsageStatsPermission() {
