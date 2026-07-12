@@ -67,6 +67,7 @@ class NetworkService extends ChangeNotifier with WidgetsBindingObserver
   int                 _wirelessNetworkSignalLevel;
   int                 _dailyDataUsage; // In bytes
   bool                _hasUsageStatsPermission;
+  bool                _vpnActive;
   Timer?              _usageTimer;
   int                 _callCount = 0;
   int                 _usageCallCount = 0;
@@ -78,7 +79,8 @@ class NetworkService extends ChangeNotifier with WidgetsBindingObserver
         _networkType = NetworkType.Unknown,
         _wirelessNetworkSignalLevel = 0,
         _dailyDataUsage = 0,
-        _hasUsageStatsPermission = false
+        _hasUsageStatsPermission = false,
+        _vpnActive = false
   {
     _channel.addNetworkChangedListener(_onNetworkChanged);
 
@@ -176,6 +178,7 @@ class NetworkService extends ChangeNotifier with WidgetsBindingObserver
   int                   get   wirelessNetworkSignalLevel    => _wirelessNetworkSignalLevel;
   int                 get   dailyDataUsage                => _dailyDataUsage;
   bool                get   hasUsageStatsPermission       => _hasUsageStatsPermission;
+  bool                get   vpnActive                     => _vpnActive;
 
   CellularNetworkType _getCellularNetworkType(int index)
   {
@@ -194,11 +197,12 @@ class NetworkService extends ChangeNotifier with WidgetsBindingObserver
       int networkTypeInt = map["networkType"] as int;
       _hasInternetAccess = map["internetAccess"] as bool;
       _networkType = NetworkType.values[networkTypeInt];
+      _vpnActive = map["vpnActive"] as bool? ?? false;
 
       if (_networkType == NetworkType.Cellular || _networkType == NetworkType.Wifi) {
         _wirelessNetworkSignalLevel = map["wirelessSignalLevel"] as int;
       }
-      log("NetworkService: parsed type $_networkType, signal $_wirelessNetworkSignalLevel");
+      log("NetworkService: parsed type $_networkType, signal $_wirelessNetworkSignalLevel, vpn $_vpnActive");
     } catch (e) {
       log("NetworkService error parsing: $e");
     }
@@ -214,6 +218,7 @@ class NetworkService extends ChangeNotifier with WidgetsBindingObserver
       case "NETWORK_UNAVAILABLE":
         _hasInternetAccess = false;
         _networkType = NetworkType.Unknown;
+        _vpnActive = false;
         break;
       case "CAPABILITIES_CHANGED":
         Map<dynamic, dynamic> map = event["arguments"];

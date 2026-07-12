@@ -11,6 +11,7 @@ void main() {
 
   setUp(() {
     mockNetworkService = MockNetworkService();
+    when(mockNetworkService.vpnActive).thenReturn(false);
   });
 
   Widget createWidgetUnderTest() {
@@ -205,5 +206,17 @@ void main() {
     await tester.pumpAndSettle();
 
     verify(mockNetworkService.openWifiSettings()).called(1);
+  });
+
+  testWidgets('renders both wifi and vpn_key when wifi is active and vpnActive is true', (WidgetTester tester) async {
+    when(mockNetworkService.networkType).thenReturn(NetworkType.Wifi);
+    when(mockNetworkService.cellularNetworkType).thenReturn(CellularNetworkType.Unknown);
+    when(mockNetworkService.wirelessNetworkSignalLevel).thenReturn(4);
+    when(mockNetworkService.vpnActive).thenReturn(true);
+
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    expect(find.byIcon(Icons.signal_wifi_4_bar), findsOneWidget);
+    expect(find.byIcon(Icons.vpn_key), findsOneWidget);
   });
 }
