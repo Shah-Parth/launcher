@@ -30,6 +30,7 @@ public class NetworkUtils
     public static final String KEY_NETWORK_ACCESS = "networkAccess";
     public static final String KEY_NETWORK_TYPE = "networkType";
     public static final String KEY_WIRELESS_SIGNAL_LEVEL = "wirelessSignalLevel";
+    public static final String KEY_VPN_ACTIVE = "vpnActive";
 
     public static Map<String, Object> getNetworkCapabilitiesInformation(Context context, NetworkCapabilities capabilities)
     {
