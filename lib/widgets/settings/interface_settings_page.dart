@@ -38,7 +38,7 @@ class InterfaceSettingsPage extends StatelessWidget {
 
     return Column(
       children: [
-        Text('Interface', style: Theme.of(context).textTheme.titleLarge),
+        Text(localizations.interface, style: Theme.of(context).textTheme.titleLarge),
         const Divider(),
         Expanded(
           child: SingleChildScrollView(
@@ -62,7 +62,7 @@ class InterfaceSettingsPage extends StatelessWidget {
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.palette_outlined),
-                  title: Text('Accent Color', style: Theme.of(context).textTheme.bodyMedium),
+                  title: Text(localizations.accentColor, style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context).pushNamed(AccentColorPage.routeName),
                 ),
                 FocusableSettingsTile(
@@ -72,7 +72,7 @@ class InterfaceSettingsPage extends StatelessWidget {
                 ),
                 FocusableSettingsTile(
                   leading: const Icon(Icons.miscellaneous_services),
-                  title: Text("Miscellaneous", style: Theme.of(context).textTheme.bodyMedium),
+                  title: Text(localizations.miscellaneous, style: Theme.of(context).textTheme.bodyMedium),
                   onPressed: () => Navigator.of(context).pushNamed(MiscPanelPage.routeName),
                 ),
               ],

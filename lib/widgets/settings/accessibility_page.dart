@@ -112,11 +112,11 @@ class _AccessibilityPageState extends State<AccessibilityPage> with WidgetsBindi
                     color: _accessibilityEnabled ? Colors.green : Colors.orange,
                   ),
                   title: Text(
-                    'Home Button Fix (Google TV)',
+                    localizations.homeButtonFix,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                   trailing: Text(
-                    _accessibilityEnabled ? 'Enabled' : 'Disabled',
+                    _accessibilityEnabled ? localizations.enabled : localizations.disabled,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           color: _accessibilityEnabled ? Colors.green : Colors.orange,
                         ),

@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/settings_service.dart';
@@ -28,6 +29,7 @@ class ScreensaverClockStylePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
     return Selector<SettingsService, String>(
       selector: (_, settingsService) => settingsService.screensaverClockStyle,
       builder: (context, currentStyle, _) {
@@ -35,7 +37,7 @@ class ScreensaverClockStylePage extends StatelessWidget {
 
         return Column(
           children: [
-            Text('Screensaver Clock Style', style: Theme.of(context).textTheme.titleLarge),
+            Text(localizations.screensaverClockStyle, style: Theme.of(context).textTheme.titleLarge),
             const Divider(),
             Expanded(
               child: SingleChildScrollView(

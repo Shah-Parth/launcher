@@ -1,4 +1,5 @@
 
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +12,12 @@ class DataUsagePeriodPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
     return Consumer<SettingsService>(
         builder: (context, service, _) {
           return Column(
             children: [
-              Text('Data Usage Period', style: Theme.of(context).textTheme.titleLarge),
+              Text(localizations.dataUsagePeriod, style: Theme.of(context).textTheme.titleLarge),
               const Divider(),
               Expanded(
                 child: ListView(

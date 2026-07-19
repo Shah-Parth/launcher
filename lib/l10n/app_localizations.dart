@@ -706,6 +706,26 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Permission required to show Continue Watching'**
   String get permissionDeniedContinueWatching;
+
+  String get interface;
+  String get system;
+  String get accentColor;
+  String get miscellaneous;
+  String get brightnessScheduler;
+  String get screensaverSettings;
+  String get screensaverClockStyle;
+  String get dataUsagePeriod;
+  String get notificationAccess;
+  String get granted;
+  String get permissionRequired;
+  String get systemWidePopupAlert;
+  String get overlayPermissionRequired;
+  String get enabled;
+  String get disabled;
+  String get showAppNamesBelowIcons;
+  String get dataUsage;
+  String get networkIndicator;
+  String get homeButtonFix;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

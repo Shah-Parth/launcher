@@ -329,4 +329,61 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get permissionDeniedContinueWatching => 'Se requiere permiso para mostrar Continuar viendo';
+
+  @override
+  String get interface => 'Interfaz';
+
+  @override
+  String get system => 'Sistema';
+
+  @override
+  String get accentColor => 'Color de acento';
+
+  @override
+  String get miscellaneous => 'Miscelánea';
+
+  @override
+  String get brightnessScheduler => 'Programador de brillo';
+
+  @override
+  String get screensaverSettings => 'Ajustes del salvapantallas';
+
+  @override
+  String get screensaverClockStyle => 'Estilo de reloj del salvapantallas';
+
+  @override
+  String get dataUsagePeriod => 'Período de uso de datos';
+
+  @override
+  String get notificationAccess => 'Acceso a notificaciones';
+
+  @override
+  String get granted => 'Concedido';
+
+  @override
+  String get permissionRequired => 'Permiso requerido';
+
+  @override
+  String get systemWidePopupAlert => 'Alerta emergente del sistema';
+
+  @override
+  String get overlayPermissionRequired => 'Permiso de superposición requerido';
+
+  @override
+  String get enabled => 'Habilitado';
+
+  @override
+  String get disabled => 'Deshabilitado';
+
+  @override
+  String get showAppNamesBelowIcons => 'Mostrar nombres debajo de los iconos';
+
+  @override
+  String get dataUsage => 'Uso de datos';
+
+  @override
+  String get networkIndicator => 'Indicador de red';
+
+  @override
+  String get homeButtonFix => 'Corrección del botón Inicio (Google TV)';
 }

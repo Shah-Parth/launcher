@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/settings_service.dart';
@@ -51,13 +52,14 @@ class AccentColorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
     return Consumer<SettingsService>(
       builder: (context, settingsService, _) {
         final currentColor = settingsService.accentColorHex;
         
         return Column(
           children: [
-            Text('Accent Color', style: Theme.of(context).textTheme.titleLarge),
+            Text(localizations.accentColor, style: Theme.of(context).textTheme.titleLarge),
             const Divider(),
             Expanded(
               child: GridView.builder(

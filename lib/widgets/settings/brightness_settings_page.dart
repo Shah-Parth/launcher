@@ -17,6 +17,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/brightness_service.dart';
@@ -29,6 +30,7 @@ class BrightnessSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    AppLocalizations localizations = AppLocalizations.of(context)!;
     return Consumer<BrightnessService>(
       builder: (context, brightnessService, _) {
         final isEnabled = brightnessService.isEnabled;
@@ -36,7 +38,7 @@ class BrightnessSettingsPage extends StatelessWidget {
         
         return Column(
           children: [
-            Text('Brightness Scheduler', style: Theme.of(context).textTheme.titleLarge),
+            Text(localizations.brightnessScheduler, style: Theme.of(context).textTheme.titleLarge),
             const Divider(),
             Expanded(
               child: SingleChildScrollView(
