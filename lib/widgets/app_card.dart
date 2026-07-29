@@ -24,6 +24,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/focus_keyboard_listener.dart';
+import 'package:flauncher/widgets/app_card_keys.dart';
 import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +33,6 @@ import 'package:provider/provider.dart';
 
 import '../models/app.dart';
 import '../models/category.dart';
-
-const _validationKeys = [LogicalKeyboardKey.select, LogicalKeyboardKey.enter, LogicalKeyboardKey.gameButtonA];
 
 class AppCard extends StatefulWidget
 {
@@ -630,12 +629,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     }
 
     if (_moving) {
-      final isArrowKey = key == LogicalKeyboardKey.arrowLeft ||
-          key == LogicalKeyboardKey.arrowUp ||
-          key == LogicalKeyboardKey.arrowRight ||
-          key == LogicalKeyboardKey.arrowDown;
-
-      if (isArrowKey) {
+      if (AppCardKeys.isArrowKey(key)) {
         final now = DateTime.now();
         if (_lastMoveTime != null && now.difference(_lastMoveTime!) < const Duration(milliseconds: 150)) {
           return KeyEventResult.handled;
@@ -653,12 +647,10 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
         widget.onMove(AxisDirection.right);
       } else if (key == LogicalKeyboardKey.arrowDown) {
         widget.onMove(AxisDirection.down);
-      } else if (_validationKeys.contains(key)) {
+      } else if (AppCardKeys.validationKeys.contains(key)) {
         setState(() => _moving = false);
         widget.onMoveEnd();
-      } else if (key == LogicalKeyboardKey.escape ||
-                 key == LogicalKeyboardKey.goBack ||
-                 key == LogicalKeyboardKey.gameButtonB) {
+      } else if (AppCardKeys.cancelKeys.contains(key)) {
         setState(() => _moving = false);
         widget.onMoveCancel?.call();
         context.read<LauncherState>().suppressBackNavigation();
@@ -667,7 +659,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
       }
 
       return KeyEventResult.handled;
-    } else if (_validationKeys.contains(key)) {
+    } else if (AppCardKeys.validationKeys.contains(key)) {
       if (!_clicked) {
         setState(() => _clicked = true);
         Future.delayed(const Duration(milliseconds: 150), () {
@@ -690,7 +682,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   }
 
   KeyEventResult _onLongPress(BuildContext context, LogicalKeyboardKey? key) {
-    if (!_moving && (key == null || longPressableKeys.contains(key))) {
+    if (!_moving && (key == null || AppCardKeys.longPressableKeys.contains(key))) {
       _showPanel(context);
       return KeyEventResult.handled;
     }
