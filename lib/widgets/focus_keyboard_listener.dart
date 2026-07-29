@@ -49,6 +49,16 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
       );
 
   KeyEventResult _handleKey(BuildContext context, KeyEvent keyEvent) {
+    if (keyEvent is KeyRepeatEvent) {
+      final key = keyEvent.logicalKey;
+      if (key == LogicalKeyboardKey.arrowLeft ||
+          key == LogicalKeyboardKey.arrowRight ||
+          key == LogicalKeyboardKey.arrowUp ||
+          key == LogicalKeyboardKey.arrowDown) {
+        return KeyEventResult.ignored;
+      }
+    }
+
     switch (keyEvent.runtimeType) {
       case KeyDownEvent:
       case KeyRepeatEvent:
