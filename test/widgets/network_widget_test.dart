@@ -219,4 +219,34 @@ void main() {
     expect(find.byIcon(Icons.signal_wifi_4_bar), findsOneWidget);
     expect(find.byIcon(Icons.vpn_key), findsOneWidget);
   });
+
+  testWidgets('tapping wifi icon when vpn is active opens wifi settings', (WidgetTester tester) async {
+    when(mockNetworkService.networkType).thenReturn(NetworkType.Wifi);
+    when(mockNetworkService.cellularNetworkType).thenReturn(CellularNetworkType.Unknown);
+    when(mockNetworkService.wirelessNetworkSignalLevel).thenReturn(4);
+    when(mockNetworkService.vpnActive).thenReturn(true);
+    when(mockNetworkService.openWifiSettings()).thenAnswer((_) => Future.value());
+
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    await tester.tap(find.byIcon(Icons.signal_wifi_4_bar));
+    await tester.pumpAndSettle();
+
+    verify(mockNetworkService.openWifiSettings()).called(1);
+  });
+
+  testWidgets('tapping vpn key icon when vpn is active opens vpn settings', (WidgetTester tester) async {
+    when(mockNetworkService.networkType).thenReturn(NetworkType.Wifi);
+    when(mockNetworkService.cellularNetworkType).thenReturn(CellularNetworkType.Unknown);
+    when(mockNetworkService.wirelessNetworkSignalLevel).thenReturn(4);
+    when(mockNetworkService.vpnActive).thenReturn(true);
+    when(mockNetworkService.openVpnSettings()).thenAnswer((_) => Future.value());
+
+    await tester.pumpWidget(createWidgetUnderTest());
+
+    await tester.tap(find.byIcon(Icons.vpn_key));
+    await tester.pumpAndSettle();
+
+    verify(mockNetworkService.openVpnSettings()).called(1);
+  });
 }
