@@ -55,6 +55,10 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
           key == LogicalKeyboardKey.arrowRight ||
           key == LogicalKeyboardKey.arrowUp ||
           key == LogicalKeyboardKey.arrowDown) {
+        final result = widget.onPressed?.call(key) ?? KeyEventResult.ignored;
+        if (result == KeyEventResult.handled) {
+          return KeyEventResult.handled;
+        }
         return KeyEventResult.ignored;
       }
     }
