@@ -65,48 +65,65 @@ class NetworkWidget extends StatelessWidget
             break;
         }
 
-        final List<Widget> icons = [
-          Icon(physicalIcon,
-            color: iconColor,
-            shadows: const [
-              Shadow(
-                color: Colors.black54,
-                offset: Offset(0, 2),
-                blurRadius: 8
-              )
-            ]
-          ),
-        ];
+        Widget physicalWidget = Icon(
+          physicalIcon,
+          color: iconColor,
+          shadows: const [
+            Shadow(
+              color: Colors.black54,
+              offset: Offset(0, 2),
+              blurRadius: 8
+            )
+          ]
+        );
 
-        if (vpnActive) {
-          icons.add(const SizedBox(width: 4));
-          icons.add(const Icon(Icons.vpn_key,
-            shadows: [
-              Shadow(
-                color: Colors.black54,
-                offset: Offset(0, 2),
-                blurRadius: 8
-              )
-            ]
-          ));
+        if (!vpnActive || physicalIcon == Icons.vpn_key) {
+          return InkWell(
+            onTap: () {
+              if (vpnActive || networkType == NetworkType.Vpn) {
+                networkService.openVpnSettings();
+              } else {
+                networkService.openWifiSettings();
+              }
+            },
+            borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: physicalWidget,
+            ),
+          );
         }
 
-        return InkWell(
-          onTap: () {
-            if (vpnActive) {
-              networkService.openVpnSettings();
-            } else {
-              networkService.openWifiSettings();
-            }
-          },
-          borderRadius: BorderRadius.circular(8),
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: icons,
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            InkWell(
+              onTap: () => networkService.openWifiSettings(),
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: physicalWidget,
+              ),
             ),
-          ),
+            const SizedBox(width: 4),
+            InkWell(
+              onTap: () => networkService.openVpnSettings(),
+              borderRadius: BorderRadius.circular(8),
+              child: const Padding(
+                padding: EdgeInsets.all(4.0),
+                child: Icon(
+                  Icons.vpn_key,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black54,
+                      offset: Offset(0, 2),
+                      blurRadius: 8
+                    )
+                  ]
+                ),
+              ),
+            ),
+          ],
         );
       }
     );
