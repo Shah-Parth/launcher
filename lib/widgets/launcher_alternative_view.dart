@@ -35,7 +35,6 @@ class AlternativeLauncherView extends StatelessWidget {
           _buildClock(context, timeFormat, clockStyle),
           const SizedBox(height: 16),
           DateTimeWidget(dateFormat,
-            updateInterval: const Duration(minutes: 1),
             textStyle: Theme.of(context).textTheme.headlineLarge!.copyWith(
               fontSize: 56,
               fontWeight: FontWeight.w300,

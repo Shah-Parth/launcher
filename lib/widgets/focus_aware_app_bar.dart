@@ -211,7 +211,6 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                         DateTimeWidget(
                           dateTimeSettings.dateFormat,
                           key: const Key("statusbar_date"),
-                          updateInterval: const Duration(minutes: 1),
                           textStyle: textStyle,
                         ),
                       
