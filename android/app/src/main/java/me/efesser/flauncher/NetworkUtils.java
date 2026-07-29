@@ -37,6 +37,7 @@ public class NetworkUtils
         boolean hasNetworkAccess, hasInternetAccess;
         int wirelessNetworkSignalLevel = 0;
         int networkType = NETWORK_TYPE_UNKNOWN;
+        boolean isVpnActive = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN);
 
         hasNetworkAccess = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -46,10 +47,7 @@ public class NetworkUtils
             hasInternetAccess = hasNetworkAccess;
         }
 
-        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) {
-            networkType = NETWORK_TYPE_VPN;
-        }
-        else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
             networkType = NETWORK_TYPE_CELLULAR;
         }
         else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
@@ -80,13 +78,33 @@ public class NetworkUtils
         else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
             networkType = NETWORK_TYPE_WIRED;
         }
+        else if (isVpnActive) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (connectivityManager != null) {
+                Map<String, Object> fullInfo = getNetworkInformation(context, connectivityManager.getActiveNetwork());
+                if (fullInfo != null && fullInfo.containsKey(KEY_NETWORK_TYPE)) {
+                    Object t = fullInfo.get(KEY_NETWORK_TYPE);
+                    if (t instanceof Integer) {
+                        networkType = (int) t;
+                    }
+                    Object s = fullInfo.get(KEY_WIRELESS_SIGNAL_LEVEL);
+                    if (s instanceof Integer) {
+                        wirelessNetworkSignalLevel = (int) s;
+                    }
+                }
+            }
+            if (networkType == NETWORK_TYPE_UNKNOWN) {
+                networkType = NETWORK_TYPE_VPN;
+            }
+        }
 
-        Map<String, Object> mapOut = new java.util.HashMap<>();
-        mapOut.put(KEY_NETWORK_ACCESS, hasNetworkAccess);
-        mapOut.put(KEY_INTERNET_ACCESS, hasInternetAccess);
-        mapOut.put(KEY_NETWORK_TYPE, networkType);
-        mapOut.put(KEY_WIRELESS_SIGNAL_LEVEL, wirelessNetworkSignalLevel);
-        return mapOut;
+        Map<String, Object> map = new java.util.HashMap<>();
+        map.put(KEY_NETWORK_ACCESS, hasNetworkAccess);
+        map.put(KEY_INTERNET_ACCESS, hasInternetAccess);
+        map.put(KEY_NETWORK_TYPE, networkType);
+        map.put(KEY_WIRELESS_SIGNAL_LEVEL, wirelessNetworkSignalLevel);
+        map.put(KEY_VPN_ACTIVE, isVpnActive);
+        return map;
     }
 
     public static Map<String, Object> getNetworkInformation(Context context, Network network)

@@ -103,7 +103,7 @@ public class NetworkEventStreamHandler implements EventChannel.StreamHandler
 
         @Override
         public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
-            Map<String, Object> map = NetworkUtils.getNetworkCapabilitiesInformation(_context, networkCapabilities);
+            Map<String, Object> map = NetworkUtils.getNetworkInformation(_context, network);
 
             if (Objects.equals(map.get(NetworkUtils.KEY_NETWORK_TYPE), NetworkUtils.NETWORK_TYPE_CELLULAR)) {
                 TelephonyManager manager = (TelephonyManager) _context.getSystemService(Context.TELEPHONY_SERVICE);
@@ -155,7 +155,7 @@ public class NetworkEventStreamHandler implements EventChannel.StreamHandler
 
         @Override
         public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
-            Map<String, Object> map = NetworkUtils.getNetworkCapabilitiesInformation(_context, networkCapabilities);
+            Map<String, Object> map = NetworkUtils.getNetworkInformation(_context, network);
 
             if (Objects.equals(map.get(NetworkUtils.KEY_NETWORK_TYPE), NetworkUtils.NETWORK_TYPE_CELLULAR)) {
                 TelephonyManager manager = (TelephonyManager) _context.getSystemService(Context.TELEPHONY_SERVICE);
