@@ -30,6 +30,8 @@ class LauncherState extends ChangeNotifier
   bool _isDefaultLauncher;
   bool _launcherVisible;
 
+  DateTime? _suppressBackUntil;
+
   bool  get isDefaultLauncher => _isDefaultLauncher;
   bool  get launcherVisible => _launcherVisible;
 
@@ -40,12 +42,20 @@ class LauncherState extends ChangeNotifier
     notifyListeners();
   }
 
+  void suppressBackNavigation() {
+    _suppressBackUntil = DateTime.now().add(const Duration(milliseconds: 500));
+  }
+
   Future<void> refresh(AppsService appsService) async {
     _isDefaultLauncher = await appsService.isDefaultLauncher();
     notifyListeners();
   }
 
   void handleBackNavigation(BuildContext context) {
+    if (_suppressBackUntil != null && DateTime.now().isBefore(_suppressBackUntil!)) {
+      _suppressBackUntil = null;
+      return;
+    }
     AppsService appsService = context.read<AppsService>();
     LauncherState launcherState = context.read<LauncherState>();
     SettingsService settingsService = context.read<SettingsService>();
