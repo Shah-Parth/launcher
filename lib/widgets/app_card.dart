@@ -607,6 +607,8 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
         )
       );
 
+  DateTime? _lastMoveTime;
+
   KeyEventResult _onPressed(BuildContext context, LogicalKeyboardKey? key) {
     if (!_moving) {
       if (key == LogicalKeyboardKey.arrowLeft && widget.isFirstInRow) {
@@ -625,20 +627,28 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     }
 
     if (_moving) {
+      final isArrowKey = key == LogicalKeyboardKey.arrowLeft ||
+          key == LogicalKeyboardKey.arrowUp ||
+          key == LogicalKeyboardKey.arrowRight ||
+          key == LogicalKeyboardKey.arrowDown;
+
+      if (isArrowKey) {
+        final now = DateTime.now();
+        if (_lastMoveTime != null && now.difference(_lastMoveTime!) < const Duration(milliseconds: 150)) {
+          return KeyEventResult.handled;
+        }
+        _lastMoveTime = now;
+      }
 
       WidgetsBinding.instance.addPostFrameCallback((_) => Scrollable.ensureVisible(context,
           alignment: 0.1, duration: const Duration(milliseconds: 100), curve: Curves.easeInOut));
       if (key == LogicalKeyboardKey.arrowLeft) {
-
         widget.onMove(AxisDirection.left);
       } else if (key == LogicalKeyboardKey.arrowUp) {
-
         widget.onMove(AxisDirection.up);
       } else if (key == LogicalKeyboardKey.arrowRight) {
-
         widget.onMove(AxisDirection.right);
       } else if (key == LogicalKeyboardKey.arrowDown) {
-
         widget.onMove(AxisDirection.down);
       } else if (_validationKeys.contains(key) ||
                  key == LogicalKeyboardKey.escape ||
