@@ -62,17 +62,9 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
             List<LauncherSection> sections = service.launcherSections;
 
             return Expanded(
-              child: ReorderableListView.builder(
-                cacheExtent: 2000,
-                buildDefaultDragHandles: false,
-                padding: EdgeInsets.only(bottom: 80),
+              child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 80),
                 itemCount: sections.length,
-                onReorder: (int oldIndex, int newIndex) {
-                  if (oldIndex < newIndex) {
-                    newIndex -= 1;
-                  }
-                  context.read<AppsService>().moveSection(oldIndex, newIndex);
-                },
                 itemBuilder: (context, index) {
                   final section = sections[index];
                   return _section(context, section, index, sections.length);
@@ -202,12 +194,9 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
                 child: Row(
                   children: [
                     // Drag Handle Icon
-                    ReorderableDragStartListener(
-                      index: index,
-                      child: Icon(
-                        isMoving ? Icons.drag_indicator : Icons.drag_handle,
-                        color: iconColor,
-                      ),
+                    Icon(
+                      isMoving ? Icons.drag_indicator : Icons.drag_handle,
+                      color: iconColor,
                     ),
                     const SizedBox(width: 16),
                     
