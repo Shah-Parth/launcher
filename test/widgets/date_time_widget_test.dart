@@ -86,5 +86,26 @@ void main() {
       // If the timer was not canceled properly, pumpWidget would fail or tests would hang.
       expect(find.byType(DateTimeWidget), findsNothing);
     });
+
+    testWidgets('Refreshes time when app lifecycle state changes to resumed', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: DateTimeWidget('HH:mm:ss', animate: false),
+          ),
+        ),
+      );
+
+      expect(find.byType(Text), findsOneWidget);
+
+      // Simulate app lifecycle state transition to paused and back to resumed
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
+      await tester.pump();
+
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
+
+      expect(find.byType(Text), findsOneWidget);
+    });
   });
 }
