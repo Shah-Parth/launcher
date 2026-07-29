@@ -24,6 +24,7 @@ import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/application_info_panel.dart';
 import 'package:flauncher/widgets/focus_keyboard_listener.dart';
+import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/notifications_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -41,6 +42,7 @@ class AppCard extends StatefulWidget
   final bool autofocus;
   final void Function(AxisDirection) onMove;
   final VoidCallback onMoveEnd;
+  final VoidCallback? onMoveCancel;
   final int index;
   final bool handleUpNavigationToSettings;
   final bool isFirstInRow;
@@ -53,6 +55,7 @@ class AppCard extends StatefulWidget
     required this.autofocus,
     required this.onMove,
     required this.onMoveEnd,
+    this.onMoveCancel,
     this.index = 0,
     this.handleUpNavigationToSettings = false,
     this.isFirstInRow = false,
@@ -650,13 +653,15 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
         widget.onMove(AxisDirection.right);
       } else if (key == LogicalKeyboardKey.arrowDown) {
         widget.onMove(AxisDirection.down);
-      } else if (_validationKeys.contains(key) ||
-                 key == LogicalKeyboardKey.escape ||
-                 key == LogicalKeyboardKey.goBack ||
-                 key == LogicalKeyboardKey.gameButtonB) {
-
+      } else if (_validationKeys.contains(key)) {
         setState(() => _moving = false);
         widget.onMoveEnd();
+      } else if (key == LogicalKeyboardKey.escape ||
+                 key == LogicalKeyboardKey.goBack ||
+                 key == LogicalKeyboardKey.gameButtonB) {
+        setState(() => _moving = false);
+        widget.onMoveCancel?.call();
+        context.read<LauncherState>().suppressBackNavigation();
       } else {
         return KeyEventResult.ignored;
       }

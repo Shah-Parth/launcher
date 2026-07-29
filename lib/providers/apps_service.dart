@@ -731,6 +731,15 @@ class AppsService extends ChangeNotifier {
     notifyListeners();
   }
 
+  void cancelReorderApplication(Category category) {
+    if (!_categoriesById.containsKey(category.id)) {
+      return;
+    }
+    Category categoryFound = _categoriesById[category.id]!;
+    sortCategory(categoryFound);
+    notifyListeners();
+  }
+
   Future<int> addCategory(String categoryName,
       {CategorySort sort = Category.Sort,
       CategoryType type = Category.Type,

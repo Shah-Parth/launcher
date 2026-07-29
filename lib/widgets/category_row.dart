@@ -68,7 +68,8 @@ class CategoryRow extends StatelessWidget
                   isFirstInRow: index == 0,
                   isLastInRow: index == applications.length - 1,
                   onMove: (direction) => _onMove(context, direction, applications[index]),
-                  onMoveEnd: () => _onMoveEnd(context)
+                  onMoveEnd: () => _onMoveEnd(context),
+                  onMoveCancel: () => _onMoveCancel(context),
                 )
             )
           )
@@ -130,5 +131,10 @@ class CategoryRow extends StatelessWidget
   void _onMoveEnd(BuildContext context) {
     final appsService = context.read<AppsService>();
     appsService.saveApplicationOrderInCategory(category);
+  }
+
+  void _onMoveCancel(BuildContext context) {
+    final appsService = context.read<AppsService>();
+    appsService.cancelReorderApplication(category);
   }
 }

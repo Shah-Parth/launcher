@@ -72,7 +72,8 @@ class AppsGrid extends StatelessWidget
               isFirstInRow: isFirstInRow,
               isLastInRow: isLastInRow,
               onMove: (direction) => _onMove(context, direction, applications[index]),
-              onMoveEnd: () => _saveOrder(context)
+              onMoveEnd: () => _saveOrder(context),
+              onMoveCancel: () => _cancelOrder(context),
             );
           }
         )
@@ -157,6 +158,11 @@ class AppsGrid extends StatelessWidget
   void _saveOrder(BuildContext context) {
     final appsService = context.read<AppsService>();
     appsService.saveApplicationOrderInCategory(category);
+  }
+
+  void _cancelOrder(BuildContext context) {
+    final appsService = context.read<AppsService>();
+    appsService.cancelReorderApplication(category);
   }
 
   SliverGridDelegate _buildSliverGridDelegate() => SliverGridDelegateWithFixedCrossAxisCount(
