@@ -256,7 +256,7 @@ void main() {
     verify(appsService.reorderApplication(applicationsCategory, 0, 1));
     await tester.sendKeyEvent(LogicalKeyboardKey.gameButtonB);
     await tester.pump();
-    verify(appsService.saveApplicationOrderInCategory(applicationsCategory));
+    verify(appsService.cancelReorderApplication(applicationsCategory));
   });
 
   testWidgets("AppCard moves in row", (tester) async {
