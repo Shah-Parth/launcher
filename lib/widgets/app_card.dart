@@ -599,23 +599,25 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   }
 
   Widget _arrow(Alignment alignment, IconData icon, VoidCallback onTap) =>
-      Align(
-        alignment: alignment,
-        child: Ink(
-          decoration: ShapeDecoration(
-            color: Theme.of(context).primaryColor.withOpacity(0.8),
-            shape: CircleBorder()
-          ),
-          child: SizedBox(
-            height: 36,
-            width: 36,
-            child: IconButton(
-              icon: Icon(icon, size: 24),
-              onPressed: onTap,
-              padding: EdgeInsets.all(0)
+      ExcludeFocus(
+        child: Align(
+          alignment: alignment,
+          child: Ink(
+            decoration: ShapeDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.8),
+              shape: CircleBorder()
+            ),
+            child: SizedBox(
+              height: 36,
+              width: 36,
+              child: IconButton(
+                icon: Icon(icon, size: 24),
+                onPressed: onTap,
+                padding: EdgeInsets.all(0)
+              )
             )
           )
-        )
+        ),
       );
 
   DateTime? _lastMoveTime;
