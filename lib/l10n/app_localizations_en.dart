@@ -386,4 +386,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeButtonFix => 'Home Button Fix (Google TV)';
+
+  @override
+  String get appLanguage => 'Language';
+
+  @override
+  String get systemDefault => 'System Default';
+
+  @override
+  String get english => 'English';
+
+  @override
+  String get spanish => 'Spanish';
 }

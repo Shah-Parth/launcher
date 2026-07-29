@@ -180,5 +180,9 @@
     "showAppNamesBelowIcons": "Show App Names Below Icons",
     "dataUsage": "Data Usage",
     "networkIndicator": "Network Indicator",
-    "homeButtonFix": "Home Button Fix (Google TV)"
+    "homeButtonFix": "Home Button Fix (Google TV)",
+    "appLanguage": "Language",
+    "systemDefault": "System Default",
+    "english": "English",
+    "spanish": "Spanish"
 }

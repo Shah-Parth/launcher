@@ -19,6 +19,7 @@
 //import 'dart:html';
 
 import 'package:flauncher/providers/settings_service.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
@@ -143,6 +144,34 @@ void main() async {
         notified = true;
       });
       await settingsService.setShowInputsWidgetInStatusBar(false);
+      expect(notified, isTrue);
+    });
+  });
+
+  group("appLanguage and appLocale", () {
+    test("default appLanguage is empty string and appLocale is null", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final settingsService = SettingsService(sharedPreferences);
+      expect(settingsService.appLanguage, "");
+      expect(settingsService.appLocale, isNull);
+    });
+
+    test("sets and gets appLanguage and appLocale", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final settingsService = SettingsService(sharedPreferences);
+      await settingsService.setAppLanguage("es");
+      expect(settingsService.appLanguage, "es");
+      expect(settingsService.appLocale, equals(const Locale("es")));
+    });
+
+    test("setAppLanguage notifies listeners", () async {
+      final sharedPreferences = await SharedPreferences.getInstance();
+      final settingsService = SettingsService(sharedPreferences);
+      bool notified = false;
+      settingsService.addListener(() {
+        notified = true;
+      });
+      await settingsService.setAppLanguage("en");
       expect(notified, isTrue);
     });
   });

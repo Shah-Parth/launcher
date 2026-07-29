@@ -44,11 +44,14 @@ class FLauncherApp extends StatelessWidget
     LauncherState launcherState = context.read<LauncherState>();
     launcherState.refresh(appsService);
 
-    return Selector<SettingsService, Color>(
-      selector: (_, settings) => settings.accentColor,
-      builder: (context, accentColor, _) {
+    return Selector<SettingsService, (Color, Locale?)>(
+      selector: (_, settings) => (settings.accentColor, settings.appLocale),
+      builder: (context, tuple, _) {
+        final accentColor = tuple.$1;
+        final appLocale = tuple.$2;
 
         return MaterialApp(
+      locale: appLocale,
       scrollBehavior: const MaterialScrollBehavior().copyWith(
         overscroll: false,
       ),

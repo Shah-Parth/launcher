@@ -47,6 +47,7 @@ const String _showInputsWidgetInStatusBarKey = "show_inputs_widget_in_status_bar
 const String _showContinueWatchingKey = "show_continue_watching";
 const String _showNotificationsWidgetInStatusBarKey = "show_notifications_widget_in_status_bar";
 const String _autoHideNotificationsWidgetKey = "auto_hide_notifications_widget";
+const String _appLanguageKey = "app_language";
 
 // WiFi usage period options
 const String DATA_USAGE_DAILY = "daily";
@@ -99,6 +100,7 @@ class SettingsService extends ChangeNotifier {
   late bool _showContinueWatching;
   late bool _showNotificationsWidgetInStatusBar;
   late bool _autoHideNotificationsWidget;
+  late String _appLanguage;
 
   bool get appHighlightAnimationEnabled => _appHighlightAnimationEnabled;
 
@@ -139,6 +141,15 @@ class SettingsService extends ChangeNotifier {
   bool get showNotificationsWidgetInStatusBar => _showNotificationsWidgetInStatusBar;
   bool get autoHideNotificationsWidget => _autoHideNotificationsWidget;
 
+  String get appLanguage => _appLanguage;
+
+  Locale? get appLocale {
+    if (_appLanguage.isEmpty) {
+      return null;
+    }
+    return Locale(_appLanguage);
+  }
+
   String get accentColorHex => _accentColorHex;
 
   String get screensaverClockStyle => _screensaverClockStyle;
@@ -177,6 +188,13 @@ class SettingsService extends ChangeNotifier {
     _showContinueWatching = _sharedPreferences.getBool(_showContinueWatchingKey) ?? true;
     _showNotificationsWidgetInStatusBar = _sharedPreferences.getBool(_showNotificationsWidgetInStatusBarKey) ?? true;
     _autoHideNotificationsWidget = _sharedPreferences.getBool(_autoHideNotificationsWidgetKey) ?? false;
+    _appLanguage = _sharedPreferences.getString(_appLanguageKey) ?? "";
+    notifyListeners();
+  }
+
+  Future<void> setAppLanguage(String value) async {
+    await _sharedPreferences.setString(_appLanguageKey, value);
+    _appLanguage = value;
     notifyListeners();
   }
 

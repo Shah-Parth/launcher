@@ -180,5 +180,9 @@
     "showAppNamesBelowIcons": "Mostrar nombres debajo de los iconos",
     "dataUsage": "Uso de datos",
     "networkIndicator": "Indicador de red",
-    "homeButtonFix": "Corrección del botón Inicio (Google TV)"
+    "homeButtonFix": "Corrección del botón Inicio (Google TV)",
+    "appLanguage": "Idioma",
+    "systemDefault": "Predeterminado del sistema",
+    "english": "Inglés",
+    "spanish": "Español"
 }
