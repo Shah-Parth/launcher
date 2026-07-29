@@ -147,11 +147,8 @@ class AppsGrid extends StatelessWidget
     }
     if (newIndex != null) {
       final appsService = context.read<AppsService>();
-      
-      appsService.reorderApplication(category, index, newIndex);
-      
-      // Set pending focus so the app at the new position will request focus
       appsService.setPendingReorderFocus(movingApp.packageName, category.id, newIndex);
+      appsService.reorderApplication(category, index, newIndex);
     }
   }
 

@@ -106,14 +106,17 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
        if (!mounted) return;
        final appsService = Provider.of<AppsService>(context, listen: false);
        if (appsService.pendingReorderFocusPackage == widget.application.packageName &&
-           appsService.pendingReorderFocusCategoryId == widget.category.id &&
-           widget.index == appsService.pendingReorderFocusIndex) {
+           appsService.pendingReorderFocusCategoryId == widget.category.id) {
           appsService.clearPendingReorderFocusPackage();
-          _focusNode.requestFocus();
+          if (!_focusNode.hasFocus) {
+            _focusNode.requestFocus();
+          }
           
-          setState(() {
-            _moving = true;
-          });
+          if (!_moving) {
+            setState(() {
+              _moving = true;
+            });
+          }
        }
     });
   }
@@ -127,10 +130,11 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
        if (!mounted) return;
        final appsService = Provider.of<AppsService>(context, listen: false);
        if (appsService.pendingReorderFocusPackage == widget.application.packageName &&
-           appsService.pendingReorderFocusCategoryId == widget.category.id &&
-           widget.index == appsService.pendingReorderFocusIndex) {
+           appsService.pendingReorderFocusCategoryId == widget.category.id) {
           appsService.clearPendingReorderFocusPackage();
-          _focusNode.requestFocus();
+          if (!_focusNode.hasFocus) {
+            _focusNode.requestFocus();
+          }
           
           if (!_moving) {
             setState(() {
@@ -636,7 +640,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
     if (_moving) {
       if (AppCardKeys.isArrowKey(key)) {
         final now = DateTime.now();
-        if (_lastMoveTime != null && now.difference(_lastMoveTime!) < const Duration(milliseconds: 150)) {
+        if (_lastMoveTime != null && now.difference(_lastMoveTime!) < const Duration(milliseconds: 50)) {
           return KeyEventResult.handled;
         }
         _lastMoveTime = now;

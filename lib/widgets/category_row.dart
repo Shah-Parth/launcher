@@ -103,8 +103,13 @@ class CategoryRow extends StatelessWidget
     );
   }
 
-  int _findChildIndex(Key key) =>
-      applications.indexWhere((app) => app.packageName == (key as ValueKey<String>).value);
+  int? _findChildIndex(Key key) {
+    if (key is ValueKey<String>) {
+      final index = applications.indexWhere((app) => app.packageName == key.value);
+      return index >= 0 ? index : null;
+    }
+    return null;
+  }
 
   void _onMove(BuildContext context, AxisDirection direction, App movingApp) {
     final index = applications.indexOf(movingApp);
@@ -122,10 +127,8 @@ class CategoryRow extends StatelessWidget
     }
 
     final appsService = context.read<AppsService>();
-    appsService.reorderApplication(category, index, newIndex);
-    
-    // Set pending focus so the app at the new position will request focus
     appsService.setPendingReorderFocus(movingApp.packageName, category.id, newIndex);
+    appsService.reorderApplication(category, index, newIndex);
   }
 
   void _onMoveEnd(BuildContext context) {
