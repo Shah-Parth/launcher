@@ -584,7 +584,9 @@ public class MainActivity extends FlutterActivity {
                     null,
                     startTime,
                     endTime);
-            totalBytes += wifiBucket.getRxBytes() + wifiBucket.getTxBytes();
+            if (wifiBucket != null) {
+                totalBytes += wifiBucket.getRxBytes() + wifiBucket.getTxBytes();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -595,7 +597,9 @@ public class MainActivity extends FlutterActivity {
                     null,
                     startTime,
                     endTime);
-            totalBytes += mobileBucket.getRxBytes() + mobileBucket.getTxBytes();
+            if (mobileBucket != null) {
+                totalBytes += mobileBucket.getRxBytes() + mobileBucket.getTxBytes();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -606,7 +610,9 @@ public class MainActivity extends FlutterActivity {
                     null,
                     startTime,
                     endTime);
-            totalBytes += ethernetBucket.getRxBytes() + ethernetBucket.getTxBytes();
+            if (ethernetBucket != null) {
+                totalBytes += ethernetBucket.getRxBytes() + ethernetBucket.getTxBytes();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -641,7 +647,9 @@ public class MainActivity extends FlutterActivity {
                     null,
                     startTime,
                     endTime);
-            totalBytes += wifiBucket.getRxBytes() + wifiBucket.getTxBytes();
+            if (wifiBucket != null) {
+                totalBytes += wifiBucket.getRxBytes() + wifiBucket.getTxBytes();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -652,7 +660,9 @@ public class MainActivity extends FlutterActivity {
                     null,
                     startTime,
                     endTime);
-            totalBytes += mobileBucket.getRxBytes() + mobileBucket.getTxBytes();
+            if (mobileBucket != null) {
+                totalBytes += mobileBucket.getRxBytes() + mobileBucket.getTxBytes();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -663,7 +673,9 @@ public class MainActivity extends FlutterActivity {
                     null,
                     startTime,
                     endTime);
-            totalBytes += ethernetBucket.getRxBytes() + ethernetBucket.getTxBytes();
+            if (ethernetBucket != null) {
+                totalBytes += ethernetBucket.getRxBytes() + ethernetBucket.getTxBytes();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -698,7 +710,9 @@ public class MainActivity extends FlutterActivity {
                     null,
                     startTime,
                     endTime);
-            totalBytes += wifiBucket.getRxBytes() + wifiBucket.getTxBytes();
+            if (wifiBucket != null) {
+                totalBytes += wifiBucket.getRxBytes() + wifiBucket.getTxBytes();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -709,7 +723,9 @@ public class MainActivity extends FlutterActivity {
                     null,
                     startTime,
                     endTime);
-            totalBytes += mobileBucket.getRxBytes() + mobileBucket.getTxBytes();
+            if (mobileBucket != null) {
+                totalBytes += mobileBucket.getRxBytes() + mobileBucket.getTxBytes();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -720,7 +736,9 @@ public class MainActivity extends FlutterActivity {
                     null,
                     startTime,
                     endTime);
-            totalBytes += ethernetBucket.getRxBytes() + ethernetBucket.getTxBytes();
+            if (ethernetBucket != null) {
+                totalBytes += ethernetBucket.getRxBytes() + ethernetBucket.getTxBytes();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
