@@ -152,9 +152,10 @@ class _FLauncherState extends State<FLauncher> {
   }
 
   Widget _wallpaper(BuildContext context, WallpaperService wallpaperService) {
+    Widget background;
     if (wallpaperService.wallpaper != null) {
       final physicalSize = MediaQuery.sizeOf(context);
-      return Image(
+      background = Image(
         image: wallpaperService.wallpaper!,
         key: Key("background_${wallpaperService.version}"),
         fit: BoxFit.cover,
@@ -163,8 +164,28 @@ class _FLauncherState extends State<FLauncher> {
       );
     }
     else {
-      return Container(key: const Key("background"), decoration: BoxDecoration(gradient: wallpaperService.gradient.gradient));
+      background = Container(key: const Key("background"), decoration: BoxDecoration(gradient: wallpaperService.gradient.gradient));
     }
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        background,
+        DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black.withOpacity(0.35),
+                Colors.black.withOpacity(0.15),
+                Colors.black.withOpacity(0.45),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget _emptyState(BuildContext context) {

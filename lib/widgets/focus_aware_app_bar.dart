@@ -162,8 +162,17 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
               Selector<SettingsService, bool>(
                 selector: (_, settings) => settings.showNetworkIndicatorInStatusBar,
                 builder: (context, showNetwork, _) => showNetwork
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 12),
+                  ? Container(
+                      margin: const EdgeInsets.only(right: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.12),
+                          width: 1,
+                        ),
+                      ),
                       child: _FocusableNetworkWidget(),
                     )
                   : const SizedBox.shrink(),
@@ -172,7 +181,18 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
               Selector<SettingsService, bool>(
                 selector: (_, settings) => settings.showDataWidgetInStatusBar,
                 builder: (context, showData, _) => showData
-                  ? const DailyDataUsageWidget()
+                  ? Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.12),
+                          width: 1,
+                        ),
+                      ),
+                      child: const DailyDataUsageWidget(),
+                    )
                   : const SizedBox.shrink(),
               ),
             ],
@@ -195,7 +215,7 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                 builder: (context, dateTimeSettings, _) {
                   // Define standard text style
                   const textStyle = TextStyle(
-                    fontSize: 20,
+                    fontSize: 18,
                     fontWeight: FontWeight.w400,
                     color: Colors.white,
                     shadows: [
@@ -203,28 +223,43 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
                     ],
                   );
 
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Date
-                      if (dateTimeSettings.showDateInStatusBar)
-                        DateTimeWidget(
-                          dateTimeSettings.dateFormat,
-                          key: const Key("statusbar_date"),
-                          textStyle: textStyle,
-                        ),
-                      
-                      if (dateTimeSettings.showDateInStatusBar && dateTimeSettings.showTimeInStatusBar)
-                          const SizedBox(width: 16),
+                  if (!dateTimeSettings.showDateInStatusBar && !dateTimeSettings.showTimeInStatusBar) {
+                    return const SizedBox.shrink();
+                  }
 
-                      // Clock
-                      if (dateTimeSettings.showTimeInStatusBar)
-                        DateTimeWidget(
-                          dateTimeSettings.timeFormat,
-                          key: const Key("statusbar_clock"),
-                          textStyle: textStyle.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                    ]
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.12),
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Date
+                        if (dateTimeSettings.showDateInStatusBar)
+                          DateTimeWidget(
+                            dateTimeSettings.dateFormat,
+                            key: const Key("statusbar_date"),
+                            textStyle: textStyle,
+                          ),
+                        
+                        if (dateTimeSettings.showDateInStatusBar && dateTimeSettings.showTimeInStatusBar)
+                            const SizedBox(width: 12),
+
+                        // Clock
+                        if (dateTimeSettings.showTimeInStatusBar)
+                          DateTimeWidget(
+                            dateTimeSettings.timeFormat,
+                            key: const Key("statusbar_clock"),
+                            textStyle: textStyle.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                      ],
+                    ),
                   );
                 },
               ),

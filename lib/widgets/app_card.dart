@@ -228,14 +228,14 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                         builder: (context, constraints) {
                           return AnimatedContainer(
                             duration: appSelectorTransitionAnimationEnabled ? const Duration(milliseconds: 200) : Duration.zero,
-                            curve: Curves.easeInOut,
+                            curve: Curves.easeOutBack,
                             transformAlignment: Alignment.center,
                             transform: _scaleTransform(context, themes, constraints.maxWidth),
                             child: Material(
                           borderRadius: borderRadius,
                           clipBehavior: Clip.antiAlias,
                           elevation: shouldHighlight ? (themes == 'premium' ? 32 : (themes == 'classic' ? 8 : 16)) : 0,
-                          shadowColor: Colors.black,
+                          shadowColor: shouldHighlight ? Theme.of(context).primaryColor.withOpacity(0.6) : Colors.black,
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
