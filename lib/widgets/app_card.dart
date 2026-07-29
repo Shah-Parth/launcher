@@ -469,7 +469,11 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
           if (record == null) return const SizedBox();
 
           if (record.$1 == AppImageType.Banner) {
-            return Ink.image(image: record.$2, fit: BoxFit.cover);
+            return Ink.image(
+              image: record.$2,
+              fit: BoxFit.cover,
+              onImageError: (e, s) => debugPrint('AppCard banner image error: $e'),
+            );
           }
           else {
             return Padding(
@@ -481,6 +485,7 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                     child: Ink.image(
                       image: record.$2,
                       height: double.maxFinite,
+                      onImageError: (e, s) => debugPrint('AppCard icon image error: $e'),
                     ),
                   ),
                   Flexible(
