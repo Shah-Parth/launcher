@@ -42,50 +42,70 @@ class DateTimeWidget extends StatefulWidget {
   State<DateTimeWidget> createState() => _DateTimeWidgetState();
 }
 
-class _DateTimeWidgetState extends State<DateTimeWidget> {
+class _DateTimeWidgetState extends State<DateTimeWidget> with WidgetsBindingObserver {
   late DateFormat _dateFormat;
   late DateTime   _now;
-  late Timer      _timer;
+  String          _formattedText = '';
+  Timer?          _timer;
 
   @override
   void initState() {
     super.initState();
-
-    _dateFormat = DateFormat(widget._dateTimeFormatString, Platform.localeName);
-    _now = DateTime.now();
-    _timer = Timer.periodic(widget.updateInterval ?? _defaultInterval(), (_) => _refreshTime());
+    WidgetsBinding.instance.addObserver(this);
+    _initDateFormatAndRefresh();
+    _startTimer();
   }
 
-  /// Returns 1-second interval if format contains seconds, otherwise 1-minute.
+  void _initDateFormatAndRefresh() {
+    _dateFormat = DateFormat(widget._dateTimeFormatString, Platform.localeName);
+    _now = DateTime.now();
+    _formattedText = _dateFormat.format(_now);
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    final interval = widget.updateInterval ?? _defaultInterval();
+    _timer = Timer.periodic(interval, (_) => _refreshTime());
+  }
+
+  /// Returns 1-second interval by default so time updates immediately when NTP sync completes or minute rolls over.
   Duration _defaultInterval() {
-    final fmt = widget._dateTimeFormatString;
-    return (fmt.contains('s') || fmt.contains('S'))
-        ? const Duration(seconds: 1)
-        : const Duration(minutes: 1);
+    return const Duration(seconds: 1);
   }
 
   @override
   void didUpdateWidget(DateTimeWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     
-    // Update format if it changed
-    if (oldWidget._dateTimeFormatString != widget._dateTimeFormatString) {
-      _dateFormat = DateFormat(widget._dateTimeFormatString, Platform.localeName);
-      setState(() {
-        _now = DateTime.now();
-      });
+    // Update format if it changed or updateInterval changed
+    if (oldWidget._dateTimeFormatString != widget._dateTimeFormatString ||
+        oldWidget.updateInterval != widget.updateInterval) {
+      _initDateFormatAndRefresh();
+      _startTimer();
+      setState(() {});
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshTime(force: true);
+      _startTimer();
+    } else if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      _timer?.cancel();
     }
   }
 
   @override
   void dispose() {
-    _timer.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final formattedText = _dateFormat.format(_now);
+    final formattedText = _formattedText.isNotEmpty ? _formattedText : _dateFormat.format(_now);
     
     if (widget.animate) {
       return AnimatedTimeDisplay(
@@ -97,9 +117,15 @@ class _DateTimeWidgetState extends State<DateTimeWidget> {
     return Text(formattedText, style: widget.textStyle);
   }
 
-  void _refreshTime() {
-    setState(() {
-      _now = DateTime.now();
-    });
+  void _refreshTime({bool force = false}) {
+    final now = DateTime.now();
+    final newFormattedText = _dateFormat.format(now);
+    
+    if (force || newFormattedText != _formattedText) {
+      setState(() {
+        _now = now;
+        _formattedText = newFormattedText;
+      });
+    }
   }
 }
