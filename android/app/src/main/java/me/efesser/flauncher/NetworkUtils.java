@@ -162,6 +162,45 @@ public class NetworkUtils
             }
         }
 
+        // Fallback for physical network when VPN is active or physicalCaps returned UNKNOWN/VPN
+        if (map == null || Objects.equals(map.get(KEY_NETWORK_TYPE), NETWORK_TYPE_UNKNOWN) || Objects.equals(map.get(KEY_NETWORK_TYPE), NETWORK_TYPE_VPN)) {
+            WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            if (wifiManager != null && wifiManager.isWifiEnabled()) {
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                if (wifiInfo != null && wifiInfo.getNetworkId() != -1) {
+                    if (map == null) map = new HashMap<>();
+                    map.put(KEY_NETWORK_TYPE, NETWORK_TYPE_WIFI);
+                    map.put(KEY_NETWORK_ACCESS, true);
+                    map.put(KEY_INTERNET_ACCESS, true);
+                    wirelessNetworkSignalLevel = getWifiSignalLevel(wifiInfo);
+                }
+            }
+            if (map == null || Objects.equals(map.get(KEY_NETWORK_TYPE), NETWORK_TYPE_UNKNOWN) || Objects.equals(map.get(KEY_NETWORK_TYPE), NETWORK_TYPE_VPN)) {
+                if (connectivityManager != null) {
+                    @SuppressWarnings("deprecation")
+                    NetworkInfo ethernetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
+                    if (ethernetInfo != null && ethernetInfo.isConnected()) {
+                        if (map == null) map = new HashMap<>();
+                        map.put(KEY_NETWORK_TYPE, NETWORK_TYPE_WIRED);
+                        map.put(KEY_NETWORK_ACCESS, true);
+                        map.put(KEY_INTERNET_ACCESS, true);
+                    }
+                }
+            }
+            if (map == null || Objects.equals(map.get(KEY_NETWORK_TYPE), NETWORK_TYPE_UNKNOWN) || Objects.equals(map.get(KEY_NETWORK_TYPE), NETWORK_TYPE_VPN)) {
+                if (connectivityManager != null) {
+                    @SuppressWarnings("deprecation")
+                    NetworkInfo mobileInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+                    if (mobileInfo != null && mobileInfo.isConnected()) {
+                        if (map == null) map = new HashMap<>();
+                        map.put(KEY_NETWORK_TYPE, NETWORK_TYPE_CELLULAR);
+                        map.put(KEY_NETWORK_ACCESS, true);
+                        map.put(KEY_INTERNET_ACCESS, true);
+                    }
+                }
+            }
+        }
+
         if (map != null) {
             map = new HashMap<>(map);
         }
@@ -204,7 +243,6 @@ public class NetworkUtils
                 WifiManager wifiManager = (WifiManager) context
                         .getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-                networkType = NETWORK_TYPE_WIFI;
                 try {
                     if (wifiManager != null) {
                         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
@@ -215,29 +253,22 @@ public class NetworkUtils
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+                networkType = NETWORK_TYPE_WIFI;
             }
             else if (networkInfoType == ConnectivityManager.TYPE_VPN) {
                 isVpnActive = true;
-                // noinspection deprecation
-                NetworkInfo wifiInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-                // noinspection deprecation
-                NetworkInfo mobileInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-                // noinspection deprecation
-                NetworkInfo ethernetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
+                WifiManager wifiManager = (WifiManager) context
+                        .getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager != null ? wifiManager.getConnectionInfo() : null;
+                @SuppressWarnings("deprecation")
+                NetworkInfo ethernetInfo = connectivityManager != null ? connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET) : null;
+                @SuppressWarnings("deprecation")
+                NetworkInfo mobileInfo = connectivityManager != null ? connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE) : null;
 
-                if (wifiInfo != null && wifiInfo.isConnected()) {
+                if (wifiInfo != null && wifiInfo.getNetworkId() != -1) {
                     networkType = NETWORK_TYPE_WIFI;
-                    WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                    try {
-                        if (wifiManager != null) {
-                            WifiInfo wInfo = wifiManager.getConnectionInfo();
-                            if (wInfo != null) {
-                                wirelessSignalLevel = getWifiSignalLevel(wInfo);
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    wirelessSignalLevel = getWifiSignalLevel(wifiInfo);
                 } else if (ethernetInfo != null && ethernetInfo.isConnected()) {
                     networkType = NETWORK_TYPE_WIRED;
                 } else if (mobileInfo != null && mobileInfo.isConnected()) {
@@ -260,7 +291,7 @@ public class NetworkUtils
 
     public static int getWifiSignalLevel(WifiInfo wifiInfo)
     {
-        final int SIGNAL_LEVELS = 4;
+        final int SIGNAL_LEVELS = 5;
         int rssi = wifiInfo.getRssi();
 
         return calculateSignalLevel(rssi, SIGNAL_LEVELS);
