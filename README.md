@@ -6,7 +6,7 @@
   <img alt="LTvLauncher Banner" src=".github/assets/banner_light.svg">
 </picture>
 
-[![Version](https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/version.svg)](https://github.com/LeanBitLab/LtvLauncher/releases/latest) [![Downloads](https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/downloads.svg)](https://github.com/LeanBitLab/LtvLauncher/releases) [![Stars](https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/stars.svg)](https://github.com/LeanBitLab/LtvLauncher/stargazers) [![Tests](https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/tests.svg)](https://github.com/LeanBitLab/LtvLauncher/actions/workflows/badges.yml) [![Coverage](https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/coverage.svg)](https://github.com/LeanBitLab/LtvLauncher/actions/workflows/badges.yml)
+[![Version](https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/version.svg)](https://github.com/LeanBitLab/LtvLauncher/releases/latest) [![Downloads](https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/downloads.svg)](https://github.com/LeanBitLab/LtvLauncher/releases) [![Stars](https://raw.githubusercontent.com/LeanBitLab/LtvLauncher/master/.github/badges/stars.svg)](https://github.com/LeanBitLab/LtvLauncher/stargazers)
 
 
 
