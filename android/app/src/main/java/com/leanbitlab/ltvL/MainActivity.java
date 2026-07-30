@@ -89,6 +89,7 @@ public class MainActivity extends FlutterActivity {
                 case "getApplicationIcon" -> result.success(getApplicationIcon(call.arguments()));
                 case "launchActivityFromAction" -> result.success(launchActivityFromAction(call.arguments()));
                 case "launchApp" -> result.success(launchApp(call.arguments()));
+                case "openUrl" -> result.success(openUrl(call.arguments()));
                 case "openSettings" -> result.success(openSettings());
                 case "openScreensaverSettings" -> result.success(openScreensaverSettings());
                 case "openAppInfo" -> result.success(openAppInfo(call.arguments()));
@@ -418,6 +419,15 @@ public class MainActivity extends FlutterActivity {
         }
 
         return tryStartActivity(intent);
+    }
+
+    private boolean openUrl(String url) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            return tryStartActivity(intent);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     private boolean openSettings() {

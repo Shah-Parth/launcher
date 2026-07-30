@@ -45,6 +45,15 @@ class FLauncherChannel {
 
   Future<void> launchApp(String packageName) async => await _methodChannel.invokeMethod('launchApp', packageName);
 
+  Future<bool> openUrl(String url) async {
+    try {
+      final bool? success = await _methodChannel.invokeMethod("openUrl", url);
+      return success ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<void> openSettings() async => await _methodChannel.invokeMethod('openSettings');
 
   Future<void> openAppInfo(String packageName) async => await _methodChannel.invokeMethod('openAppInfo', packageName);
