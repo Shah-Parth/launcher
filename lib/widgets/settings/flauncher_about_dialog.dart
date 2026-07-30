@@ -42,139 +42,99 @@ class LTvLauncherAboutDialog extends StatelessWidget {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       child: Container(
-        width: 400,
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: const Color(0xFF1E1E2C).withOpacity(0.96),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: accentColor.withOpacity(0.35),
-            width: 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.6),
-              blurRadius: 24,
-              spreadRadius: 4,
-            ),
-            BoxShadow(
-              color: accentColor.withOpacity(0.15),
-              blurRadius: 16,
-            ),
-          ],
+        width: 360,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.85,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Enhanced App Icon with Glowing Container
-            Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(22),
-                gradient: LinearGradient(
-                  colors: [
-                    accentColor.withOpacity(0.6),
-                    accentColor.withOpacity(0.15),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: accentColor.withOpacity(0.4),
-                    blurRadius: 18,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(18),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E1E28),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.12),
+            width: 1,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Clean App Icon
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
                 child: Image.asset(
                   "assets/icon.png",
-                  height: 80,
-                  width: 80,
+                  height: 64,
+                  width: 64,
                   fit: BoxFit.cover,
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 12),
 
-            // App Title & Version Badge
-            const Text(
-              "LTvLauncher",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
-              decoration: BoxDecoration(
-                color: accentColor.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: accentColor.withOpacity(0.5), width: 1),
-              ),
-              child: Text(
-                "v${packageInfo.version} (${packageInfo.buildNumber})",
+              // Title & Version
+              const Text(
+                "LTvLauncher",
                 style: TextStyle(
-                  color: accentColor,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-
-            // Legalese
-            const Text(
-              "Developed by LeanBitLab",
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
+              const SizedBox(height: 4),
+              Text(
+                "v${packageInfo.version} (${packageInfo.buildNumber})",
+                style: const TextStyle(
+                  color: Colors.white54,
+                  fontSize: 12,
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-
-            // Sponsor Button (Prominent & Focusable for TV)
-            _AboutButton(
-              icon: Icons.favorite_rounded,
-              iconColor: const Color(0xFFFF4081),
-              label: "Sponsor Project",
-              accentColor: const Color(0xFFFF4081),
-              autofocus: true,
-              onPressed: () {
-                FLauncherChannel().openUrl("https://github.com/sponsors/LeanBitLab");
-              },
-            ),
-            const SizedBox(height: 10),
-
-            // GitHub Repository Button
-            _AboutButton(
-              icon: Icons.code_rounded,
-              iconColor: accentColor,
-              label: "Source Code & Docs",
-              accentColor: accentColor,
-              onPressed: () {
-                FLauncherChannel().openUrl("https://github.com/LeanBitLab/LtvLauncher");
-              },
-            ),
-            const SizedBox(height: 14),
-
-            // Close Button
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text(
-                "Close",
-                style: TextStyle(color: Colors.white60, fontSize: 13),
+              const SizedBox(height: 4),
+              const Text(
+                "Developed by LeanBitLab",
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+
+              // Sponsor Button
+              _AboutButton(
+                icon: Icons.favorite,
+                iconColor: const Color(0xFFE91E63),
+                label: "Sponsor Project",
+                accentColor: accentColor,
+                autofocus: true,
+                onPressed: () {
+                  FLauncherChannel().openUrl("https://github.com/sponsors/LeanBitLab");
+                },
+              ),
+              const SizedBox(height: 8),
+
+              // Source Code Button
+              _AboutButton(
+                icon: Icons.code,
+                iconColor: Colors.white70,
+                label: "Source Code",
+                accentColor: accentColor,
+                onPressed: () {
+                  FLauncherChannel().openUrl("https://github.com/LeanBitLab/LtvLauncher");
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Close Action
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text(
+                  "Close",
+                  style: TextStyle(color: Colors.white54, fontSize: 13),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -217,36 +177,27 @@ class _AboutButtonState extends State<_AboutButton> {
         onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
         child: GestureDetector(
           onTap: widget.onPressed,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: _focused ? widget.accentColor.withOpacity(0.25) : Colors.white.withOpacity(0.06),
-              borderRadius: BorderRadius.circular(14),
+              color: _focused ? widget.accentColor.withOpacity(0.2) : Colors.white.withOpacity(0.06),
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(
-                color: _focused ? widget.accentColor : Colors.white.withOpacity(0.12),
-                width: _focused ? 2 : 1,
+                color: _focused ? Colors.white : Colors.transparent,
+                width: _focused ? 2 : 0,
               ),
-              boxShadow: _focused
-                  ? [
-                      BoxShadow(
-                        color: widget.accentColor.withOpacity(0.4),
-                        blurRadius: 10,
-                      )
-                    ]
-                  : null,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(widget.icon, size: 18, color: widget.iconColor),
-                const SizedBox(width: 10),
+                Icon(widget.icon, size: 16, color: _focused ? Colors.white : widget.iconColor),
+                const SizedBox(width: 8),
                 Text(
                   widget.label,
                   style: TextStyle(
-                    color: _focused ? Colors.white : Colors.white70,
-                    fontSize: 14,
-                    fontWeight: _focused ? FontWeight.bold : FontWeight.w600,
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: _focused ? FontWeight.bold : FontWeight.w500,
                   ),
                 ),
               ],
