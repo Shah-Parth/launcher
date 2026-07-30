@@ -57,82 +57,19 @@ class AccentColorPage extends StatelessWidget {
       builder: (context, settingsService, _) {
         final currentColorHex = settingsService.accentColorHex;
         final currentColor = _hexToColor(currentColorHex);
-        final activePreset = colorPresets.firstWhere(
-          (p) => p.$1 == currentColorHex,
-          orElse: () => (currentColorHex, 'Custom'),
-        );
 
         return Column(
           children: [
-            // Header Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: currentColor.withOpacity(0.15),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: currentColor.withOpacity(0.4), width: 1.5),
-                    ),
-                    child: Icon(
-                      Icons.palette_rounded,
-                      color: currentColor,
-                      size: 22,
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          localizations.accentColor,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 0.5,
-                              ),
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          'Personalize interface highlights & focus effects',
-                          style: TextStyle(
-                            color: Colors.white60,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            
-            // Subtle Gradient Divider
-            Container(
-              height: 1,
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.transparent,
-                    currentColor.withOpacity(0.4),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
-
-            // Color Grid
+            Text(localizations.accentColor, style: Theme.of(context).textTheme.titleLarge),
+            const Divider(),
             Expanded(
               child: GridView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.all(16),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
-                  childAspectRatio: 1.25,
+                  childAspectRatio: 1.3,
                 ),
                 itemCount: colorPresets.length,
                 itemBuilder: (context, index) {
@@ -149,88 +86,38 @@ class AccentColorPage extends StatelessWidget {
                 },
               ),
             ),
-
-            // Live UI Preview Card
+            // Minimalist Accent Preview Indicator
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.35),
+                  color: Colors.black26,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: currentColor.withOpacity(0.35),
+                    color: currentColor.withOpacity(0.5),
                     width: 1.5,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: currentColor.withOpacity(0.12),
-                      blurRadius: 12,
-                      spreadRadius: 1,
-                    ),
-                  ],
                 ),
-                child: Column(
+                child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Mini Status Bar & Card Row Preview
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(Icons.widgets_outlined, size: 14, color: currentColor),
-                            const SizedBox(width: 6),
-                            Text(
-                              'Live Preview',
-                              style: TextStyle(
-                                color: currentColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: currentColor.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: currentColor.withOpacity(0.5), width: 1),
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 6,
-                                height: 6,
-                                decoration: BoxDecoration(
-                                  color: currentColor,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                activePreset.$2,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: currentColor,
+                        shape: BoxShape.circle,
+                      ),
                     ),
-                    const SizedBox(height: 10),
-                    // Mini Apps Focus Preview Row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        _buildMiniCard(Colors.grey.shade800, false, currentColor),
-                        _buildMiniCard(currentColor, true, currentColor),
-                        _buildMiniCard(Colors.grey.shade800, false, currentColor),
-                      ],
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Selected Accent',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ],
                 ),
@@ -239,32 +126,6 @@ class AccentColorPage extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildMiniCard(Color baseColor, bool isFocused, Color accentColor) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      width: 54,
-      height: 34,
-      decoration: BoxDecoration(
-        color: isFocused ? accentColor.withOpacity(0.25) : Colors.white10,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isFocused ? accentColor : Colors.white12,
-          width: isFocused ? 2 : 1,
-        ),
-        boxShadow: isFocused
-            ? [BoxShadow(color: accentColor.withOpacity(0.5), blurRadius: 8)]
-            : null,
-      ),
-      child: Center(
-        child: Icon(
-          isFocused ? Icons.play_arrow_rounded : Icons.apps_rounded,
-          size: 16,
-          color: isFocused ? accentColor : Colors.white54,
-        ),
-      ),
     );
   }
 }
@@ -293,8 +154,8 @@ class _ColorTileState extends State<_ColorTile> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkSwatch = widget.color.computeLuminance() < 0.4;
-    final checkColor = isDarkSwatch ? Colors.white : Colors.black87;
+    final isLightColor = widget.color.computeLuminance() > 0.5;
+    final iconColor = isLightColor ? Colors.black : Colors.white;
 
     return Actions(
       actions: <Type, Action<Intent>>{
@@ -306,95 +167,44 @@ class _ColorTileState extends State<_ColorTile> {
         onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
         child: GestureDetector(
           onTap: widget.onTap,
-          child: AnimatedScale(
-            scale: _focused ? 1.06 : 1.0,
-            duration: const Duration(milliseconds: 150),
-            curve: Curves.easeOutCubic,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              decoration: BoxDecoration(
+          child: Container(
+            decoration: BoxDecoration(
+              color: widget.color.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
                 color: _focused
-                    ? Colors.white.withOpacity(0.12)
-                    : (widget.isSelected
-                        ? widget.color.withOpacity(0.18)
-                        : Colors.white.withOpacity(0.04)),
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(
-                  color: _focused
-                      ? widget.color
-                      : (widget.isSelected ? widget.color.withOpacity(0.7) : Colors.white.withOpacity(0.1)),
-                  width: _focused ? 2.5 : (widget.isSelected ? 2 : 1),
+                    ? Colors.white
+                    : (widget.isSelected ? widget.color : Colors.transparent),
+                width: _focused ? 2.5 : (widget.isSelected ? 2 : 0),
+              ),
+              boxShadow: _focused
+                  ? [BoxShadow(color: widget.color.withOpacity(0.5), blurRadius: 8)]
+                  : null,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 14,
+                  height: 14,
+                  decoration: BoxDecoration(
+                    color: widget.color,
+                    shape: BoxShape.circle,
+                  ),
+                  child: widget.isSelected
+                      ? Icon(Icons.check, color: iconColor, size: 10)
+                      : null,
                 ),
-                boxShadow: _focused
-                    ? [
-                        BoxShadow(
-                          color: widget.color.withOpacity(0.65),
-                          blurRadius: 16,
-                          spreadRadius: 2,
-                        ),
-                      ]
-                    : widget.isSelected
-                        ? [
-                            BoxShadow(
-                              color: widget.color.withOpacity(0.35),
-                              blurRadius: 10,
-                            ),
-                          ]
-                        : null,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Color Orb Swatch
-                  Container(
-                    width: 32,
-                    height: 32,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [
-                          widget.color,
-                          widget.color.withOpacity(0.75),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: widget.color.withOpacity(0.4),
-                          blurRadius: 6,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: widget.isSelected
-                        ? Center(
-                            child: Icon(
-                              Icons.check_rounded,
-                              color: checkColor,
-                              size: 20,
-                            ),
-                          )
-                        : null,
+                const SizedBox(width: 8),
+                Text(
+                  widget.name,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: _focused || widget.isSelected ? FontWeight.bold : FontWeight.w500,
+                    fontSize: 13,
                   ),
-                  const SizedBox(height: 6),
-                  // Color Name Label
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Text(
-                        widget.name,
-                        style: TextStyle(
-                          color: _focused || widget.isSelected ? Colors.white : Colors.white70,
-                          fontWeight: _focused || widget.isSelected ? FontWeight.bold : FontWeight.w500,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
