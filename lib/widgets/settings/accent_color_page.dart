@@ -55,26 +55,90 @@ class AccentColorPage extends StatelessWidget {
     AppLocalizations localizations = AppLocalizations.of(context)!;
     return Consumer<SettingsService>(
       builder: (context, settingsService, _) {
-        final currentColor = settingsService.accentColorHex;
-        
+        final currentColorHex = settingsService.accentColorHex;
+        final currentColor = _hexToColor(currentColorHex);
+        final activePreset = colorPresets.firstWhere(
+          (p) => p.$1 == currentColorHex,
+          orElse: () => (currentColorHex, 'Custom'),
+        );
+
         return Column(
           children: [
-            Text(localizations.accentColor, style: Theme.of(context).textTheme.titleLarge),
-            const Divider(),
+            // Header Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: currentColor.withOpacity(0.15),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: currentColor.withOpacity(0.4), width: 1.5),
+                    ),
+                    child: Icon(
+                      Icons.palette_rounded,
+                      color: currentColor,
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          localizations.accentColor,
+                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                        ),
+                        const SizedBox(height: 2),
+                        const Text(
+                          'Personalize interface highlights & focus effects',
+                          style: TextStyle(
+                            color: Colors.white60,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Subtle Gradient Divider
+            Container(
+              height: 1,
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    currentColor.withOpacity(0.4),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+
+            // Color Grid
             Expanded(
               child: GridView.builder(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 1.3,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
+                  childAspectRatio: 1.25,
                 ),
                 itemCount: colorPresets.length,
                 itemBuilder: (context, index) {
                   final (hex, name) = colorPresets[index];
-                  final isSelected = currentColor == hex;
-                  
+                  final isSelected = currentColorHex == hex;
+
                   return _ColorTile(
                     color: _hexToColor(hex),
                     name: name,
@@ -85,35 +149,88 @@ class AccentColorPage extends StatelessWidget {
                 },
               ),
             ),
-            // Preview section
+
+            // Live UI Preview Card
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
               child: Container(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.black26,
-                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black.withOpacity(0.35),
+                  borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: _hexToColor(currentColor),
-                    width: 3,
+                    color: currentColor.withOpacity(0.35),
+                    width: 1.5,
                   ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.palette,
-                      color: _hexToColor(currentColor),
-                      size: 32,
+                  boxShadow: [
+                    BoxShadow(
+                      color: currentColor.withOpacity(0.12),
+                      blurRadius: 12,
+                      spreadRadius: 1,
                     ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Preview',
-                      style: TextStyle(
-                        color: _hexToColor(currentColor),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Mini Status Bar & Card Row Preview
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.widgets_outlined, size: 14, color: currentColor),
+                            const SizedBox(width: 6),
+                            Text(
+                              'Live Preview',
+                              style: TextStyle(
+                                color: currentColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(
+                            color: currentColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: currentColor.withOpacity(0.5), width: 1),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 6,
+                                height: 6,
+                                decoration: BoxDecoration(
+                                  color: currentColor,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                activePreset.$2,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    // Mini Apps Focus Preview Row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _buildMiniCard(Colors.grey.shade800, false, currentColor),
+                        _buildMiniCard(currentColor, true, currentColor),
+                        _buildMiniCard(Colors.grey.shade800, false, currentColor),
+                      ],
                     ),
                   ],
                 ),
@@ -122,6 +239,32 @@ class AccentColorPage extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildMiniCard(Color baseColor, bool isFocused, Color accentColor) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      width: 54,
+      height: 34,
+      decoration: BoxDecoration(
+        color: isFocused ? accentColor.withOpacity(0.25) : Colors.white10,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: isFocused ? accentColor : Colors.white12,
+          width: isFocused ? 2 : 1,
+        ),
+        boxShadow: isFocused
+            ? [BoxShadow(color: accentColor.withOpacity(0.5), blurRadius: 8)]
+            : null,
+      ),
+      child: Center(
+        child: Icon(
+          isFocused ? Icons.play_arrow_rounded : Icons.apps_rounded,
+          size: 16,
+          color: isFocused ? accentColor : Colors.white54,
+        ),
+      ),
     );
   }
 }
@@ -150,6 +293,9 @@ class _ColorTileState extends State<_ColorTile> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkSwatch = widget.color.computeLuminance() < 0.4;
+    final checkColor = isDarkSwatch ? Colors.white : Colors.black87;
+
     return Actions(
       actions: <Type, Action<Intent>>{
         ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) => widget.onTap()),
@@ -160,39 +306,90 @@ class _ColorTileState extends State<_ColorTile> {
         onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
         child: GestureDetector(
           onTap: widget.onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 50),
-            decoration: BoxDecoration(
-              color: widget.color,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: _focused ? Colors.white : (widget.isSelected ? Colors.white : Colors.transparent),
-                width: _focused ? 3 : (widget.isSelected ? 2 : 0),
+          child: AnimatedScale(
+            scale: _focused ? 1.06 : 1.0,
+            duration: const Duration(milliseconds: 150),
+            curve: Curves.easeOutCubic,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              decoration: BoxDecoration(
+                color: _focused
+                    ? Colors.white.withOpacity(0.12)
+                    : (widget.isSelected
+                        ? widget.color.withOpacity(0.18)
+                        : Colors.white.withOpacity(0.04)),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: _focused
+                      ? widget.color
+                      : (widget.isSelected ? widget.color.withOpacity(0.7) : Colors.white.withOpacity(0.1)),
+                  width: _focused ? 2.5 : (widget.isSelected ? 2 : 1),
+                ),
+                boxShadow: _focused
+                    ? [
+                        BoxShadow(
+                          color: widget.color.withOpacity(0.65),
+                          blurRadius: 16,
+                          spreadRadius: 2,
+                        ),
+                      ]
+                    : widget.isSelected
+                        ? [
+                            BoxShadow(
+                              color: widget.color.withOpacity(0.35),
+                              blurRadius: 10,
+                            ),
+                          ]
+                        : null,
               ),
-              boxShadow: _focused
-                  ? [BoxShadow(color: widget.color.withOpacity(0.6), blurRadius: 12, spreadRadius: 2)]
-                  : widget.isSelected
-                      ? [BoxShadow(color: widget.color.withOpacity(0.4), blurRadius: 8)]
-                      : null,
-            ),
-            child: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (widget.isSelected)
-                    const Icon(Icons.check, color: Colors.white, size: 24),
-                  if (widget.isSelected)
-                    const SizedBox(height: 2),
+                  // Color Orb Swatch
+                  Container(
+                    width: 32,
+                    height: 32,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: LinearGradient(
+                        colors: [
+                          widget.color,
+                          widget.color.withOpacity(0.75),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: widget.color.withOpacity(0.4),
+                          blurRadius: 6,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: widget.isSelected
+                        ? Center(
+                            child: Icon(
+                              Icons.check_rounded,
+                              color: checkColor,
+                              size: 20,
+                            ),
+                          )
+                        : null,
+                  ),
+                  const SizedBox(height: 6),
+                  // Color Name Label
                   FittedBox(
                     fit: BoxFit.scaleDown,
-                    child: Text(
-                      widget.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
-                        shadows: [Shadow(color: Colors.black54, blurRadius: 4)],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Text(
+                        widget.name,
+                        style: TextStyle(
+                          color: _focused || widget.isSelected ? Colors.white : Colors.white70,
+                          fontWeight: _focused || widget.isSelected ? FontWeight.bold : FontWeight.w500,
+                          fontSize: 12,
+                        ),
                       ),
                     ),
                   ),

@@ -162,17 +162,8 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
               Selector<SettingsService, bool>(
                 selector: (_, settings) => settings.showNetworkIndicatorInStatusBar,
                 builder: (context, showNetwork, _) => showNetwork
-                  ? Container(
-                      margin: const EdgeInsets.only(right: 12),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.3),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.12),
-                          width: 1,
-                        ),
-                      ),
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 12),
                       child: _FocusableNetworkWidget(),
                     )
                   : const SizedBox.shrink(),
@@ -303,6 +294,7 @@ class _FocusableIconButtonState extends State<_FocusableIconButton> {
           child: Container(
             padding: const EdgeInsets.all(4),  // Match network indicator padding
             decoration: BoxDecoration(
+              color: _focused ? Colors.black.withOpacity(0.3) : Colors.transparent,
               borderRadius: BorderRadius.circular(8),
               border: _focused
                 ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
@@ -347,7 +339,9 @@ class _FocusableNetworkWidgetState extends State<_FocusableNetworkWidget> {
     return Focus(
       onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
       child: Container(
+        padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
+          color: _focused ? Colors.black.withOpacity(0.3) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: _focused
             ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
