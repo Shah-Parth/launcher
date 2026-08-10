@@ -120,7 +120,7 @@ class LTvLauncherAboutDialog extends StatelessWidget {
                 label: "Source Code",
                 accentColor: accentColor,
                 onPressed: () {
-                  FLauncherChannel().openUrl("https://github.com/LeanBitLab/LtvLauncher");
+                  FLauncherChannel().openUrl("https://github.com/leanbitlab-org/LtvLauncher");
                 },
               ),
               const SizedBox(height: 12),

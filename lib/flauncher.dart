@@ -78,6 +78,7 @@ class _FLauncherState extends State<FLauncher> {
                   builder: (context, appsService, _) {
                     if (appsService.initialized) {
                       return SingleChildScrollView(
+                        physics: const ClampingScrollPhysics(),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

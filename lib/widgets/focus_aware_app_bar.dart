@@ -162,9 +162,9 @@ class FocusAwareAppBarState extends State<FocusAwareAppBar>
               Selector<SettingsService, bool>(
                 selector: (_, settings) => settings.showNetworkIndicatorInStatusBar,
                 builder: (context, showNetwork, _) => showNetwork
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 12),
-                      child: _FocusableNetworkWidget(),
+                  ? const Padding(
+                      padding: EdgeInsets.only(right: 12),
+                      child: NetworkWidget(),
                     )
                   : const SizedBox.shrink(),
               ),
@@ -320,37 +320,6 @@ class _FocusableIconButtonState extends State<_FocusableIconButton> {
                 ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// Network widget with consistent focus indicator
-class _FocusableNetworkWidget extends StatefulWidget {
-  @override
-  State<_FocusableNetworkWidget> createState() => _FocusableNetworkWidgetState();
-}
-
-class _FocusableNetworkWidgetState extends State<_FocusableNetworkWidget> {
-  bool _focused = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Focus(
-      onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: _focused ? Colors.black.withOpacity(0.3) : Colors.transparent,
-          borderRadius: BorderRadius.circular(8),
-          border: _focused
-            ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
-            : null,
-          boxShadow: _focused
-            ? const [BoxShadow(color: Colors.black54, blurRadius: 8, spreadRadius: 1)]
-            : null,
-        ),
-        child: const NetworkWidget(),
       ),
     );
   }

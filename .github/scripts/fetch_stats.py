@@ -3,7 +3,7 @@ import json
 import os
 import subprocess
 
-REPO = 'LeanBitLab/LtvLauncher'
+REPO = 'leanbitlab-org/LtvLauncher'
 token = os.environ.get('GH_TOKEN') or os.environ.get('GITHUB_TOKEN')
 
 headers = {'User-Agent': 'Mozilla/5.0'}

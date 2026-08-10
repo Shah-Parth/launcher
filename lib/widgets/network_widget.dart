@@ -78,7 +78,7 @@ class NetworkWidget extends StatelessWidget
         );
 
         if (!vpnActive || physicalIcon == Icons.vpn_key) {
-          return InkWell(
+          return _NetworkIconButton(
             onTap: () {
               if (vpnActive || networkType == NetworkType.Vpn) {
                 networkService.openVpnSettings();
@@ -86,46 +86,76 @@ class NetworkWidget extends StatelessWidget
                 networkService.openWifiSettings();
               }
             },
-            borderRadius: BorderRadius.circular(8),
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: physicalWidget,
-            ),
+            child: physicalWidget,
           );
         }
 
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            InkWell(
+            _NetworkIconButton(
               onTap: () => networkService.openWifiSettings(),
-              borderRadius: BorderRadius.circular(8),
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: physicalWidget,
-              ),
+              child: physicalWidget,
             ),
             const SizedBox(width: 4),
-            InkWell(
+            _NetworkIconButton(
               onTap: () => networkService.openVpnSettings(),
-              borderRadius: BorderRadius.circular(8),
-              child: const Padding(
-                padding: EdgeInsets.all(4.0),
-                child: Icon(
-                  Icons.vpn_key,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black54,
-                      offset: Offset(0, 2),
-                      blurRadius: 8
-                    )
-                  ]
-                ),
+              child: const Icon(
+                Icons.vpn_key,
+                shadows: [
+                  Shadow(
+                    color: Colors.black54,
+                    offset: Offset(0, 2),
+                    blurRadius: 8,
+                  )
+                ],
               ),
             ),
           ],
         );
-      }
+      },
+    );
+  }
+}
+
+class _NetworkIconButton extends StatefulWidget {
+  final VoidCallback onTap;
+  final Widget child;
+
+  const _NetworkIconButton({
+    required this.onTap,
+    required this.child,
+  });
+
+  @override
+  State<_NetworkIconButton> createState() => _NetworkIconButtonState();
+}
+
+class _NetworkIconButtonState extends State<_NetworkIconButton> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
+      child: InkWell(
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: _focused ? Colors.black.withOpacity(0.3) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            border: _focused
+                ? Border.all(color: Theme.of(context).colorScheme.primary, width: 2)
+                : null,
+            boxShadow: _focused
+                ? const [BoxShadow(color: Colors.black54, blurRadius: 8, spreadRadius: 1)]
+                : null,
+          ),
+          child: widget.child,
+        ),
+      ),
     );
   }
 }
