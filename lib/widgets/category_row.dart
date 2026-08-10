@@ -80,24 +80,14 @@ class CategoryRow extends StatelessWidget
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Selector<SettingsService, (bool, Color)>(
-          selector: (context, service) => (service.showCategoryTitles, service.accentColor),
-          builder: (context, settings, _) {
-            final (showCategoriesTitle, accentColor) = settings;
+        Selector<SettingsService, bool>(
+          selector: (context, service) => service.showCategoryTitles,
+          builder: (context, showCategoriesTitle, _) {
             if (showCategoriesTitle) {
               return Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
                 child: Row(
                   children: [
-                    Container(
-                      width: 4,
-                      height: 18,
-                      decoration: BoxDecoration(
-                        color: accentColor,
-                        borderRadius: BorderRadius.circular(2),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
                     Text(category.name,
                       style: Theme.of(context)
                           .textTheme
@@ -116,7 +106,7 @@ class CategoryRow extends StatelessWidget
               );
             }
 
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           }
         ),
         categoryContent
