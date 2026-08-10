@@ -9,6 +9,7 @@ class WatchNextService extends ChangeNotifier {
   final FLauncherChannel _channel;
   List<WatchNextProgram> _programs = [];
   bool _initialized = false;
+  bool _hasPermission = true;
   Timer? _refreshTimer;
   int _callCount = 0;
 
@@ -20,6 +21,7 @@ class WatchNextService extends ChangeNotifier {
 
   List<WatchNextProgram> get programs => List.unmodifiable(_programs);
   bool get initialized => _initialized;
+  bool get hasPermission => _hasPermission;
 
   Future<void> _init() async {
     await refresh();
@@ -36,11 +38,12 @@ class WatchNextService extends ChangeNotifier {
       final bool hasPermission = await checkPermission();
       if (callSnapshot != _callCount) return;
 
+      _hasPermission = hasPermission;
       if (!hasPermission) {
         if (_programs.isNotEmpty) {
           _programs = [];
-          if (callSnapshot == _callCount) notifyListeners();
         }
+        if (callSnapshot == _callCount) notifyListeners();
         return;
       }
 

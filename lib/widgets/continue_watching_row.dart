@@ -20,6 +20,32 @@ class ContinueWatchingRow extends StatelessWidget {
 
     return Consumer2<WatchNextService, AppsService>(
       builder: (context, watchNextService, appsService, _) {
+        if (!watchNextService.hasPermission) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.redAccent.withOpacity(0.4)),
+              ),
+              child: const Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: Colors.redAccent, size: 20),
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'ADB grant required for Continue Watching: adb shell pm grant com.leanbitlab.ltvL com.android.providers.tv.permission.READ_WRITE_WATCH_NEXT_PROGRAMS',
+                      style: TextStyle(color: Colors.white70, fontSize: 12),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
         final List<WatchNextProgram> programs = watchNextService.programs;
         if (programs.isEmpty) {
           return const SizedBox.shrink();
