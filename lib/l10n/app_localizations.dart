@@ -693,4 +693,196 @@ abstract class AppLocalizations {
 
   /// No description provided for @continueWatching.
   ///
-  /// In en, this me
+  /// In en, this message translates to:
+  /// **'Continue Watching'**
+  String get continueWatching;
+
+  /// No description provided for @showContinueWatchingOnHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Continue Watching on Home'**
+  String get showContinueWatchingOnHome;
+
+  /// No description provided for @permissionDeniedContinueWatching.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission required to show Continue Watching'**
+  String get permissionDeniedContinueWatching;
+
+  /// No description provided for @interface.
+  ///
+  /// In en, this message translates to:
+  /// **'Interface'**
+  String get interface;
+
+  /// No description provided for @system.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
+  String get system;
+
+  /// No description provided for @accentColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Accent Color'**
+  String get accentColor;
+
+  /// No description provided for @miscellaneous.
+  ///
+  /// In en, this message translates to:
+  /// **'Miscellaneous'**
+  String get miscellaneous;
+
+  /// No description provided for @brightnessScheduler.
+  ///
+  /// In en, this message translates to:
+  /// **'Brightness Scheduler'**
+  String get brightnessScheduler;
+
+  /// No description provided for @screensaverSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Screensaver Settings'**
+  String get screensaverSettings;
+
+  /// No description provided for @screensaverClockStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Screensaver Clock Style'**
+  String get screensaverClockStyle;
+
+  /// No description provided for @dataUsagePeriod.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Usage Period'**
+  String get dataUsagePeriod;
+
+  /// No description provided for @notificationAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Access'**
+  String get notificationAccess;
+
+  /// No description provided for @granted.
+  ///
+  /// In en, this message translates to:
+  /// **'Granted'**
+  String get granted;
+
+  /// No description provided for @permissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission Required'**
+  String get permissionRequired;
+
+  /// No description provided for @systemWidePopupAlert.
+  ///
+  /// In en, this message translates to:
+  /// **'System-wide Popup Alert'**
+  String get systemWidePopupAlert;
+
+  /// No description provided for @overlayPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Overlay Permission Required'**
+  String get overlayPermissionRequired;
+
+  /// No description provided for @enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Enabled'**
+  String get enabled;
+
+  /// No description provided for @disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'Disabled'**
+  String get disabled;
+
+  /// No description provided for @showAppNamesBelowIcons.
+  ///
+  /// In en, this message translates to:
+  /// **'Show App Names Below Icons'**
+  String get showAppNamesBelowIcons;
+
+  /// No description provided for @dataUsage.
+  ///
+  /// In en, this message translates to:
+  /// **'Data Usage'**
+  String get dataUsage;
+
+  /// No description provided for @networkIndicator.
+  ///
+  /// In en, this message translates to:
+  /// **'Network Indicator'**
+  String get networkIndicator;
+
+  /// No description provided for @homeButtonFix.
+  ///
+  /// In en, this message translates to:
+  /// **'Home Button Fix (Google TV)'**
+  String get homeButtonFix;
+
+  /// No description provided for @appLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
+  String get appLanguage;
+
+  /// No description provided for @systemDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'System Default'**
+  String get systemDefault;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get english;
+
+  /// No description provided for @spanish.
+  ///
+  /// In en, this message translates to:
+  /// **'Spanish'**
+  String get spanish;
+
+  /// No description provided for @ukrainian.
+  ///
+  /// In en, this message translates to:
+  /// **'Ukrainian'**
+  String get ukrainian;
+}
+
+class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+  const _AppLocalizationsDelegate();
+
+  @override
+  Future<AppLocalizations> load(Locale locale) {
+    return SynchronousFuture<AppLocalizations>(lookupAppLocalizations(locale));
+  }
+
+  @override
+  bool isSupported(Locale locale) => <String>['en', 'es', 'uk'].contains(locale.languageCode);
+
+  @override
+  bool shouldReload(_AppLocalizationsDelegate old) => false;
+}
+
+AppLocalizations lookupAppLocalizations(Locale locale) {
+
+
+  // Lookup logic when only language code is specified.
+  switch (locale.languageCode) {
+    case 'en': return AppLocalizationsEn();
+    case 'es': return AppLocalizationsEs();
+    case 'uk': return AppLocalizationsUk();
+  }
+
+  throw FlutterError(
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.'
+  );
+}
