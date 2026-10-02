@@ -66,7 +66,8 @@ void main() {
     expect(dbAppsCategories.length, numApps);
   });
 
-  test('refreshState repairs missing AppsCategories rows in database',
+  test(
+      'refreshState preserves app removal from category across restarts and categorizes new apps',
       () async {
     when(mockChannel.getApplications()).thenAnswer((_) async => [
           {
@@ -119,21 +120,58 @@ void main() {
     var tvApps = appsService.categories.firstWhere((c) => c.name == 'TV Apps');
     expect(tvApps.applications.length, 2);
 
+    // 1. Explicitly remove an app (simulate "Remove from section")
     await database.deleteAppCategory(tvCategoryId, 'com.example.app1');
     await appsService.refreshState();
 
-    final repairedCategories = await database.getAppsCategories();
-    final repaired = repairedCategories
+    // Verify it stays removed across restarts (Issue #146: no phantom return)
+    final afterRemovalCategories = await database.getAppsCategories();
+    final removed = afterRemovalCategories
         .where((row) => row.appPackageName == 'com.example.app1')
         .toList();
-    expect(repaired.length, 1);
-    expect(repaired.first.order, 1);
+    expect(removed.length, 0);
 
     final refreshedTvApps =
         appsService.categories.firstWhere((c) => c.name == 'TV Apps');
-    expect(refreshedTvApps.applications.length, 2);
+    expect(refreshedTvApps.applications.length, 1);
     expect(refreshedTvApps.applications[0].packageName, 'com.example.app0');
-    expect(refreshedTvApps.applications[1].packageName, 'com.example.app1');
+
+    // 2. Introduce a brand new app installed while launcher was closed
+    when(mockChannel.getApplications()).thenAnswer((_) async => [
+          {
+            'packageName': 'com.example.app0',
+            'name': 'App 0',
+            'version': '1.0.0',
+            'sideloaded': false
+          },
+          {
+            'packageName': 'com.example.app1',
+            'name': 'App 1',
+            'version': '1.0.0',
+            'sideloaded': false
+          },
+          {
+            'packageName': 'com.example.app2',
+            'name': 'App 2',
+            'version': '1.0.0',
+            'sideloaded': false
+          },
+        ]);
+
+    await appsService.refreshState();
+
+    final afterNewAppCategories = await database.getAppsCategories();
+    final newAppRows = afterNewAppCategories
+        .where((row) => row.appPackageName == 'com.example.app2')
+        .toList();
+    expect(newAppRows.length, 1);
+    expect(newAppRows.first.categoryId, tvCategoryId);
+    expect(newAppRows.first.order, 1);
+
+    final finalTvApps =
+        appsService.categories.firstWhere((c) => c.name == 'TV Apps');
+    expect(finalTvApps.applications.map((a) => a.packageName).toList(),
+        ['com.example.app0', 'com.example.app2']);
   });
 
   test('Test addCategory sets correct order', () async {

@@ -280,7 +280,7 @@ void main() {
     });
 
     test(
-        "initializes when manually sorted category has app missing AppsCategories row",
+        "newly installed app missing AppsCategories row receives category assignment",
         () async {
       final channel = MockFLauncherChannel();
       final database = MockFLauncherDatabase();
@@ -317,8 +317,14 @@ void main() {
       when(channel.getApplicationBanner(any))
           .thenAnswer((_) => Future.value(Uint8List(0)));
 
-      when(database.getApplications())
-          .thenAnswer((_) => Future.value([orderedApp, orphanApp]));
+      int getAppsCallCount = 0;
+      when(database.getApplications()).thenAnswer((_) {
+        getAppsCallCount++;
+        if (getAppsCallCount == 1) {
+          return Future.value([orderedApp]);
+        }
+        return Future.value([orderedApp, orphanApp]);
+      });
       when(database.getCategories())
           .thenAnswer((_) => Future.value([tvCategory]));
       when(database.getAppsCategories()).thenAnswer((_) => Future.value([
@@ -357,7 +363,75 @@ void main() {
     });
 
     test(
-        "hidden orphaned app is repaired in database but not shown in category",
+        "existing app with zero categories (removed by user) is not re-added on initialization",
+        () async {
+      final channel = MockFLauncherChannel();
+      final database = MockFLauncherDatabase();
+
+      final orderedApp = App(
+          packageName: "app.ordered",
+          name: "Ordered App",
+          version: "1.0.0",
+          hidden: false);
+      final removedApp = App(
+          packageName: "app.removed",
+          name: "Removed App",
+          version: "1.0.0",
+          hidden: false);
+      final tvCategory =
+          Category(id: 1, name: "TV Apps", order: 0, sort: CategorySort.manual);
+
+      when(channel.getApplications()).thenAnswer((_) => Future.value([
+            {
+              'packageName': 'app.ordered',
+              'name': 'Ordered App',
+              'version': '1.0.0',
+              'sideloaded': false
+            },
+            {
+              'packageName': 'app.removed',
+              'name': 'Removed App',
+              'version': '1.0.0',
+              'sideloaded': false
+            },
+          ]));
+      when(channel.getApplicationIcon(any))
+          .thenAnswer((_) => Future.value(Uint8List(0)));
+      when(channel.getApplicationBanner(any))
+          .thenAnswer((_) => Future.value(Uint8List(0)));
+
+      // Both apps already existed in the database before persistApps
+      when(database.getApplications())
+          .thenAnswer((_) => Future.value([orderedApp, removedApp]));
+      when(database.getCategories())
+          .thenAnswer((_) => Future.value([tvCategory]));
+      when(database.getAppsCategories()).thenAnswer((_) => Future.value([
+            AppCategory(categoryId: 1, appPackageName: "app.ordered", order: 0),
+          ]));
+      when(database.getLauncherSpacers()).thenAnswer((_) => Future.value([]));
+      when(database.transaction(any)).thenAnswer(
+          (realInvocation) => realInvocation.positionalArguments[0]());
+      when(database.persistApps(any)).thenAnswer((_) => Future.value());
+      when(database.wasCreated).thenReturn(false);
+
+      final appsService = AppsService(channel, database);
+
+      while (!appsService.initialized) {
+        await Future.delayed(const Duration(milliseconds: 10));
+      }
+
+      expect(appsService.initialized, isTrue);
+
+      final tvApps = appsService.categories.first;
+      expect(tvApps.applications.map((app) => app.packageName).toList(),
+          ["app.ordered"]);
+      expect(orderedApp.categoryOrders[1], 0);
+      expect(removedApp.categoryOrders.containsKey(1), isFalse);
+      verifyNever(database.insertAppsCategories(any));
+    });
+
+    test(
+        "newly installed hidden app is categorized in database but not shown in category",
         () async {
       final channel = MockFLauncherChannel();
       final database = MockFLauncherDatabase();
@@ -394,8 +468,14 @@ void main() {
       when(channel.getApplicationBanner(any))
           .thenAnswer((_) => Future.value(Uint8List(0)));
 
-      when(database.getApplications())
-          .thenAnswer((_) => Future.value([visibleApp, hiddenOrphan]));
+      int getAppsCallCount = 0;
+      when(database.getApplications()).thenAnswer((_) {
+        getAppsCallCount++;
+        if (getAppsCallCount == 1) {
+          return Future.value([visibleApp]);
+        }
+        return Future.value([visibleApp, hiddenOrphan]);
+      });
       when(database.getCategories())
           .thenAnswer((_) => Future.value([tvCategory]));
       when(database.getAppsCategories()).thenAnswer((_) => Future.value([
@@ -422,7 +502,7 @@ void main() {
       verify(database.insertAppsCategories(any)).called(1);
     });
 
-    test("multiple orphaned apps receive deterministic non-conflicting orders",
+    test("multiple newly installed apps receive deterministic non-conflicting orders",
         () async {
       final channel = MockFLauncherChannel();
       final database = MockFLauncherDatabase();
@@ -453,8 +533,14 @@ void main() {
       when(channel.getApplicationBanner(any))
           .thenAnswer((_) => Future.value(Uint8List(0)));
 
-      when(database.getApplications())
-          .thenAnswer((_) => Future.value([orphanA, orphanB]));
+      int getAppsCallCount = 0;
+      when(database.getApplications()).thenAnswer((_) {
+        getAppsCallCount++;
+        if (getAppsCallCount == 1) {
+          return Future.value([]);
+        }
+        return Future.value([orphanA, orphanB]);
+      });
       when(database.getCategories())
           .thenAnswer((_) => Future.value([tvCategory]));
       when(database.getAppsCategories()).thenAnswer((_) => Future.value([]));
@@ -481,7 +567,7 @@ void main() {
           ["app.a", "app.b"]);
     });
 
-    test("orphaned sideloaded app is assigned to Non-TV Apps category",
+    test("newly installed sideloaded app is assigned to Non-TV Apps category",
         () async {
       final channel = MockFLauncherChannel();
       final database = MockFLauncherDatabase();
@@ -509,8 +595,14 @@ void main() {
       when(channel.getApplicationBanner(any))
           .thenAnswer((_) => Future.value(Uint8List(0)));
 
-      when(database.getApplications())
-          .thenAnswer((_) => Future.value([sideloadedApp]));
+      int getAppsCallCount = 0;
+      when(database.getApplications()).thenAnswer((_) {
+        getAppsCallCount++;
+        if (getAppsCallCount == 1) {
+          return Future.value([]);
+        }
+        return Future.value([sideloadedApp]);
+      });
       when(database.getCategories())
           .thenAnswer((_) => Future.value([tvCategory, nonTvCategory]));
       when(database.getAppsCategories()).thenAnswer((_) => Future.value([]));

@@ -317,6 +317,17 @@ class AppsService extends ChangeNotifier {
     Map<String, (Map, AppsCompanion)> appsFromSystemByPackageName =
         Map.fromEntries(appEntries);
 
+    List<App> appsFromDatabaseBefore = await appsFromDatabaseFuture;
+    final Set<String> knownPackageNames =
+        appsFromDatabaseBefore.map((a) => a.packageName).toSet();
+
+    final List<String> uninstalledPackageNames = knownPackageNames
+        .where((pkg) => !appsFromSystemByPackageName.containsKey(pkg))
+        .toList();
+    if (uninstalledPackageNames.isNotEmpty) {
+      await _database.deleteApps(uninstalledPackageNames);
+    }
+
     await _database.transaction(() async {
       await _database.persistApps(
           appsFromSystemByPackageName.values.map((record) => record.$2));
@@ -357,7 +368,7 @@ class AppsService extends ChangeNotifier {
       }
     }
 
-    final List<App> orphanedApps = [];
+    final List<App> newAppsToCategorize = [];
 
     for (App application in _applications.values) {
       Map? applicationFromSystem =
@@ -386,14 +397,16 @@ class AppsService extends ChangeNotifier {
               }
             }
           }
-        } else {
-          orphanedApps.add(application);
+        } else if (!knownPackageNames.contains(application.packageName)) {
+          // This app was newly installed while the launcher was offline or rebooting.
+          // Existing apps with zero categories were intentionally removed by the user.
+          newAppsToCategorize.add(application);
         }
       }
     }
 
-    if (orphanedApps.isNotEmpty) {
-      await _repairOrphanedAppCategories(orphanedApps);
+    if (newAppsToCategorize.isNotEmpty) {
+      await _assignCategoriesForNewApps(newAppsToCategorize);
     }
 
     for (Category category in _categoriesById.values) {
@@ -429,15 +442,15 @@ class AppsService extends ChangeNotifier {
     }
   }
 
-  /// Assigns persisted category membership and manual order for installed apps
+  /// Assigns persisted category membership and manual order for newly installed apps
   /// that are missing AppsCategories rows.
-  Future<void> _repairOrphanedAppCategories(Iterable<App> orphanedApps) async {
-    if (orphanedApps.isEmpty || _categoriesById.isEmpty) {
+  Future<void> _assignCategoriesForNewApps(Iterable<App> newApps) async {
+    if (newApps.isEmpty || _categoriesById.isEmpty) {
       return;
     }
 
     final Map<int, List<App>> appsByCategoryId = {};
-    for (final app in orphanedApps) {
+    for (final app in newApps) {
       final targetCategory = _findTargetCategoryForNewApp(app.sideloaded);
       if (targetCategory == null) {
         continue;
