@@ -59,11 +59,32 @@ class ThemesPage extends StatelessWidget {
                       autofocus: currentShape == 'premium',
                     ),
                     _ShapeRadioTile(
+                      title: 'Glow',
+                      value: 'glow',
+                      groupValue: currentShape,
+                      onChanged: (value) => settingsService.setThemes(value!),
+                      autofocus: currentShape == 'glow',
+                    ),
+                    _ShapeRadioTile(
+                      title: 'Squircle',
+                      value: 'squircle',
+                      groupValue: currentShape,
+                      onChanged: (value) => settingsService.setThemes(value!),
+                      autofocus: currentShape == 'squircle',
+                    ),
+                    _ShapeRadioTile(
                       title: 'Classic',
                       value: 'classic',
                       groupValue: currentShape,
                       onChanged: (value) => settingsService.setThemes(value!),
                       autofocus: currentShape == 'classic',
+                    ),
+                    _ShapeRadioTile(
+                      title: 'Minimal',
+                      value: 'minimal',
+                      groupValue: currentShape,
+                      onChanged: (value) => settingsService.setThemes(value!),
+                      autofocus: currentShape == 'minimal',
                     ),
                     _ShapeRadioTile(
                       title: 'Capsule',

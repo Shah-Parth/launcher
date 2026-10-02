@@ -170,6 +170,8 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final bool showAppNames = context.select<SettingsService, bool>((s) => s.showAppNamesBelowIcons);
     final String themes = context.select<SettingsService, String>((s) => s.themes);
+    final String accentColorHex = context.select<SettingsService, String>((s) => s.accentColorHex);
+    final Color accentColor = Color(int.tryParse('0xFF$accentColorHex') ?? 0xFF7C4DFF);
     final bool hideHighlightOutlineOnHomescreen = context.select<SettingsService, bool>((s) => s.hideHighlightOutlineOnHomescreen);
     final bool appSelectorTransitionAnimationEnabled = context.select<SettingsService, bool>((s) => s.appSelectorTransitionAnimationEnabled);
 
@@ -181,9 +183,21 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
         borderRadius = BorderRadius.circular(16);
         innerBorderRadius = BorderRadius.circular(14);
         break;
+      case 'glow':
+        borderRadius = BorderRadius.circular(12);
+        innerBorderRadius = BorderRadius.circular(10);
+        break;
+      case 'squircle':
+        borderRadius = BorderRadius.circular(24);
+        innerBorderRadius = BorderRadius.circular(22);
+        break;
       case 'classic':
         borderRadius = BorderRadius.zero;
         innerBorderRadius = BorderRadius.zero;
+        break;
+      case 'minimal':
+        borderRadius = BorderRadius.circular(4);
+        innerBorderRadius = BorderRadius.circular(2);
         break;
       case 'capsule':
         borderRadius = BorderRadius.circular(100);
@@ -234,8 +248,8 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                             child: Material(
                           borderRadius: borderRadius,
                           clipBehavior: Clip.antiAlias,
-                          elevation: shouldHighlight ? (themes == 'classic' ? 8 : 16) : 0,
-                          shadowColor: Colors.black,
+                          elevation: shouldHighlight ? (themes == 'minimal' ? 6 : (themes == 'classic' ? 8 : 16)) : 0,
+                          shadowColor: (shouldHighlight && themes == 'glow') ? accentColor.withOpacity(0.85) : Colors.black,
                           child: Stack(
                             fit: StackFit.expand,
                             children: [
@@ -344,6 +358,44 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
                                                 border: Border.all(
                                                   color: accentColor,
                                                   width: 4
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    if (themes == 'minimal') {
+                                      _animation.stop();
+                                      return IgnorePointer(
+                                        child: Stack(
+                                          fit: StackFit.expand,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: borderRadius,
+                                                border: Border.all(
+                                                  color: accentColor,
+                                                  width: 2
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                    if (themes == 'glow') {
+                                      _animation.stop();
+                                      return IgnorePointer(
+                                        child: Stack(
+                                          fit: StackFit.expand,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: borderRadius,
+                                                border: Border.all(
+                                                  color: accentColor,
+                                                  width: 3
                                                 ),
                                               ),
                                             ),
@@ -568,6 +620,10 @@ class _AppCardState extends State<AppCard> with TickerProviderStateMixin {
         scale = 1.15;
       } else if (theme == 'classic') {
         scale = 1.0;
+      } else if (theme == 'minimal') {
+        scale = 1.05;
+      } else if (theme == 'glow' || theme == 'squircle') {
+        scale = 1.12;
       } else {
         scale = 1.1;
       }

@@ -291,7 +291,7 @@ class _WatchNextCardState extends State<WatchNextCard> with TickerProviderStateM
     final bool showPercentage = context.select<SettingsService, bool>((s) => s.continueWatchingShowPercentage);
     final bool showDescription = context.select<SettingsService, bool>((s) => s.continueWatchingShowDescription);
 
-    final Color accentColor = Color(int.parse('FF$accentColorHex', radix: 16));
+    final Color accentColor = Color(int.tryParse('0xFF$accentColorHex') ?? 0xFF7C4DFF);
     double cardWidth;
     double cardHeight;
     final int? customHeight = int.tryParse(cardSize);
@@ -324,9 +324,21 @@ class _WatchNextCardState extends State<WatchNextCard> with TickerProviderStateM
         borderRadius = BorderRadius.circular(16);
         innerBorderRadius = BorderRadius.circular(14);
         break;
+      case 'glow':
+        borderRadius = BorderRadius.circular(12);
+        innerBorderRadius = BorderRadius.circular(10);
+        break;
+      case 'squircle':
+        borderRadius = BorderRadius.circular(24);
+        innerBorderRadius = BorderRadius.circular(22);
+        break;
       case 'classic':
         borderRadius = BorderRadius.zero;
         innerBorderRadius = BorderRadius.zero;
+        break;
+      case 'minimal':
+        borderRadius = BorderRadius.circular(4);
+        innerBorderRadius = BorderRadius.circular(2);
         break;
       case 'capsule':
         borderRadius = BorderRadius.circular(100);
@@ -347,6 +359,10 @@ class _WatchNextCardState extends State<WatchNextCard> with TickerProviderStateM
         scale = 1.15;
       } else if (themes == 'classic') {
         scale = 1.0;
+      } else if (themes == 'minimal') {
+        scale = 1.05;
+      } else if (themes == 'glow' || themes == 'squircle') {
+        scale = 1.12;
       } else {
         scale = 1.1;
       }
@@ -362,9 +378,11 @@ class _WatchNextCardState extends State<WatchNextCard> with TickerProviderStateM
     }
 
     final double elevation = shouldHighlight
-        ? (themes == 'classic' ? 8 : 16)
+        ? (themes == 'minimal' ? 6 : (themes == 'classic' ? 8 : 16))
         : 0;
-    final Color shadowColor = Colors.black;
+    final Color shadowColor = (shouldHighlight && themes == 'glow')
+        ? accentColor.withOpacity(0.85)
+        : Colors.black;
 
     Widget? highlightWidget;
     if (shouldHighlight && !hideHighlightOutlineOnHomescreen) {
@@ -377,6 +395,26 @@ class _WatchNextCardState extends State<WatchNextCard> with TickerProviderStateM
             decoration: BoxDecoration(
               borderRadius: borderRadius,
               border: Border.all(color: accentColor, width: 4),
+            ),
+          ),
+        );
+      } else if (themes == 'minimal') {
+        _animation.stop();
+        highlightWidget = IgnorePointer(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              border: Border.all(color: accentColor, width: 2),
+            ),
+          ),
+        );
+      } else if (themes == 'glow') {
+        _animation.stop();
+        highlightWidget = IgnorePointer(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: borderRadius,
+              border: Border.all(color: accentColor, width: 3),
             ),
           ),
         );
