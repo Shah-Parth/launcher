@@ -140,8 +140,12 @@ public class MainActivity extends FlutterActivity {
                 case "checkWriteSettingsPermission" -> result.success(checkWriteSettingsPermission());
                 case "requestWriteSettingsPermission" -> result.success(requestWriteSettingsPermission());
                 case "setSystemBrightness" -> {
-                    int brightness = call.argument("brightness");
-                    result.success(setSystemBrightness(brightness));
+                    Integer brightness = call.argument("brightness");
+                    if (brightness != null) {
+                        result.success(setSystemBrightness(brightness));
+                    } else {
+                        result.error("INVALID_ARGUMENT", "Missing brightness", null);
+                    }
                 }
                 case "openDefaultLauncherSettings" -> result.success(openDefaultLauncherSettings());
                 case "openWifiSettings" -> result.success(openWifiSettings());
@@ -185,13 +189,6 @@ public class MainActivity extends FlutterActivity {
                         result.error("INVALID_ARGUMENT", "Missing id", null);
                     }
                 }
-                case "getWatchNextPoster" -> {
-                    String posterArtUri = call.argument("posterArtUri");
-                    sIoExecutor.execute(() -> {
-                        byte[] posterBytes = getWatchNextPoster(posterArtUri);
-                        runOnUiThread(() -> result.success(posterBytes));
-                    });
-                }
                 case "launchWatchNextProgram" -> {
                     String intentUri = call.argument("intentUri");
                     result.success(launchWatchNextProgram(intentUri));
@@ -204,7 +201,7 @@ public class MainActivity extends FlutterActivity {
                     getWindow().getDecorView().playSoundEffect(android.view.SoundEffectConstants.CLICK);
                     result.success(null);
                 }
-                default -> throw new IllegalArgumentException();
+                default -> result.notImplemented();
             }
         });
 
@@ -362,6 +359,9 @@ public class MainActivity extends FlutterActivity {
                 completed += 1;
             }
         }
+
+        if (tvActivitiesInfo == null) tvActivitiesInfo = Collections.emptyList();
+        if (nonTvActivitiesInfo == null) nonTvActivitiesInfo = Collections.emptyList();
 
         CompletionService<Map<String, Serializable>> completionService = new ExecutorCompletionService<>(executor);
 
@@ -541,8 +541,13 @@ public class MainActivity extends FlutterActivity {
 
     private boolean openUrl(String url) {
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            return tryStartActivity(intent);
+            Uri uri = Uri.parse(url);
+            String scheme = uri.getScheme();
+            if (scheme != null && (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                return tryStartActivity(intent);
+            }
+            return false;
         } catch (Exception e) {
             return false;
         }
@@ -625,31 +630,48 @@ public class MainActivity extends FlutterActivity {
     }
 
     private byte[] drawableToByteArray(Drawable drawable) {
-        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+        try {
+            if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+                return new byte[0];
+            }
+
+            Bitmap bitmap;
+            if (drawable instanceof BitmapDrawable bitmapDrawable && bitmapDrawable.getBitmap() != null) {
+                bitmap = bitmapDrawable.getBitmap();
+            } else {
+                bitmap = drawableToBitmap(drawable);
+            }
+
+            if (bitmap == null) {
+                return new byte[0];
+            }
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+            return stream.toByteArray();
+        } catch (Throwable t) {
+            t.printStackTrace();
             return new byte[0];
         }
-
-        Bitmap bitmap;
-        if (drawable instanceof BitmapDrawable bitmapDrawable) {
-            bitmap = bitmapDrawable.getBitmap();
-        } else {
-            bitmap = drawableToBitmap(drawable);
-        }
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
     }
 
     Bitmap drawableToBitmap(Drawable drawable) {
-        Bitmap bitmap = Bitmap.createBitmap(
-                drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(),
-                Bitmap.Config.ARGB_8888);
+        try {
+            int width = Math.min(Math.max(drawable.getIntrinsicWidth(), 1), 512);
+            int height = Math.min(Math.max(drawable.getIntrinsicHeight(), 1), 512);
+            Bitmap bitmap = Bitmap.createBitmap(
+                    width,
+                    height,
+                    Bitmap.Config.ARGB_8888);
 
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+            return bitmap;
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return null;
+        }
     }
 
     private int getActiveNetworkTransportType() {
@@ -1398,102 +1420,6 @@ public class MainActivity extends FlutterActivity {
         }
     }
 
-    private byte[] getWatchNextPoster(String posterArtUri) {
-        if (posterArtUri == null || posterArtUri.isEmpty()) {
-            return null;
-        }
-        try {
-            if (posterArtUri.startsWith("http://") || posterArtUri.startsWith("https://")) {
-                // Fully offline launcher: remote network fetching disabled
-                return null;
-            } else if (posterArtUri.startsWith("file://")) {
-                Uri fileUri = Uri.parse(posterArtUri);
-                java.io.File file = new java.io.File(fileUri.getPath());
-                if (file.exists() && file.canRead()) {
-                    try (java.io.FileInputStream fis = new java.io.FileInputStream(file)) {
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-                        while ((bytesRead = fis.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-                        }
-                        return outputStream.toByteArray();
-                    }
-                }
-            } else if (posterArtUri.startsWith("/")) {
-                java.io.File file = new java.io.File(posterArtUri);
-                if (file.exists() && file.canRead()) {
-                    try (java.io.FileInputStream fis = new java.io.FileInputStream(file)) {
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-                        while ((bytesRead = fis.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-                        }
-                        return outputStream.toByteArray();
-                    }
-                }
-            } else if (posterArtUri.startsWith("android.resource://")) {
-                Uri uri = Uri.parse(posterArtUri);
-                try (java.io.InputStream inputStream = getContentResolver().openInputStream(uri)) {
-                    if (inputStream != null) {
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-                        while ((bytesRead = inputStream.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-                        }
-                        return outputStream.toByteArray();
-                    }
-                } catch (Exception ignored) {}
-                try {
-                    String authority = uri.getAuthority();
-                    if (authority != null && !authority.isEmpty()) {
-                        android.content.res.Resources res = getPackageManager().getResourcesForApplication(authority);
-                        List<String> pathSegments = uri.getPathSegments();
-                        int resId = 0;
-                        if (pathSegments.size() == 1) {
-                            try {
-                                resId = Integer.parseInt(pathSegments.get(0));
-                            } catch (NumberFormatException ignored) {}
-                        } else if (pathSegments.size() >= 2) {
-                            String type = pathSegments.get(0);
-                            String name = pathSegments.get(1);
-                            resId = res.getIdentifier(name, type, authority);
-                        }
-                        if (resId != 0) {
-                            try (java.io.InputStream is = res.openRawResource(resId)) {
-                                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                                byte[] buffer = new byte[8192];
-                                int bytesRead;
-                                while ((bytesRead = is.read(buffer)) != -1) {
-                                    outputStream.write(buffer, 0, bytesRead);
-                                }
-                                return outputStream.toByteArray();
-                            }
-                        }
-                    }
-                } catch (Exception ignored) {}
-            } else {
-                Uri uri = Uri.parse(posterArtUri);
-                try (java.io.InputStream inputStream = getContentResolver().openInputStream(uri)) {
-                    if (inputStream != null) {
-                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                        byte[] buffer = new byte[8192];
-                        int bytesRead;
-                        while ((bytesRead = inputStream.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-                        }
-                        return outputStream.toByteArray();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     private boolean launchWatchNextProgram(String intentUri) {
         if (intentUri == null || intentUri.isEmpty()) {
             return false;
@@ -1501,6 +1427,7 @@ public class MainActivity extends FlutterActivity {
         try {
             Intent intent = Intent.parseUri(intentUri, Intent.URI_INTENT_SCHEME);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setSelector(null);
             return tryStartActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();

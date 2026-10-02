@@ -27,7 +27,14 @@ public class LauncherAppsEventStreamHandler implements EventChannel.StreamHandle
     @Override
     public void onCancel(Object arguments)
     {
-        _launcherApps.unregisterCallback(_launcherAppsCallback);
+        if (_launcherApps != null && _launcherAppsCallback != null) {
+            try {
+                _launcherApps.unregisterCallback(_launcherAppsCallback);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            _launcherAppsCallback = null;
+        }
     }
 
     @Override
@@ -49,7 +56,11 @@ public class LauncherAppsEventStreamHandler implements EventChannel.StreamHandle
 
         @Override
         public void onPackageRemoved(String packageName, UserHandle user) {
-            _eventSink.success(new java.util.HashMap<String, Object>() {{ put("action", "PACKAGE_REMOVED"); put("packageName", packageName); }});
+            _activity.runOnUiThread(() -> {
+                try {
+                    _eventSink.success(new java.util.HashMap<String, Object>() {{ put("action", "PACKAGE_REMOVED"); put("packageName", packageName); }});
+                } catch (Exception ignored) {}
+            });
         }
 
         @Override
@@ -57,7 +68,11 @@ public class LauncherAppsEventStreamHandler implements EventChannel.StreamHandle
             Map<String, Serializable> application = _activity.getApplication(packageName);
 
             if (!application.isEmpty()) {
-                _eventSink.success(new java.util.HashMap<String, Object>() {{ put("action", "PACKAGE_ADDED"); put("activityInfo", application); }});
+                _activity.runOnUiThread(() -> {
+                    try {
+                        _eventSink.success(new java.util.HashMap<String, Object>() {{ put("action", "PACKAGE_ADDED"); put("activityInfo", application); }});
+                    } catch (Exception ignored) {}
+                });
             }
         }
 
@@ -66,7 +81,11 @@ public class LauncherAppsEventStreamHandler implements EventChannel.StreamHandle
             Map<String, Serializable> application = _activity.getApplication(packageName);
 
             if (!application.isEmpty()) {
-                _eventSink.success(new java.util.HashMap<String, Object>() {{ put("action", "PACKAGE_CHANGED"); put("activityInfo", application); }});
+                _activity.runOnUiThread(() -> {
+                    try {
+                        _eventSink.success(new java.util.HashMap<String, Object>() {{ put("action", "PACKAGE_CHANGED"); put("activityInfo", application); }});
+                    } catch (Exception ignored) {}
+                });
             }
         }
 
@@ -83,7 +102,11 @@ public class LauncherAppsEventStreamHandler implements EventChannel.StreamHandle
             }
 
             if (!applications.isEmpty()) {
-                _eventSink.success(new java.util.HashMap<String, Object>() {{ put("action", "PACKAGES_AVAILABLE"); put("activitiesInfo", applications); }});
+                _activity.runOnUiThread(() -> {
+                    try {
+                        _eventSink.success(new java.util.HashMap<String, Object>() {{ put("action", "PACKAGES_AVAILABLE"); put("activitiesInfo", applications); }});
+                    } catch (Exception ignored) {}
+                });
             }
         }
 

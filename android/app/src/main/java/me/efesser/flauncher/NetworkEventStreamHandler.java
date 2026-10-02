@@ -42,11 +42,11 @@ public class NetworkEventStreamHandler implements EventChannel.StreamHandler
 
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                _networkCallback = new NetworkCallbackImplApi31(events, null);
+                _networkCallback = new NetworkCallbackImplApi31(events, _handler);
                 _connectivityManager.registerDefaultNetworkCallback(_networkCallback, _handler);
             }
             else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                _networkCallback = new NetworkCallbackImpl(events, null);
+                _networkCallback = new NetworkCallbackImpl(events, _handler);
                 _connectivityManager.registerDefaultNetworkCallback(_networkCallback, _handler);
             }
             else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -66,11 +66,21 @@ public class NetworkEventStreamHandler implements EventChannel.StreamHandler
 
     @Override
     public void onCancel(Object arguments) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            _connectivityManager.unregisterNetworkCallback(_networkCallback);
-        }
-        else {
-            _context.unregisterReceiver(_networkChangeReceiver);
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                if (_networkCallback != null) {
+                    _connectivityManager.unregisterNetworkCallback(_networkCallback);
+                    _networkCallback = null;
+                }
+            }
+            else {
+                if (_networkChangeReceiver != null) {
+                    _context.unregisterReceiver(_networkChangeReceiver);
+                    _networkChangeReceiver = null;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
