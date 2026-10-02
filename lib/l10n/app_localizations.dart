@@ -455,6 +455,12 @@ abstract class AppLocalizations {
   /// **'Show category titles'**
   String get showCategoryTitles;
 
+  /// No description provided for @showCategoryAppCount.
+  ///
+  /// In en, this message translates to:
+  /// **'Show app count in categories'**
+  String get showCategoryAppCount;
+
   /// No description provided for @themes.
   ///
   /// In en, this message translates to:

@@ -183,6 +183,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get showCategoryTitles => '카테고리 제목 표시';
 
   @override
+  String get showCategoryAppCount => '카테고리의 앱 수 표시';
+
+  @override
   String get themes => '테마';
 
   @override

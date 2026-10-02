@@ -183,6 +183,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get showCategoryTitles => 'إظهار عناوين الفئات';
 
   @override
+  String get showCategoryAppCount => 'إظهار عدد التطبيقات في الفئات';
+
+  @override
   String get themes => 'السمات';
 
   @override

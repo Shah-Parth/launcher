@@ -183,6 +183,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get showCategoryTitles => '显示类别标题';
 
   @override
+  String get showCategoryAppCount => '在类别中显示应用数量';
+
+  @override
   String get themes => '主题';
 
   @override

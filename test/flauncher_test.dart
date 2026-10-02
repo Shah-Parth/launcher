@@ -592,6 +592,7 @@ SettingsService mkSettingsService() {
   when(settingsService.timeFormat).thenReturn(SettingsService.defaultTimeFormat);
   when(settingsService.appHighlightAnimationEnabled).thenReturn(true);
   when(settingsService.showCategoryTitles).thenReturn(true);
+  when(settingsService.showCategoryAppCount).thenReturn(false);
   when(settingsService.autoHideAppBarEnabled).thenReturn(false);
   when(settingsService.showInputsWidgetInStatusBar).thenReturn(true);
   when(settingsService.showNetworkIndicatorInStatusBar).thenReturn(true);

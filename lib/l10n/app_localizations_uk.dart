@@ -183,6 +183,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get showCategoryTitles => 'Показувати назви категорій';
 
   @override
+  String get showCategoryAppCount => 'Показувати кількість додатків у категоріях';
+
+  @override
   String get themes => 'Теми';
 
   @override

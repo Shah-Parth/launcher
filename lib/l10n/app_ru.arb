@@ -83,6 +83,7 @@
     "settings": "Настройки",
     "show": "Показать",
     "showCategoryTitles": "Показывать заголовки категорий",
+    "showCategoryAppCount": "Показывать количество приложений в категориях",
     "themes": "Темы",
     "hideHighlightOutlineOnHomescreen": "Скрыть контур выделения на главном экране",
     "appSelectorTransitionAnimation": "Анимация перехода селектора приложений",

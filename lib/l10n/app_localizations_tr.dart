@@ -183,6 +183,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get showCategoryTitles => 'Kategori başlıklarını göster';
 
   @override
+  String get showCategoryAppCount => 'Kategorilerde uygulama sayısını göster';
+
+  @override
   String get themes => 'Temalar';
 
   @override

@@ -83,6 +83,7 @@
     "settings": "Settings",
     "show": "Show",
     "showCategoryTitles": "Show category titles",
+    "showCategoryAppCount": "Show app count in categories",
     "themes": "Themes",
     "hideHighlightOutlineOnHomescreen": "Hide highlight outline on homescreen",
     "appSelectorTransitionAnimation": "App selector transition animation",

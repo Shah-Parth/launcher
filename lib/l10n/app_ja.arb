@@ -83,6 +83,7 @@
     "settings": "設定",
     "show": "表示",
     "showCategoryTitles": "カテゴリタイトルを表示",
+    "showCategoryAppCount": "カテゴリ内のアプリ数を表示",
     "themes": "テーマ",
     "hideHighlightOutlineOnHomescreen": "ホーム画面でハイライトのアウトラインを非表示",
     "appSelectorTransitionAnimation": "アプリセレクターの遷移アニメーション",

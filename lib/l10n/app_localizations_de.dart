@@ -183,6 +183,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get showCategoryTitles => 'Kategorietitel anzeigen';
 
   @override
+  String get showCategoryAppCount => 'App-Anzahl in Kategorien anzeigen';
+
+  @override
   String get themes => 'Designs';
 
   @override

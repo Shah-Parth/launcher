@@ -83,6 +83,7 @@
     "settings": "الإعدادات",
     "show": "إظهار",
     "showCategoryTitles": "إظهار عناوين الفئات",
+    "showCategoryAppCount": "إظهار عدد التطبيقات في الفئات",
     "themes": "السمات",
     "hideHighlightOutlineOnHomescreen": "إخفاء مخطط التمييز على الشاشة الرئيسية",
     "appSelectorTransitionAnimation": "رسوم متحركة لانتقال محدد التطبيقات",

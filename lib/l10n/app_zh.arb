@@ -83,6 +83,7 @@
     "settings": "设置",
     "show": "显示",
     "showCategoryTitles": "显示类别标题",
+    "showCategoryAppCount": "在类别中显示应用数量",
     "themes": "主题",
     "hideHighlightOutlineOnHomescreen": "在主屏幕隐藏高亮边框",
     "appSelectorTransitionAnimation": "应用选择器转场动画",

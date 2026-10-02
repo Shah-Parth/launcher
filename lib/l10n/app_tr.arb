@@ -83,6 +83,7 @@
     "settings": "Ayarlar",
     "show": "Göster",
     "showCategoryTitles": "Kategori başlıklarını göster",
+    "showCategoryAppCount": "Kategorilerde uygulama sayısını göster",
     "themes": "Temalar",
     "hideHighlightOutlineOnHomescreen": "Ana ekranda vurgu anahattını gizle",
     "appSelectorTransitionAnimation": "Uygulama seçici geçiş animasyonu",

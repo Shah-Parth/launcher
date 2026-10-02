@@ -83,6 +83,7 @@
     "settings": "설정",
     "show": "표시",
     "showCategoryTitles": "카테고리 제목 표시",
+    "showCategoryAppCount": "카테고리의 앱 수 표시",
     "themes": "테마",
     "hideHighlightOutlineOnHomescreen": "홈 화면에서 하이라이트 윤곽선 숨기기",
     "appSelectorTransitionAnimation": "앱 선택기 전환 애니메이션",

@@ -30,6 +30,7 @@ const _gradientUuidKey = "gradient_uuid";
 const _backButtonActionKey = "back_button_action";
 const _dateFormatKey = "date_format";
 const _showCategoryTitlesKey = "show_category_titles";
+const _showCategoryAppCountKey = "show_category_app_count";
 const _showAppNamesBelowIconsKey = "show_app_names_below_icons";
 const _themesKey = "app_banner_shape";
 const _hideHighlightOutlineOnHomescreenKey = "hide_highlight_outline_on_homescreen";
@@ -95,6 +96,7 @@ class SettingsService extends ChangeNotifier {
   late bool _appKeyClickEnabled;
   late bool _autoHideAppBarEnabled;
   late bool _showCategoryTitles;
+  late bool _showCategoryAppCount;
   late bool _showAppNamesBelowIcons;
   late String _themes;
   late bool _hideHighlightOutlineOnHomescreen;
@@ -136,6 +138,8 @@ class SettingsService extends ChangeNotifier {
   bool get autoHideAppBarEnabled => _autoHideAppBarEnabled;
 
   bool get showCategoryTitles => _showCategoryTitles;
+
+  bool get showCategoryAppCount => _showCategoryAppCount;
 
   bool get showAppNamesBelowIcons => _showAppNamesBelowIcons;
 
@@ -208,6 +212,7 @@ class SettingsService extends ChangeNotifier {
     _appKeyClickEnabled = _sharedPreferences.getBool(_appKeyClickEnabledKey) ?? true;
     _autoHideAppBarEnabled = _sharedPreferences.getBool(_autoHideAppBarKey) ?? false;
     _showCategoryTitles = _sharedPreferences.getBool(_showCategoryTitlesKey) ?? true;
+    _showCategoryAppCount = _sharedPreferences.getBool(_showCategoryAppCountKey) ?? false;
     _showAppNamesBelowIcons = _sharedPreferences.getBool(_showAppNamesBelowIconsKey) ?? false;
     _themes = _sharedPreferences.getString(_themesKey) ?? "modern";
     _hideHighlightOutlineOnHomescreen = _sharedPreferences.getBool(_hideHighlightOutlineOnHomescreenKey) ?? false;
@@ -250,6 +255,7 @@ class SettingsService extends ChangeNotifier {
       _appKeyClickEnabledKey: _appKeyClickEnabled,
       _autoHideAppBarKey: _autoHideAppBarEnabled,
       _showCategoryTitlesKey: _showCategoryTitles,
+      _showCategoryAppCountKey: _showCategoryAppCount,
       _showAppNamesBelowIconsKey: _showAppNamesBelowIcons,
       _themesKey: _themes,
       _hideHighlightOutlineOnHomescreenKey: _hideHighlightOutlineOnHomescreen,
@@ -354,6 +360,12 @@ class SettingsService extends ChangeNotifier {
   Future<void> setShowCategoryTitles(bool show) async {
     await _sharedPreferences.setBool(_showCategoryTitlesKey, show);
     _showCategoryTitles = show;
+    notifyListeners();
+  }
+
+  Future<void> setShowCategoryAppCount(bool show) async {
+    await _sharedPreferences.setBool(_showCategoryAppCountKey, show);
+    _showCategoryAppCount = show;
     notifyListeners();
   }
 

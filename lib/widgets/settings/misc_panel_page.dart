@@ -60,6 +60,12 @@ class MiscPanelPage extends StatelessWidget {
                 secondary: const Icon(Icons.abc),
               ),
               RoundedSwitchListTile(
+                value: settingsService.showCategoryAppCount,
+                onChanged: (value) => settingsService.setShowCategoryAppCount(value),
+                title: Text(localizations.showCategoryAppCount, style: Theme.of(context).textTheme.bodyMedium),
+                secondary: const Icon(Icons.numbers),
+              ),
+              RoundedSwitchListTile(
                 value: settingsService.showAppNamesBelowIcons,
                 onChanged: (value) => settingsService.setShowAppNamesBelowIcons(value),
                 title: Text(localizations.showAppNamesBelowIcons, style: Theme.of(context).textTheme.bodyMedium),

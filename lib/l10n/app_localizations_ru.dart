@@ -183,6 +183,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get showCategoryTitles => 'Показывать заголовки категорий';
 
   @override
+  String get showCategoryAppCount => 'Показывать количество приложений в категориях';
+
+  @override
   String get themes => 'Темы';
 
   @override

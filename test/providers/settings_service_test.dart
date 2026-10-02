@@ -189,6 +189,7 @@ void main() async {
       await service1.setAppLanguage("fr");
       await service1.setScreensaverClockStyle("analog");
       await service1.setShowContinueWatching(false);
+      await service1.setShowCategoryAppCount(true);
 
       final exported = service1.exportSettingsMap();
       expect(exported["accent_color"], ACCENT_COLOR_TEAL);
@@ -197,6 +198,7 @@ void main() async {
       expect(exported["app_language"], "fr");
       expect(exported["screensaver_clock_style"], "analog");
       expect(exported["show_continue_watching"], false);
+      expect(exported["show_category_app_count"], true);
 
       // Now create a target instance
       final service2 = SettingsService(sp1);
@@ -210,6 +212,33 @@ void main() async {
       expect(service2.appLanguage, "fr");
       expect(service2.screensaverClockStyle, "analog");
       expect(service2.showContinueWatching, isFalse);
+      expect(service2.showCategoryAppCount, isTrue);
+    });
+  });
+
+  group("showCategoryAppCount", () {
+    test("default is false", () async {
+      final sp = await SharedPreferences.getInstance();
+      final service = SettingsService(sp);
+      expect(service.showCategoryAppCount, isFalse);
+    });
+
+    test("sets and gets value", () async {
+      final sp = await SharedPreferences.getInstance();
+      final service = SettingsService(sp);
+      await service.setShowCategoryAppCount(true);
+      expect(service.showCategoryAppCount, isTrue);
+    });
+
+    test("notifies listeners", () async {
+      final sp = await SharedPreferences.getInstance();
+      final service = SettingsService(sp);
+      bool notified = false;
+      service.addListener(() {
+        notified = true;
+      });
+      await service.setShowCategoryAppCount(true);
+      expect(notified, isTrue);
     });
   });
 

@@ -83,6 +83,7 @@
     "settings": "Einstellungen",
     "show": "Anzeigen",
     "showCategoryTitles": "Kategorietitel anzeigen",
+    "showCategoryAppCount": "App-Anzahl in Kategorien anzeigen",
     "themes": "Designs",
     "hideHighlightOutlineOnHomescreen": "Hervorhebungskontur auf dem Startbildschirm ausblenden",
     "appSelectorTransitionAnimation": "App-Auswahl-Übergangsanimation",

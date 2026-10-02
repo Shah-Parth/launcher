@@ -83,6 +83,7 @@
     "settings": "Ajustes",
     "show": "Mostrar",
     "showCategoryTitles": "Mostrar títulos de categorías",
+    "showCategoryAppCount": "Mostrar recuento de aplicaciones en categorías",
     "themes": "Temas",
     "hideHighlightOutlineOnHomescreen": "Ocultar el contorno de resaltado en la pantalla de inicio",
     "appSelectorTransitionAnimation": "Animación de transición del selector de aplicaciones",

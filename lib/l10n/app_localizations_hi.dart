@@ -183,6 +183,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get showCategoryTitles => 'श्रेणी शीर्षक दिखाएं';
 
   @override
+  String get showCategoryAppCount => 'श्रेणियों में ऐप की संख्या दिखाएं';
+
+  @override
   String get themes => 'थीम';
 
   @override

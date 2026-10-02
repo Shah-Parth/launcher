@@ -83,9 +83,11 @@ class AppsGrid extends StatelessWidget
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Selector<SettingsService, bool>(
-          selector: (context, service) => service.showCategoryTitles,
-          builder: (context, showCategoriesTitle, _) {
+        Selector<SettingsService, (bool, bool)>(
+          selector: (context, service) =>
+              (service.showCategoryTitles, service.showCategoryAppCount),
+          builder: (context, settings, _) {
+            final (showCategoriesTitle, showCategoryAppCount) = settings;
             if (showCategoriesTitle) {
               return Padding(
                 padding: const EdgeInsets.only(left: 16, bottom: 8),
@@ -97,13 +99,15 @@ class AppsGrid extends StatelessWidget
                           .titleLarge!
                           .copyWith(shadows: [const Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 8)])
                     ),
-                    const SizedBox(width: 8),
-                    Text('•  ${applications.length}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium!
-                          .copyWith(color: Colors.white54)
-                    ),
+                    if (showCategoryAppCount) ...[
+                      const SizedBox(width: 8),
+                      Text('•  ${applications.length}',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(color: Colors.white54)
+                      ),
+                    ],
                   ],
                 ),
               );
