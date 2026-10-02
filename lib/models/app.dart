@@ -45,15 +45,14 @@ class App
     sideloaded = false;
 
   App.fromSystem(Map<dynamic, dynamic> data):
-    packageName = data['packageName'],
-    name = data['name'],
-    version = data['version'],
+    packageName = data['packageName'] as String? ?? '',
+    name = data['name'] as String? ?? '',
+    version = data['version'] as String? ?? '',
     hidden = false,
-    sideloaded = data['sideloaded'],
-    categoryOrders = Map() {
-
+    sideloaded = data['sideloaded'] as bool? ?? false,
+    categoryOrders = <int, int>{} {
     if (data.containsKey('action')) {
-      action = data['action'];
+      action = data['action'] as String?;
     }
   }
 }

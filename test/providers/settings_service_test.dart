@@ -214,6 +214,24 @@ void main() async {
       expect(service2.showContinueWatching, isFalse);
       expect(service2.showCategoryAppCount, isTrue);
     });
+
+    test("safely imports list with non-string values without throwing", () async {
+      final sp = await SharedPreferences.getInstance();
+      final service = SettingsService(sp);
+      await service.importSettingsMap({
+        "hidden_watch_next_program_ids": [101, 102],
+      });
+      expect(service.hiddenWatchNextProgramIds, ["101", "102"]);
+    });
+  });
+
+  group("accentColor safety", () {
+    test("returns fallback color if accentColorHex is malformed", () async {
+      final sp = await SharedPreferences.getInstance();
+      await sp.setString("accent_color", "INVALID_HEX");
+      final service = SettingsService(sp);
+      expect(service.accentColor, const Color(0xFF7C4DFF));
+    });
   });
 
   group("showCategoryAppCount", () {

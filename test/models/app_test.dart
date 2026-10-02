@@ -86,6 +86,17 @@ void main() {
       expect(app.action, isNull);
     });
 
+    test('App.fromSystem safely handles null and missing fields', () {
+      final app = App.fromSystem({});
+
+      expect(app.packageName, '');
+      expect(app.name, '');
+      expect(app.version, '');
+      expect(app.sideloaded, isFalse);
+      expect(app.hidden, isFalse);
+      expect(app.action, isNull);
+    });
+
     test('mutable fields can be updated', () {
       final app = App(
         packageName: 'com.example.app',

@@ -17,6 +17,7 @@
  */
 
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
@@ -50,6 +51,11 @@ Future<void> main() async {
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
     debugPrint('FLauncher Error Boundary: ${details.exception}');
+  };
+
+  PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+    debugPrint('FLauncher Platform Error Boundary: $error');
+    return true; // handled, don't crash process
   };
 
   ErrorWidget.builder = (FlutterErrorDetails details) {

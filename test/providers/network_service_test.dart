@@ -10,6 +10,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late MockFLauncherChannel mockChannel;
   late NetworkService networkService;
+  void Function(Map<String, dynamic>)? networkListener;
 
   setUp(() {
     mockChannel = MockFLauncherChannel();
@@ -17,7 +18,9 @@ void main() {
         .thenAnswer((_) async => <String, dynamic>{});
     when(mockChannel.checkUsageStatsPermission())
         .thenAnswer((_) async => false);
-    when(mockChannel.addNetworkChangedListener(any)).thenReturn(null);
+    when(mockChannel.addNetworkChangedListener(any)).thenAnswer((invocation) {
+      networkListener = invocation.positionalArguments[0] as void Function(Map<String, dynamic>);
+    });
     networkService = NetworkService(mockChannel);
   });
 
@@ -164,6 +167,16 @@ void main() {
         // Timer fired!
         verify(mockChannel.getDailyDataUsage()).called(1);
       });
+    });
+  });
+
+  group('network events safety', () {
+    test('handles CELLULAR_STATE_CHANGED with out-of-bounds index without throwing', () {
+      expect(networkListener, isNotNull);
+      expect(() => networkListener!({'name': 'CELLULAR_STATE_CHANGED', 'arguments': 999}), returnsNormally);
+      expect(networkService.cellularNetworkType, CellularNetworkType.Unknown);
+      expect(() => networkListener!({'name': 'CELLULAR_STATE_CHANGED', 'arguments': -5}), returnsNormally);
+      expect(networkService.cellularNetworkType, CellularNetworkType.Unknown);
     });
   });
 }

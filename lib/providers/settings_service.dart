@@ -200,7 +200,8 @@ class SettingsService extends ChangeNotifier {
 
   Color get accentColor {
     final hex = accentColorHex;
-    return Color(int.parse("0xFF$hex"));
+    final int value = int.tryParse("0xFF$hex") ?? 0xFF7C4DFF;
+    return Color(value);
   }
 
   SettingsService(this._sharedPreferences) {
@@ -305,7 +306,7 @@ class SettingsService extends ChangeNotifier {
       } else if (value is String) {
         await _sharedPreferences.setString(key, value);
       } else if (value is List) {
-        await _sharedPreferences.setStringList(key, value.cast<String>());
+        await _sharedPreferences.setStringList(key, value.map((e) => e.toString()).toList());
       }
     }
     reload();

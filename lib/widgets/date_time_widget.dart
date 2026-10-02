@@ -57,9 +57,21 @@ class _DateTimeWidgetState extends State<DateTimeWidget> with WidgetsBindingObse
   }
 
   void _initDateFormatAndRefresh() {
-    _dateFormat = DateFormat(widget._dateTimeFormatString, Platform.localeName);
+    try {
+      _dateFormat = DateFormat(widget._dateTimeFormatString, Platform.localeName);
+    } catch (_) {
+      try {
+        _dateFormat = DateFormat(widget._dateTimeFormatString);
+      } catch (_) {
+        _dateFormat = DateFormat("EEE, MMM d", "en_US");
+      }
+    }
     _now = DateTime.now();
-    _formattedText = _dateFormat.format(_now);
+    try {
+      _formattedText = _dateFormat.format(_now);
+    } catch (_) {
+      _formattedText = '';
+    }
   }
 
   void _startTimer() {
@@ -105,7 +117,14 @@ class _DateTimeWidgetState extends State<DateTimeWidget> with WidgetsBindingObse
 
   @override
   Widget build(BuildContext context) {
-    final formattedText = _formattedText.isNotEmpty ? _formattedText : _dateFormat.format(_now);
+    String formattedText = _formattedText;
+    if (formattedText.isEmpty) {
+      try {
+        formattedText = _dateFormat.format(_now);
+      } catch (_) {
+        formattedText = '';
+      }
+    }
     
     if (widget.animate) {
       return AnimatedTimeDisplay(
@@ -118,8 +137,14 @@ class _DateTimeWidgetState extends State<DateTimeWidget> with WidgetsBindingObse
   }
 
   void _refreshTime({bool force = false}) {
+    if (!mounted) return;
     final now = DateTime.now();
-    final newFormattedText = _dateFormat.format(now);
+    String newFormattedText;
+    try {
+      newFormattedText = _dateFormat.format(now);
+    } catch (_) {
+      newFormattedText = _formattedText;
+    }
     
     if (force || newFormattedText != _formattedText) {
       setState(() {

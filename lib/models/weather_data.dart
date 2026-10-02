@@ -27,9 +27,9 @@ class WeatherForecastItem {
     return WeatherForecastItem(
       minTemp: WeatherData.parseTemperature(json['minTemp']),
       maxTemp: WeatherData.parseTemperature(json['maxTemp']),
-      conditionCode: json['conditionCode'] as int?,
-      humidity: json['humidity'] as int?,
-      precipProbability: json['precipProbability'] as int?,
+      conditionCode: (json['conditionCode'] as num?)?.toInt(),
+      humidity: (json['humidity'] as num?)?.toInt(),
+      precipProbability: (json['precipProbability'] as num?)?.toInt(),
     );
   }
 }
@@ -158,13 +158,13 @@ class WeatherData {
     }
 
     return WeatherData(
-      timestamp: json['timestamp'] as int?,
+      timestamp: (json['timestamp'] as num?)?.toInt(),
       location: json['location'] as String?,
       currentTemp: parseTemperature(json['currentTemp']),
-      currentConditionCode: json['currentConditionCode'] as int?,
+      currentConditionCode: (json['currentConditionCode'] as num?)?.toInt(),
       currentCondition: json['currentCondition'] as String?,
-      currentHumidity: json['currentHumidity'] as int?,
-      windSpeed: (json['windSpeed'] is num) ? (json['windSpeed'] as num).toDouble() : null,
+      currentHumidity: (json['currentHumidity'] as num?)?.toInt(),
+      windSpeed: (json['windSpeed'] as num?)?.toDouble(),
       todayMaxTemp: parseTemperature(json['todayMaxTemp']),
       todayMinTemp: parseTemperature(json['todayMinTemp']),
       forecasts: forecasts,

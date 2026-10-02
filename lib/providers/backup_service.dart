@@ -259,7 +259,7 @@ class BackupService {
         } else if (value is String) {
           await _sharedPreferences.setString(key, value);
         } else if (value is List) {
-          await _sharedPreferences.setStringList(key, value.cast<String>());
+          await _sharedPreferences.setStringList(key, value.map((e) => e.toString()).toList());
         }
       }
     }
@@ -293,11 +293,21 @@ class BackupService {
       final List<dynamic> categoriesJson = backupData["categories"] as List;
       final List<CategoriesCompanion> categoriesCompanions = categoriesJson.map((c) {
         final Map<String, dynamic> map = Map<String, dynamic>.from(c as Map);
+        final int sortIndex = (map["sort"] as num?)?.toInt() ?? 0;
+        final CategorySort sort = (sortIndex >= 0 && sortIndex < CategorySort.values.length)
+            ? CategorySort.values[sortIndex]
+            : CategorySort.manual;
+
+        final int typeIndex = (map["type"] as num?)?.toInt() ?? 0;
+        final CategoryType type = (typeIndex >= 0 && typeIndex < CategoryType.values.length)
+            ? CategoryType.values[typeIndex]
+            : CategoryType.grid;
+
         return CategoriesCompanion(
           id: Value(map["id"] as int),
           name: Value(map["name"] as String),
-          sort: Value(CategorySort.values[map["sort"] as int]),
-          type: Value(CategoryType.values[map["type"] as int]),
+          sort: Value(sort),
+          type: Value(type),
           rowHeight: Value(map["rowHeight"] as int),
           columnsCount: Value(map["columnsCount"] as int),
           order: Value(map["order"] as int),

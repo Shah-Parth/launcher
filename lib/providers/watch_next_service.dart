@@ -92,16 +92,9 @@ class WatchNextService extends ChangeNotifier with WidgetsBindingObserver {
       }
       if (callSnapshot != _callCount) return;
 
-      // Phase 1: Emit programs immediately with cached posters where available
       final List<WatchNextProgram> newPrograms = [];
       for (final map in list) {
-        final program = WatchNextProgram.fromMap(map);
-        // Reuse existing poster bytes if same program already loaded
-        final existing = _findExisting(program.id);
-        if (existing != null && existing.posterBytes != null) {
-          program.posterBytes = existing.posterBytes;
-        }
-        newPrograms.add(program);
+        newPrograms.add(WatchNextProgram.fromMap(map));
       }
 
       // Explicitly sort programs so the most recently watched content is first
@@ -118,32 +111,6 @@ class WatchNextService extends ChangeNotifier with WidgetsBindingObserver {
 
       _programs = newPrograms;
       if (callSnapshot == _callCount) notifyListeners();
-
-      // Phase 2: Fetch local posters if present (content://, android.resource://, file://)
-      final needsPoster = newPrograms.where(
-        (p) => p.posterArtUri.isNotEmpty &&
-               p.posterBytes == null &&
-               !p.posterArtUri.startsWith('http://') &&
-               !p.posterArtUri.startsWith('https://'),
-      ).toList();
-      if (needsPoster.isNotEmpty) {
-        await Future.wait(
-          needsPoster.map((p) async {
-            try {
-              final bytes = await _channel.getWatchNextPoster(p.posterArtUri);
-              if (bytes != null && bytes.isNotEmpty) {
-                p.posterBytes = bytes;
-              }
-            } catch (e) {
-              log('Failed to fetch poster for ${p.title}', name: 'WatchNextService', error: e);
-            }
-          }),
-        ).timeout(
-          const Duration(seconds: 2),
-          onTimeout: () => [],
-        );
-        if (callSnapshot == _callCount) notifyListeners();
-      }
     } catch (e) {
       log('Failed to refresh watch next programs', name: 'WatchNextService', error: e);
     } finally {
@@ -153,13 +120,6 @@ class WatchNextService extends ChangeNotifier with WidgetsBindingObserver {
         refresh();
       }
     }
-  }
-
-  WatchNextProgram? _findExisting(int id) {
-    for (final p in _programs) {
-      if (p.id == id) return p;
-    }
-    return null;
   }
 
   Future<bool> checkPermission() async {

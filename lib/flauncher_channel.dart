@@ -29,18 +29,30 @@ class FLauncherChannel {
   static const _watchNextEventChannel = EventChannel('me.efesser.flauncher/event_watch_next');
 
   Future<List<Map<dynamic, dynamic>>> getApplications() async {
-    List<Map<dynamic, dynamic>>? applications = await _methodChannel.invokeListMethod("getApplications");
-    return applications!;
+    try {
+      List<Map<dynamic, dynamic>>? applications = await _methodChannel.invokeListMethod("getApplications");
+      return applications ?? const [];
+    } catch (_) {
+      return const [];
+    }
   }
 
   Future<Uint8List> getApplicationBanner(String packageName) async {
-    Uint8List bytes = await _methodChannel.invokeMethod("getApplicationBanner", packageName);
-    return bytes;
+    try {
+      final Uint8List? bytes = await _methodChannel.invokeMethod("getApplicationBanner", packageName);
+      return bytes ?? Uint8List(0);
+    } catch (_) {
+      return Uint8List(0);
+    }
   }
 
   Future<Uint8List> getApplicationIcon(String packageName) async {
-    Uint8List bytes = await _methodChannel.invokeMethod("getApplicationIcon", packageName);
-    return bytes;
+    try {
+      final Uint8List? bytes = await _methodChannel.invokeMethod("getApplicationIcon", packageName);
+      return bytes ?? Uint8List(0);
+    } catch (_) {
+      return Uint8List(0);
+    }
   }
 
   Future<void> launchActivityFromAction(String action) async => await _methodChannel.invokeMethod('launchActivityFromAction', action);
@@ -227,15 +239,6 @@ class FLauncherChannel {
       return list?.cast<Map<dynamic, dynamic>>() ?? [];
     } catch (_) {
       return [];
-    }
-  }
-
-  Future<Uint8List?> getWatchNextPoster(String posterArtUri) async {
-    try {
-      final Uint8List? bytes = await _methodChannel.invokeMethod("getWatchNextPoster", {"posterArtUri": posterArtUri});
-      return bytes;
-    } catch (_) {
-      return null;
     }
   }
 

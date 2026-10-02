@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flauncher/providers/watch_next_service.dart';
@@ -71,7 +70,7 @@ void main() {
       verify(mockChannel.getWatchNextPrograms()).called(1);
     });
 
-    test('fetches watch next programs and poster art on init', () async {
+    test('fetches watch next programs on init', () async {
       final fakePrograms = [
         {
           'id': 1,
@@ -87,11 +86,7 @@ void main() {
         }
       ];
 
-      final mockPosterBytes = Uint8List.fromList([1, 2, 3]);
-
       when(mockChannel.getWatchNextPrograms()).thenAnswer((_) async => fakePrograms);
-      when(mockChannel.getWatchNextPoster('content://netflix/poster/1'))
-          .thenAnswer((_) async => mockPosterBytes);
 
       watchNextService = WatchNextService(mockChannel);
       while (!watchNextService.initialized) {
@@ -100,10 +95,8 @@ void main() {
 
       expect(watchNextService.programs.length, 1);
       expect(watchNextService.programs[0].title, 'Stranger Things');
-      expect(watchNextService.programs[0].posterBytes, mockPosterBytes);
 
       verify(mockChannel.getWatchNextPrograms()).called(1);
-      verify(mockChannel.getWatchNextPoster('content://netflix/poster/1')).called(1);
     });
 
     test('sorts watch next programs with most recently watched first', () async {

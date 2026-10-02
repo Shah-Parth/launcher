@@ -180,8 +180,10 @@ class NetworkService extends ChangeNotifier with WidgetsBindingObserver
   bool                get   hasUsageStatsPermission       => _hasUsageStatsPermission;
   bool                get   vpnActive                     => _vpnActive;
 
-  CellularNetworkType _getCellularNetworkType(int index)
-  {
+  CellularNetworkType _getCellularNetworkType(int index) {
+    if (index < 0 || index >= CellularNetworkType.values.length) {
+      return CellularNetworkType.Unknown;
+    }
     CellularNetworkType type = CellularNetworkType.values[index];
     if (type == CellularNetworkType.Unused_1 || type == CellularNetworkType.Unused_2) {
       type = CellularNetworkType.Unknown;
@@ -190,17 +192,20 @@ class NetworkService extends ChangeNotifier with WidgetsBindingObserver
     return type;
   }
 
-  void _getNetworkInformation(Map<String, dynamic> map)
-  {
+  void _getNetworkInformation(Map<String, dynamic> map) {
     log("NetworkService: _getNetworkInformation: $map");
     try {
-      int networkTypeInt = map["networkType"] as int;
-      _hasInternetAccess = map["internetAccess"] as bool;
-      _networkType = NetworkType.values[networkTypeInt];
+      int networkTypeInt = (map["networkType"] as num?)?.toInt() ?? 0;
+      _hasInternetAccess = map["internetAccess"] as bool? ?? false;
+      if (networkTypeInt >= 0 && networkTypeInt < NetworkType.values.length) {
+        _networkType = NetworkType.values[networkTypeInt];
+      } else {
+        _networkType = NetworkType.Unknown;
+      }
       _vpnActive = map["vpnActive"] as bool? ?? false;
 
       if (_networkType == NetworkType.Cellular || _networkType == NetworkType.Wifi) {
-        _wirelessNetworkSignalLevel = map["wirelessSignalLevel"] as int;
+        _wirelessNetworkSignalLevel = (map["wirelessSignalLevel"] as num?)?.toInt() ?? 0;
       }
       log("NetworkService: parsed type $_networkType, signal $_wirelessNetworkSignalLevel, vpn $_vpnActive");
     } catch (e) {
@@ -208,8 +213,7 @@ class NetworkService extends ChangeNotifier with WidgetsBindingObserver
     }
   }
 
-  void _onNetworkChanged(Map<String, dynamic> event)
-  {
+  void _onNetworkChanged(Map<String, dynamic> event) {
     switch (event["name"]) {
       case "NETWORK_AVAILABLE":
         Map<dynamic, dynamic> map = event["arguments"];
@@ -225,7 +229,10 @@ class NetworkService extends ChangeNotifier with WidgetsBindingObserver
         _getNetworkInformation(map.cast<String, dynamic>());
         break;
       case "CELLULAR_STATE_CHANGED":
-        _cellularNetworkType = _getCellularNetworkType(event["arguments"]);
+        final int? typeIndex = (event["arguments"] as num?)?.toInt();
+        if (typeIndex != null) {
+          _cellularNetworkType = _getCellularNetworkType(typeIndex);
+        }
         notifyListeners();
         break;
     }

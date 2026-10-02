@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:flauncher/database.dart';
+import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/backup_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -142,5 +143,33 @@ void main() {
     final spacers = await database.getLauncherSpacers();
     expect(spacers.length, 1);
     expect(spacers[0].height, 100);
+  });
+
+  test("Import Backup handles out-of-bounds CategorySort and CategoryType values gracefully", () async {
+    final file = File('${tempDir.path}/ltv_backup_corrupted.json');
+    await file.writeAsString(json.encode({
+      "version": 1,
+      "settings": {},
+      "apps": [],
+      "categories": [
+        {
+          "id": 100,
+          "name": "Corrupted Enum Category",
+          "sort": 999, // out of bounds
+          "type": 999, // out of bounds
+          "rowHeight": 110,
+          "columnsCount": 6,
+          "order": 0,
+        }
+      ],
+      "appsCategories": [],
+      "spacers": [],
+    }));
+
+    await backupService.importBackup(file);
+    final categories = await database.getCategories();
+    expect(categories.length, 1);
+    expect(categories[0].sort, CategorySort.manual);
+    expect(categories[0].type, CategoryType.grid);
   });
 }
