@@ -76,34 +76,46 @@ class ContinueWatchingRow extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (settingsService.showCategoryTitles)
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, bottom: 8),
-                  child: Row(
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.continueWatching,
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          shadows: [
-                            const Shadow(
-                              color: Colors.black54,
-                              offset: Offset(1, 1),
-                              blurRadius: 8,
-                            )
+              Selector<SettingsService, (bool, bool)>(
+                selector: (context, service) =>
+                    (service.showCategoryTitles, service.showCategoryAppCount),
+                builder: (context, settings, _) {
+                  final (showCategoryTitles, showCategoryAppCount) = settings;
+                  if (showCategoryTitles) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 16, bottom: 8),
+                      child: Row(
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.continueWatching,
+                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              shadows: [
+                                const Shadow(
+                                  color: Colors.black54,
+                                  offset: Offset(1, 1),
+                                  blurRadius: 8,
+                                )
+                              ],
+                            ),
+                          ),
+                          if (showCategoryAppCount) ...[
+                            const SizedBox(width: 8),
+                            Text(
+                              '•  ${programs.length}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(color: Colors.white54),
+                            ),
                           ],
-                        ),
+                        ],
                       ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '•  ${programs.length}',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Colors.white54,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                    );
+                  }
+
+                  return const SizedBox.shrink();
+                },
+              ),
               SizedBox(
                 height: rowHeight,
                 child: ListView.builder(
@@ -123,6 +135,9 @@ class ContinueWatchingRow extends StatelessWidget {
                           appsService: appsService,
                           watchNextService: watchNextService,
                           handleUpNavigationToSettings: isFirstSection,
+                          isFirstInRow: index == 0,
+                          isLastInRow: index == programs.length - 1,
+                          autofocus: index == 0,
                         ),
                       ),
                     );
@@ -142,6 +157,9 @@ class WatchNextCard extends StatefulWidget {
   final AppsService appsService;
   final WatchNextService watchNextService;
   final bool handleUpNavigationToSettings;
+  final bool isFirstInRow;
+  final bool isLastInRow;
+  final bool autofocus;
 
   const WatchNextCard({
     Key? key,
@@ -149,15 +167,17 @@ class WatchNextCard extends StatefulWidget {
     required this.appsService,
     required this.watchNextService,
     this.handleUpNavigationToSettings = true,
+    this.isFirstInRow = false,
+    this.isLastInRow = false,
+    this.autofocus = false,
   }) : super(key: key);
 
   @override
   State<WatchNextCard> createState() => _WatchNextCardState();
 }
 
-class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProviderStateMixin {
+class _WatchNextCardState extends State<WatchNextCard> with TickerProviderStateMixin {
   late final FocusNode _focusNode;
-  bool _focused = false;
   bool _clicked = false;
   Uint8List? _appIconBytes;
   late final AnimationController _animation = AnimationController(
@@ -165,12 +185,31 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
     duration: const Duration(milliseconds: 1200),
   );
 
+  double _bumpDirection = 0;
+  late final AnimationController _bumpController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 200),
+  );
+  late final Animation<double> _bumpAnimation = TweenSequence<double>([
+    TweenSequenceItem(tween: Tween(begin: 0.0, end: 8.0).chain(CurveTween(curve: Curves.easeOut)), weight: 1),
+    TweenSequenceItem(tween: Tween(begin: 8.0, end: 0.0).chain(CurveTween(curve: Curves.easeIn)), weight: 1),
+  ]).animate(_bumpController);
+
   @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
     _focusNode.addListener(_onFocusChange);
+    FocusManager.instance.addHighlightModeListener(_focusHighlightModeChanged);
     _loadAppIcon();
+  }
+
+  void _focusHighlightModeChanged(FocusHighlightMode mode) {
+    setState(() {});
+  }
+
+  bool _shouldHighlight(BuildContext context) {
+    return FocusManager.instance.highlightMode == FocusHighlightMode.traditional && _focusNode.hasFocus;
   }
 
   Future<void> _loadAppIcon() async {
@@ -191,9 +230,7 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
   }
 
   void _onFocusChange() {
-    setState(() {
-      _focused = _focusNode.hasFocus;
-    });
+    setState(() {});
     if (_focusNode.hasFocus) {
       Scrollable.ensureVisible(
         context,
@@ -206,9 +243,11 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
 
   @override
   void dispose() {
+    FocusManager.instance.removeHighlightModeListener(_focusHighlightModeChanged);
     _focusNode.removeListener(_onFocusChange);
     _focusNode.dispose();
     _animation.dispose();
+    _bumpController.dispose();
     super.dispose();
   }
 
@@ -300,8 +339,10 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
         break;
     }
 
+    final bool shouldHighlight = _shouldHighlight(context);
+
     double scale = 1.0;
-    if (_focused) {
+    if (shouldHighlight) {
       if (themes == 'premium') {
         scale = 1.15;
       } else if (themes == 'classic') {
@@ -309,15 +350,24 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
       } else {
         scale = 1.1;
       }
+
+      if (cardWidth > 0) {
+        // Gap between cards is at least 16px.
+        // Limit horizontal expansion to 14px per side to prevent cropping with the next card.
+        double maxScale = 1.0 + (28.0 / cardWidth);
+        if (scale > maxScale) {
+          scale = maxScale;
+        }
+      }
     }
 
-    final double elevation = _focused
+    final double elevation = shouldHighlight
         ? (themes == 'classic' ? 8 : 16)
         : 0;
     final Color shadowColor = Colors.black;
 
     Widget? highlightWidget;
-    if (_focused && !hideHighlightOutlineOnHomescreen) {
+    if (shouldHighlight && !hideHighlightOutlineOnHomescreen) {
       if (themes == 'premium') {
         _animation.stop();
       } else if (themes == 'classic') {
@@ -331,7 +381,9 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
           ),
         );
       } else if (appHighlightAnimationEnabled) {
-        _animation.repeat(reverse: true);
+        if (!_animation.isAnimating) {
+          _animation.repeat(reverse: true);
+        }
         highlightWidget = AnimatedBuilder(
           animation: CurvedAnimation(parent: _animation, curve: Curves.easeInOut),
           builder: (context, child) {
@@ -404,7 +456,19 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
 
     return FocusKeyboardListener(
       onPressed: (key) {
-        if (key == LogicalKeyboardKey.arrowUp && widget.handleUpNavigationToSettings) {
+        if (key == LogicalKeyboardKey.arrowLeft && widget.isFirstInRow) {
+          _bumpDirection = -1.0;
+          if (!_bumpController.isAnimating) {
+            _bumpController.forward(from: 0.0);
+          }
+          return KeyEventResult.handled;
+        } else if (key == LogicalKeyboardKey.arrowRight && widget.isLastInRow) {
+          _bumpDirection = 1.0;
+          if (!_bumpController.isAnimating) {
+            _bumpController.forward(from: 0.0);
+          }
+          return KeyEventResult.handled;
+        } else if (key == LogicalKeyboardKey.arrowUp && widget.handleUpNavigationToSettings) {
           Actions.invoke(context, const MoveFocusToSettingsIntent());
           return KeyEventResult.handled;
         } else if (AppCardKeys.validationKeys.contains(key)) {
@@ -421,9 +485,18 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
         return KeyEventResult.ignored;
       },
       builder: (context) {
-        return InkWell(
-          focusNode: _focusNode,
-          focusColor: Colors.transparent,
+        return AnimatedBuilder(
+          animation: _bumpAnimation,
+          builder: (context, child) {
+            return Transform.translate(
+              offset: Offset(_bumpAnimation.value * _bumpDirection, 0),
+              child: child,
+            );
+          },
+          child: InkWell(
+            focusNode: _focusNode,
+            autofocus: widget.autofocus,
+            focusColor: Colors.transparent,
           hoverColor: Colors.transparent,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
@@ -467,7 +540,7 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
                               ],
                             ),
                             border: Border.all(
-                              color: _focused ? Colors.transparent : Colors.white.withOpacity(0.06),
+                              color: shouldHighlight ? Colors.transparent : Colors.white.withOpacity(0.06),
                               width: 1,
                             ),
                           ),
@@ -554,6 +627,22 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
                             ],
                           ),
                         ),
+                        // Unfocused dimming overlay
+                        IgnorePointer(
+                          child: AnimatedOpacity(
+                            duration: appSelectorTransitionAnimationEnabled
+                                ? const Duration(milliseconds: 200)
+                                : Duration.zero,
+                            curve: Curves.easeInOut,
+                            opacity: shouldHighlight ? 0 : 0.10,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: borderRadius,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
                         if (highlightWidget != null) highlightWidget,
                       ],
                     ),
@@ -561,8 +650,9 @@ class _WatchNextCardState extends State<WatchNextCard> with SingleTickerProvider
                 ),
               ),
             ),
-          );
-        },
+          ),
+        );
+      },
       );
     }
 }
