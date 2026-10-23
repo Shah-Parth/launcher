@@ -34,12 +34,18 @@ class ContinueWatchingRow extends StatelessWidget {
 
         final hiddenProgramIds = settingsService.hiddenWatchNextProgramIds;
         final hiddenPackages = settingsService.hiddenWatchNextPackages;
+        final hideThreshold = settingsService.continueWatchingHideThreshold;
 
         List<WatchNextProgram> programs = watchNextService.programs
             .where((p) =>
                 !hiddenProgramIds.contains(p.id.toString()) &&
                 !hiddenPackages.contains(p.packageName) &&
                 !appsService.applications.any((app) => app.packageName == p.packageName && app.hidden))
+            .where((p) {
+              if (hideThreshold <= 0) return true;
+              if (p.duration <= 0) return true;
+              return (p.playbackPosition / p.duration) < (hideThreshold / 100.0);
+            })
             .toList();
 
         final maxItems = settingsService.continueWatchingMaxItems;

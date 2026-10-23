@@ -52,6 +52,7 @@ const String _continueWatchingShowProgressKey = "continue_watching_show_progress
 const String _continueWatchingShowPercentageKey = "continue_watching_show_percentage";
 const String _continueWatchingShowDescriptionKey = "continue_watching_show_description";
 const String _continueWatchingOrderKey = "continue_watching_order";
+const String _continueWatchingHideThresholdKey = "continue_watching_hide_threshold";
 const String _hiddenWatchNextProgramIdsKey = "hidden_watch_next_program_ids";
 const String _hiddenWatchNextPackagesKey = "hidden_watch_next_packages";
 const String _startOnBootKey = "start_on_boot";
@@ -121,6 +122,7 @@ class SettingsService extends ChangeNotifier {
   late bool _continueWatchingShowPercentage;
   late bool _continueWatchingShowDescription;
   late int _continueWatchingOrder;
+  late int _continueWatchingHideThreshold;
   late List<String> _hiddenWatchNextProgramIds;
   late List<String> _hiddenWatchNextPackages;
   late bool _startOnBoot;
@@ -175,6 +177,7 @@ class SettingsService extends ChangeNotifier {
   bool get continueWatchingShowPercentage => _continueWatchingShowPercentage;
   bool get continueWatchingShowDescription => _continueWatchingShowDescription;
   int get continueWatchingOrder => _continueWatchingOrder;
+  int get continueWatchingHideThreshold => _continueWatchingHideThreshold;
   List<String> get hiddenWatchNextProgramIds => List.unmodifiable(_hiddenWatchNextProgramIds);
   List<String> get hiddenWatchNextPackages => List.unmodifiable(_hiddenWatchNextPackages);
   bool get startOnBoot => _startOnBoot;
@@ -238,6 +241,7 @@ class SettingsService extends ChangeNotifier {
     _continueWatchingShowPercentage = _sharedPreferences.getBool(_continueWatchingShowPercentageKey) ?? true;
     _continueWatchingShowDescription = _sharedPreferences.getBool(_continueWatchingShowDescriptionKey) ?? true;
     _continueWatchingOrder = _sharedPreferences.getInt(_continueWatchingOrderKey) ?? 0;
+    _continueWatchingHideThreshold = _sharedPreferences.getInt(_continueWatchingHideThresholdKey) ?? 0;
     _hiddenWatchNextProgramIds = _sharedPreferences.getStringList(_hiddenWatchNextProgramIdsKey) ?? [];
     _hiddenWatchNextPackages = _sharedPreferences.getStringList(_hiddenWatchNextPackagesKey) ?? [];
     _startOnBoot = _sharedPreferences.getBool(_startOnBootKey) ?? false;
@@ -281,6 +285,7 @@ class SettingsService extends ChangeNotifier {
       _continueWatchingShowPercentageKey: _continueWatchingShowPercentage,
       _continueWatchingShowDescriptionKey: _continueWatchingShowDescription,
       _continueWatchingOrderKey: _continueWatchingOrder,
+      _continueWatchingHideThresholdKey: _continueWatchingHideThreshold,
       _hiddenWatchNextProgramIdsKey: _hiddenWatchNextProgramIds,
       _hiddenWatchNextPackagesKey: _hiddenWatchNextPackages,
       _startOnBootKey: _startOnBoot,
@@ -489,6 +494,12 @@ class SettingsService extends ChangeNotifier {
   Future<void> setContinueWatchingOrder(int order) async {
     await _sharedPreferences.setInt(_continueWatchingOrderKey, order);
     _continueWatchingOrder = order;
+    notifyListeners();
+  }
+
+  Future<void> setContinueWatchingHideThreshold(int threshold) async {
+    await _sharedPreferences.setInt(_continueWatchingHideThresholdKey, threshold);
+    _continueWatchingHideThreshold = threshold;
     notifyListeners();
   }
 

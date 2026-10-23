@@ -75,6 +75,7 @@ void main() {
     when(settingsService.hiddenWatchNextProgramIds).thenReturn([]);
     when(settingsService.hiddenWatchNextPackages).thenReturn([]);
     when(settingsService.continueWatchingMaxItems).thenReturn(10);
+    when(settingsService.continueWatchingHideThreshold).thenReturn(0);
     when(settingsService.continueWatchingCardSize).thenReturn('normal');
     when(settingsService.continueWatchingShowProgress).thenReturn(true);
     when(settingsService.continueWatchingShowPercentage).thenReturn(true);
@@ -289,6 +290,56 @@ void main() {
 
       verify(watchNextService.launch(program)).called(1);
       await tester.pump(const Duration(milliseconds: 600));
+    });
+  });
+
+  group('ContinueWatchingRow progress threshold filtering', () {
+    testWidgets('shows all programs when continueWatchingHideThreshold is 0 (Off)', (tester) async {
+      when(settingsService.continueWatchingHideThreshold).thenReturn(0);
+      final programs = [
+        _fakeProgram(id: 1, packageName: 'app.one', title: 'Video 50%', playbackPosition: 100, duration: 200),
+        _fakeProgram(id: 2, packageName: 'app.two', title: 'Video 95%', playbackPosition: 190, duration: 200),
+        _fakeProgram(id: 3, packageName: 'app.three', title: 'Video 99%', playbackPosition: 198, duration: 200),
+      ];
+      when(watchNextService.programs).thenReturn(programs);
+
+      await tester.pumpWidget(
+        _buildTestWidget(
+          child: const ContinueWatchingRow(),
+          settingsService: settingsService,
+          watchNextService: watchNextService,
+          appsService: appsService,
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Video 50%'), findsOneWidget);
+      expect(find.text('Video 95%'), findsOneWidget);
+      expect(find.text('Video 99%'), findsOneWidget);
+    });
+
+    testWidgets('filters out programs with progress >= threshold while keeping lower progress', (tester) async {
+      when(settingsService.continueWatchingHideThreshold).thenReturn(90);
+      final programs = [
+        _fakeProgram(id: 1, packageName: 'app.one', title: 'Video 50%', playbackPosition: 100, duration: 200),
+        _fakeProgram(id: 2, packageName: 'app.two', title: 'Video 95%', playbackPosition: 190, duration: 200),
+        _fakeProgram(id: 3, packageName: 'app.three', title: 'Video Unknown Duration', playbackPosition: 100, duration: 0),
+      ];
+      when(watchNextService.programs).thenReturn(programs);
+
+      await tester.pumpWidget(
+        _buildTestWidget(
+          child: const ContinueWatchingRow(),
+          settingsService: settingsService,
+          watchNextService: watchNextService,
+          appsService: appsService,
+        ),
+      );
+      await tester.pump();
+
+      expect(find.text('Video 50%'), findsOneWidget);
+      expect(find.text('Video 95%'), findsNothing);
+      expect(find.text('Video Unknown Duration'), findsOneWidget);
     });
   });
 }

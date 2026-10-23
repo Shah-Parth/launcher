@@ -27,6 +27,7 @@ import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'continue_watching_apps_page.dart';
 import 'continue_watching_card_size_page.dart';
 import 'continue_watching_max_items_page.dart';
+import 'continue_watching_hide_threshold_page.dart';
 import 'focusable_settings_tile.dart';
 
 class ContinueWatchingSettingsPage extends StatefulWidget {
@@ -85,6 +86,9 @@ class _ContinueWatchingSettingsPageState extends State<ContinueWatchingSettingsP
 
     final maxItems = settingsService.continueWatchingMaxItems;
     final maxItemsLabel = maxItems <= 0 ? 'Unlimited' : '$maxItems items';
+
+    final hideThreshold = settingsService.continueWatchingHideThreshold;
+    final hideThresholdLabel = hideThreshold <= 0 ? 'Off' : '$hideThreshold%';
 
     final blockedCount = settingsService.hiddenWatchNextPackages.length;
     final hiddenProgramsCount = settingsService.hiddenWatchNextProgramIds.length;
@@ -164,6 +168,16 @@ class _ContinueWatchingSettingsPageState extends State<ContinueWatchingSettingsP
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70),
                   ),
                   onPressed: () => Navigator.of(context).pushNamed(ContinueWatchingMaxItemsPage.routeName),
+                ),
+                // Hide nearly finished items
+                FocusableSettingsTile(
+                  leading: const Icon(Icons.visibility_off_outlined),
+                  title: Text('Hide Nearly Finished', style: Theme.of(context).textTheme.bodyMedium),
+                  trailing: Text(
+                    hideThresholdLabel,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70),
+                  ),
+                  onPressed: () => Navigator.of(context).pushNamed(ContinueWatchingHideThresholdPage.routeName),
                 ),
                 // Show progress bar
                 RoundedSwitchListTile(

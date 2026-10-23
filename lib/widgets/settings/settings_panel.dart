@@ -43,6 +43,7 @@ import 'package:flauncher/widgets/settings/notifications_settings_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_settings_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_card_size_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_max_items_page.dart';
+import 'package:flauncher/widgets/settings/continue_watching_hide_threshold_page.dart';
 import 'package:flauncher/widgets/settings/continue_watching_apps_page.dart';
 import 'package:flauncher/models/app.dart';
 import 'package:flutter/material.dart';
@@ -132,6 +133,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return _FastPageRoute(builder: (_) => const ContinueWatchingCardSizePage());
                     case ContinueWatchingMaxItemsPage.routeName:
                       return _FastPageRoute(builder: (_) => const ContinueWatchingMaxItemsPage());
+                    case ContinueWatchingHideThresholdPage.routeName:
+                      return _FastPageRoute(builder: (_) => const ContinueWatchingHideThresholdPage());
                     case ContinueWatchingAppsPage.routeName:
                       return _FastPageRoute(builder: (_) => const ContinueWatchingAppsPage());
                     case AppDetailsPage.routeName:
