@@ -75,6 +75,7 @@ class FLauncherApp extends StatelessWidget
         GlobalWidgetsLocalizations.delegate
       ],
       supportedLocales: AppLocalizations.supportedLocales,
+      localeListResolutionCallback: resolveAppLocale,
       title: 'FLauncher',
         theme: ThemeData(
           useMaterial3: true,
@@ -156,3 +157,17 @@ class FLauncherApp extends StatelessWidget
     });
   }
 }
+
+Locale resolveAppLocale(List<Locale>? preferredLocales, Iterable<Locale> supportedLocales) {
+  if (preferredLocales != null) {
+    for (final locale in preferredLocales) {
+      for (final supported in supportedLocales) {
+        if (supported.languageCode == locale.languageCode) {
+          return supported;
+        }
+      }
+    }
+  }
+  return const Locale('en');
+}
+

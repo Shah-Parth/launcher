@@ -1,3 +1,4 @@
+import 'package:flauncher/flauncher_app.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/app_language_page.dart';
@@ -80,5 +81,28 @@ void main() {
 
     expect(settingsService.appLanguage, 'ja');
     expect(settingsService.appLocale, equals(const Locale('ja')));
+  });
+
+  group('resolveAppLocale fallback resolution', () {
+    test('defaults to English when system locale has no translation available', () {
+      final resolved = resolveAppLocale([const Locale('sv')], AppLocalizations.supportedLocales);
+      expect(resolved, equals(const Locale('en')));
+    });
+
+    test('defaults to English when preferredLocales list is null or empty', () {
+      expect(resolveAppLocale(null, AppLocalizations.supportedLocales), equals(const Locale('en')));
+      expect(resolveAppLocale([], AppLocalizations.supportedLocales), equals(const Locale('en')));
+    });
+
+    test('picks supported locale when matching translation is available', () {
+      final resolved = resolveAppLocale([const Locale('es', 'ES')], AppLocalizations.supportedLocales);
+      expect(resolved, equals(const Locale('es')));
+    });
+
+    test('respects user fallback order in preferredLocales', () {
+      // First is unsupported Swedish, second is supported French
+      final resolved = resolveAppLocale([const Locale('sv'), const Locale('fr')], AppLocalizations.supportedLocales);
+      expect(resolved, equals(const Locale('fr')));
+    });
   });
 }
