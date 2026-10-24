@@ -51,6 +51,7 @@ class AppsGrid extends StatelessWidget
     else {
       categoryContent = GridView.custom(
         clipBehavior: Clip.none,
+        physics: const NeverScrollableScrollPhysics(),
         primary: false,
         shrinkWrap: true,
         gridDelegate: _buildSliverGridDelegate(),
@@ -63,7 +64,7 @@ class AppsGrid extends StatelessWidget
             final isLastInRow = index % category.columnsCount == category.columnsCount - 1 || index == applications.length - 1;
 
             return AppCard(
-              key: Key(applications[index].packageName),
+              key: ValueKey<String>(applications[index].packageName),
               index: index,
               category: category,
               application: applications[index],

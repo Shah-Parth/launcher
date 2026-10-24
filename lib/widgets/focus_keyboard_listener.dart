@@ -43,6 +43,7 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
   bool _longPressFired = false;
   int? _keyDownAt;
   final Set<LogicalKeyboardKey> _handledKeys = {};
+  DateTime? _lastDirectionalRepeat;
 
   @override
   void dispose() {
@@ -64,6 +65,13 @@ class _FocusKeyboardListenerState extends State<FocusKeyboardListener> {
           key == LogicalKeyboardKey.arrowRight ||
           key == LogicalKeyboardKey.arrowUp ||
           key == LogicalKeyboardKey.arrowDown) {
+        final now = DateTime.now();
+        if (_lastDirectionalRepeat != null &&
+            now.difference(_lastDirectionalRepeat!) < const Duration(milliseconds: 90)) {
+          return KeyEventResult.handled;
+        }
+        _lastDirectionalRepeat = now;
+
         final result = widget.onPressed?.call(key) ?? KeyEventResult.ignored;
         if (result == KeyEventResult.handled) {
           return KeyEventResult.handled;

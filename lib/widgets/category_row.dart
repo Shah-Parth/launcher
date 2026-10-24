@@ -51,13 +51,15 @@ class CategoryRow extends StatelessWidget
         height: category.rowHeight.toDouble(),
         child: ListView.custom(
           clipBehavior: Clip.none,
+          physics: const ClampingScrollPhysics(),
+          cacheExtent: 240.0,
           padding: const EdgeInsets.all(8),
           scrollDirection: Axis.horizontal,
           childrenDelegate: SliverChildBuilderDelegate(
             childCount: applications.length,
             findChildIndexCallback: _findChildIndex,
             (context, index) => Padding(
-                key: Key(applications[index].packageName),
+                key: ValueKey<String>(applications[index].packageName),
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: AppCard(
                   index: index,
