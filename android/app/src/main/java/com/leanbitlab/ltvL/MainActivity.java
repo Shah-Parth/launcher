@@ -453,7 +453,7 @@ public class MainActivity extends FlutterActivity {
             Drawable drawable = info.loadBanner(packageManager);
 
             if (drawable != null) {
-                imageBytes = drawableToByteArray(drawable);
+                imageBytes = drawableToByteArray(drawable, 320, 180);
             }
         } catch (PackageManager.NameNotFoundException ignored) {
         }
@@ -470,7 +470,7 @@ public class MainActivity extends FlutterActivity {
             Drawable drawable = info.loadIcon(packageManager);
 
             if (drawable != null) {
-                imageBytes = drawableToByteArray(drawable);
+                imageBytes = drawableToByteArray(drawable, 192, 192);
             }
         } catch (PackageManager.NameNotFoundException ignored) {
         }
@@ -630,25 +630,57 @@ public class MainActivity extends FlutterActivity {
     }
 
     private byte[] drawableToByteArray(Drawable drawable) {
+        return drawableToByteArray(drawable, 512, 512);
+    }
+
+    private byte[] drawableToByteArray(Drawable drawable, int maxWidth, int maxHeight) {
         try {
-            if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            int intrinsicWidth = drawable.getIntrinsicWidth();
+            int intrinsicHeight = drawable.getIntrinsicHeight();
+            if (intrinsicWidth <= 0 || intrinsicHeight <= 0) {
                 return new byte[0];
             }
 
-            Bitmap bitmap;
+            // Calculate scaled dimensions maintaining aspect ratio
+            float widthRatio = (float) maxWidth / intrinsicWidth;
+            float heightRatio = (float) maxHeight / intrinsicHeight;
+            float scale = Math.min(1.0f, Math.min(widthRatio, heightRatio));
+
+            int targetWidth = Math.max(1, Math.round(intrinsicWidth * scale));
+            int targetHeight = Math.max(1, Math.round(intrinsicHeight * scale));
+
+            Bitmap bitmap = null;
+            boolean shouldRecycle = false;
+
             if (drawable instanceof BitmapDrawable bitmapDrawable && bitmapDrawable.getBitmap() != null) {
-                bitmap = bitmapDrawable.getBitmap();
-            } else {
-                bitmap = drawableToBitmap(drawable);
+                Bitmap originalBitmap = bitmapDrawable.getBitmap();
+                if (originalBitmap.getWidth() > targetWidth || originalBitmap.getHeight() > targetHeight) {
+                    bitmap = Bitmap.createScaledBitmap(originalBitmap, targetWidth, targetHeight, true);
+                    shouldRecycle = true;
+                } else {
+                    bitmap = originalBitmap;
+                    shouldRecycle = false;
+                }
+            }
+
+            if (bitmap == null) {
+                bitmap = drawableToBitmap(drawable, targetWidth, targetHeight);
+                shouldRecycle = true;
             }
 
             if (bitmap == null) {
                 return new byte[0];
             }
 
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-            return stream.toByteArray();
+            try {
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                return stream.toByteArray();
+            } finally {
+                if (shouldRecycle && !bitmap.isRecycled()) {
+                    bitmap.recycle();
+                }
+            }
         } catch (Throwable t) {
             t.printStackTrace();
             return new byte[0];
@@ -656,9 +688,13 @@ public class MainActivity extends FlutterActivity {
     }
 
     Bitmap drawableToBitmap(Drawable drawable) {
+        int width = Math.min(Math.max(drawable.getIntrinsicWidth(), 1), 512);
+        int height = Math.min(Math.max(drawable.getIntrinsicHeight(), 1), 512);
+        return drawableToBitmap(drawable, width, height);
+    }
+
+    Bitmap drawableToBitmap(Drawable drawable, int width, int height) {
         try {
-            int width = Math.min(Math.max(drawable.getIntrinsicWidth(), 1), 512);
-            int height = Math.min(Math.max(drawable.getIntrinsicHeight(), 1), 512);
             Bitmap bitmap = Bitmap.createBitmap(
                     width,
                     height,

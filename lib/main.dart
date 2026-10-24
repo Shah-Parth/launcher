@@ -44,8 +44,18 @@ Future<void> main() async {
   initializeDateFormatting();
 
   // Configure LRU Image Cache bounds to preserve RAM on Android TV devices
-  PaintingBinding.instance.imageCache.maximumSizeBytes = 50 * 1024 * 1024; // 50MB max RAM
-  PaintingBinding.instance.imageCache.maximumSize = 100; // max 100 images
+  PaintingBinding.instance.imageCache.maximumSizeBytes = 35 * 1024 * 1024; // 35MB max RAM
+  PaintingBinding.instance.imageCache.maximumSize = 80; // max 80 images
+
+  // Release decoded GPU textures when an app takes foreground
+  AppLifecycleListener(
+    onStateChange: (state) {
+      if (state == AppLifecycleState.paused || state == AppLifecycleState.hidden) {
+        PaintingBinding.instance.imageCache.clear();
+        PaintingBinding.instance.imageCache.clearLiveImages();
+      }
+    },
+  );
 
   // Global Error Boundary & Crash Protection
   FlutterError.onError = (FlutterErrorDetails details) {
