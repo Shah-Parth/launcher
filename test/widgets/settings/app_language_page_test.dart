@@ -2,6 +2,7 @@ import 'package:flauncher/flauncher_app.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/app_language_page.dart';
+import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -81,6 +82,17 @@ void main() {
 
     expect(settingsService.appLanguage, 'ja');
     expect(settingsService.appLocale, equals(const Locale('ja')));
+  });
+
+  testWidgets('autofocuses selected language tile', (WidgetTester tester) async {
+    await settingsService.setAppLanguage('es');
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    final spanishTile = tester.widget<FocusableSettingsTile>(
+      find.ancestor(of: find.text('Spanish'), matching: find.byType(FocusableSettingsTile)),
+    );
+    expect(spanishTile.autofocus, isTrue);
   });
 
   group('resolveAppLocale fallback resolution', () {

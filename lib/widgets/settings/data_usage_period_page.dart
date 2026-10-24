@@ -37,6 +37,7 @@ class DataUsagePeriodPage extends StatelessWidget {
   Widget _radioTile(BuildContext context, SettingsService service, String label, String value) {
     final isSelected = service.dataUsagePeriod == value;
     return FocusableSettingsTile(
+      autofocus: isSelected,
       leading: Icon(
         isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
         color: isSelected ? Theme.of(context).colorScheme.secondary : Colors.grey,

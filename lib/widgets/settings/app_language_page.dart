@@ -39,7 +39,7 @@ class AppLanguagePage extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  _radioTile(context, service, localizations.systemDefault, "", autofocus: true),
+                  _radioTile(context, service, localizations.systemDefault, ""),
                   _radioTile(context, service, localizations.english, "en"),
                   _radioTile(context, service, localizations.spanish, "es"),
                   _radioTile(context, service, localizations.french, "fr"),
@@ -63,10 +63,10 @@ class AppLanguagePage extends StatelessWidget {
     );
   }
 
-  Widget _radioTile(BuildContext context, SettingsService service, String label, String value, {bool autofocus = false}) {
+  Widget _radioTile(BuildContext context, SettingsService service, String label, String value) {
     final isSelected = service.appLanguage == value;
     return FocusableSettingsTile(
-      autofocus: autofocus && isSelected,
+      autofocus: isSelected,
       leading: Icon(
         isSelected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
         color: isSelected ? Theme.of(context).colorScheme.secondary : Colors.grey,
