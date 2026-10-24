@@ -16,6 +16,7 @@ import 'app_localizations_ja.dart';
 import 'app_localizations_ko.dart';
 import 'app_localizations_pt.dart';
 import 'app_localizations_ru.dart';
+import 'app_localizations_sl.dart';
 import 'app_localizations_tr.dart';
 import 'app_localizations_uk.dart';
 import 'app_localizations_zh.dart';
@@ -114,6 +115,7 @@ abstract class AppLocalizations {
     Locale('ko'),
     Locale('pt'),
     Locale('ru'),
+    Locale('sl'),
     Locale('tr'),
     Locale('uk'),
     Locale('zh')
@@ -953,6 +955,12 @@ abstract class AppLocalizations {
   /// **'Turkish'**
   String get turkish;
 
+  /// No description provided for @slovenian.
+  ///
+  /// In en, this message translates to:
+  /// **'Slovenian'**
+  String get slovenian;
+
   /// No description provided for @hidePersistentNotifications.
   ///
   /// In en, this message translates to:
@@ -1119,7 +1127,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['ar', 'de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'ko', 'pt', 'ru', 'tr', 'uk', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['ar', 'de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'ko', 'pt', 'ru', 'sl', 'tr', 'uk', 'zh'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1141,6 +1149,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     case 'ko': return AppLocalizationsKo();
     case 'pt': return AppLocalizationsPt();
     case 'ru': return AppLocalizationsRu();
+    case 'sl': return AppLocalizationsSl();
     case 'tr': return AppLocalizationsTr();
     case 'uk': return AppLocalizationsUk();
     case 'zh': return AppLocalizationsZh();

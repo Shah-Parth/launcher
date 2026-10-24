@@ -442,6 +442,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get turkish => 'तुर्की';
 
   @override
+  String get slovenian => 'स्लोवेनियाई';
+
+  @override
   String get hidePersistentNotifications => 'स्थायी सूचनाएं छिपाएं';
 
   @override

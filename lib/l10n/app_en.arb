@@ -201,6 +201,7 @@
     "korean": "Korean",
     "arabic": "Arabic",
     "turkish": "Turkish",
+    "slovenian": "Slovenian",
     "hidePersistentNotifications": "Hide Persistent Notifications",
     "hidePersistentNotificationsDesc": "Hide ongoing background service and system notifications",
     "blockedNotificationApps": "Blocked Apps",

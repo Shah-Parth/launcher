@@ -54,6 +54,7 @@ class AppLanguagePage extends StatelessWidget {
                   _radioTile(context, service, localizations.chinese, "zh"),
                   _radioTile(context, service, localizations.japanese, "ja"),
                   _radioTile(context, service, localizations.korean, "ko"),
+                  _radioTile(context, service, localizations.slovenian, "sl"),
                 ],
               ),
             ),

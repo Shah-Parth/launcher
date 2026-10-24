@@ -442,6 +442,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get turkish => 'Türkçe';
 
   @override
+  String get slovenian => 'Slovence';
+
+  @override
   String get hidePersistentNotifications => 'Kalıcı Bildirimleri Gizle';
 
   @override

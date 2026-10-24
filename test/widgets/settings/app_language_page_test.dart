@@ -84,6 +84,19 @@ void main() {
     expect(settingsService.appLocale, equals(const Locale('ja')));
   });
 
+  testWidgets('tapping Slovenian option updates appLanguage preference to sl', (WidgetTester tester) async {
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    await tester.scrollUntilVisible(find.text('Slovenian'), 300);
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Slovenian'));
+    await tester.pumpAndSettle();
+
+    expect(settingsService.appLanguage, 'sl');
+    expect(settingsService.appLocale, equals(const Locale('sl')));
+  });
+
   testWidgets('autofocuses selected language tile', (WidgetTester tester) async {
     await settingsService.setAppLanguage('es');
     await tester.pumpWidget(buildSubject());
@@ -109,6 +122,9 @@ void main() {
     test('picks supported locale when matching translation is available', () {
       final resolved = resolveAppLocale([const Locale('es', 'ES')], AppLocalizations.supportedLocales);
       expect(resolved, equals(const Locale('es')));
+
+      final slResolved = resolveAppLocale([const Locale('sl')], AppLocalizations.supportedLocales);
+      expect(slResolved, equals(const Locale('sl')));
     });
 
     test('respects user fallback order in preferredLocales', () {
