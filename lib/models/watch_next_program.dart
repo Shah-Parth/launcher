@@ -37,4 +37,13 @@ class WatchNextProgram {
       posterArtUri: map['posterArtUri'] as String? ?? '',
     );
   }
+
+  /// Returns normalized playback progress between 0.0 and 1.0,
+  /// safely guarding against divide-by-zero, negative values, NaN, and infinity.
+  double get safeProgress {
+    if (duration <= 0 || playbackPosition <= 0) return 0.0;
+    final value = playbackPosition / duration;
+    if (value.isNaN || value.isInfinite) return 0.0;
+    return value.clamp(0.0, 1.0);
+  }
 }

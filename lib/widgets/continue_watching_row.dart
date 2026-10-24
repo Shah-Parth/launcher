@@ -44,7 +44,7 @@ class ContinueWatchingRow extends StatelessWidget {
             .where((p) {
               if (hideThreshold <= 0) return true;
               if (p.duration <= 0) return true;
-              return (p.playbackPosition / p.duration) < (hideThreshold / 100.0);
+              return p.safeProgress < (hideThreshold / 100.0);
             })
             .toList();
 
@@ -492,11 +492,7 @@ class _WatchNextCardState extends State<WatchNextCard> with TickerProviderStateM
     }
 
     // Progress percentage
-    double progress = 0;
-    if (widget.program.duration > 0 && widget.program.playbackPosition >= 0) {
-      progress = widget.program.playbackPosition / widget.program.duration;
-      if (progress > 1.0) progress = 1.0;
-    }
+    final double progress = widget.program.safeProgress;
 
     return FocusKeyboardListener(
       onPressed: (key) {
