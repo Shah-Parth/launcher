@@ -52,6 +52,9 @@
         <intent>
             <action android:name="android.intent.action.GET_CONTENT" />
         </intent>
+        <intent>
+            <action android:name="com.google.android.pano.action.SLEEP" />
+        </intent>
     </queries>
 
     <application

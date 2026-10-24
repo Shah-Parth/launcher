@@ -591,6 +591,33 @@ public class MainActivity extends FlutterActivity {
     }
 
     private boolean startAmbientMode() {
+        // 1. Explicitly target Google TV Settings and AOSP TV Settings Daydream action (Android 14+)
+        String[] tvSettingsPackages = {
+            "com.google.android.tv.settings",
+            "com.android.tv.settings"
+        };
+
+        for (String pkg : tvSettingsPackages) {
+            Intent sleepIntent = new Intent("com.google.android.pano.action.SLEEP")
+                    .setPackage(pkg)
+                    .addCategory(Intent.CATEGORY_DEFAULT);
+            if (getPackageManager().resolveActivity(sleepIntent, 0) != null) {
+                if (tryStartActivity(sleepIntent)) {
+                    return true;
+                }
+            }
+        }
+
+        // 2. Generic fallback if a platform daydream handler resolves it without disambiguation
+        Intent genericSleepIntent = new Intent("com.google.android.pano.action.SLEEP")
+                .addCategory(Intent.CATEGORY_DEFAULT);
+        if (getPackageManager().resolveActivity(genericSleepIntent, 0) != null) {
+            if (tryStartActivity(genericSleepIntent)) {
+                return true;
+            }
+        }
+
+        // 3. Fallback to SystemUI Somnambulator for Android 13 and earlier
         Intent intent = new Intent(Intent.ACTION_MAIN)
                 .setClassName("com.android.systemui", "com.android.systemui.Somnambulator");
 
