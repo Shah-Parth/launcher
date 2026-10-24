@@ -99,12 +99,16 @@ List<FocusNode> toFocusNodes(List<CandidateNode> nodes) => nodes.map((e) => e.no
 /// A few extension methods to the [FocusNode] to be able to compare their
 /// respective position easily.
 extension Geometry on FocusNode {
+  /// Vertical tolerance to account for focus card zoom animations (1.1x - 1.15x),
+  /// outline borders, and subpixel rendering variance on TV panels.
+  static const double rowTolerance = 16.0;
+
   bool isBelow(FocusNode other) {
-    return rect.center.dy.round() > other.rect.center.dy.round();
+    return (rect.center.dy - other.rect.center.dy) > rowTolerance;
   }
 
   bool isBelowOrEquals(FocusNode other) {
-    return rect.center.dy.round() >= other.rect.center.dy.round();
+    return (rect.center.dy - other.rect.center.dy) >= -rowTolerance;
   }
 
   bool isRightTo(FocusNode other) {
@@ -124,15 +128,15 @@ extension Geometry on FocusNode {
   }
 
   bool isAbove(FocusNode other) {
-    return rect.center.dy.round() < other.rect.center.dy.round();
+    return (other.rect.center.dy - rect.center.dy) > rowTolerance;
   }
 
   bool isAboveOrEquals(FocusNode other) {
-    return rect.center.dy.round() <= other.rect.center.dy.round();
+    return (other.rect.center.dy - rect.center.dy) >= -rowTolerance;
   }
 
   bool isOnTheSameRow(FocusNode other) {
-    return rect.center.dy.round() == other.rect.center.dy.round();
+    return (rect.center.dy - other.rect.center.dy).abs() <= rowTolerance;
   }
 
   double distance(FocusNode other) {

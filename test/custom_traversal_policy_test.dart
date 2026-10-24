@@ -261,6 +261,41 @@ void main() {
       expect(candidates.first.node, nodeRight);
     });
 
+    testWidgets('findCandidates right and left with vertical subpixel or scale offset (#150)', (WidgetTester tester) async {
+      final nodeFrom = FocusNode();
+      final nodeLeft = FocusNode();
+      final nodeRight = FocusNode();
+      final nodeNextRow = FocusNode();
+
+      await tester.pumpWidget(
+        Directionality(
+          textDirection: TextDirection.ltr,
+          child: Stack(
+            children: [
+              // from node at top: 10
+              Positioned(left: 40, top: 10, width: 20, height: 20, child: Focus(focusNode: nodeFrom, child: const SizedBox())),
+              // left neighbor at top: 14 (4px vertical offset due to zoom/subpixel variance)
+              Positioned(left: 10, top: 14, width: 20, height: 20, child: Focus(focusNode: nodeLeft, child: const SizedBox())),
+              // right neighbor at top: 8 (2px vertical offset)
+              Positioned(left: 70, top: 8, width: 20, height: 20, child: Focus(focusNode: nodeRight, child: const SizedBox())),
+              // actual next row at top: 60 (well outside rowTolerance)
+              Positioned(left: 40, top: 60, width: 20, height: 20, child: Focus(focusNode: nodeNextRow, child: const SizedBox())),
+            ],
+          ),
+        ),
+      );
+
+      final rightSearcher = NodeSearcher(TraversalDirection.right);
+      final rightCandidates = rightSearcher.findCandidates([nodeFrom, nodeLeft, nodeRight, nodeNextRow], nodeFrom);
+      expect(rightCandidates.length, 1);
+      expect(rightCandidates.first.node, nodeRight);
+
+      final leftSearcher = NodeSearcher(TraversalDirection.left);
+      final leftCandidates = leftSearcher.findCandidates([nodeFrom, nodeLeft, nodeRight, nodeNextRow], nodeFrom);
+      expect(leftCandidates.length, 1);
+      expect(leftCandidates.first.node, nodeLeft);
+    });
+
     testWidgets('findBestFocusNode down', (WidgetTester tester) async {
       final nodeFrom = FocusNode();
       final nodeBelowLeft = FocusNode();
