@@ -355,6 +355,27 @@ class AppLocalizationsSl extends AppLocalizations {
   String get screensaverClockStyle => 'Slog ure ohranjevalnika zaslona';
 
   @override
+  String get screensaverAnimation => 'Screensaver Animation';
+
+  @override
+  String get screensaverAnimationBounce => 'DVD Bounce';
+
+  @override
+  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+
+  @override
+  String get screensaverAnimationFade => 'Minimal Fade';
+
+  @override
+  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+
+  @override
+  String get screensaverAnimationScatter => 'Character Scatter';
+
+  @override
+  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+
+  @override
   String get dataUsagePeriod => 'Obdobje porabe podatkov';
 
   @override

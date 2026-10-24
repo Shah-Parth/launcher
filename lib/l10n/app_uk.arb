@@ -227,5 +227,12 @@
     "noBlockedAppsDesc": "Усім програмам наразі дозволено показувати сповіщення",
     "notificationsAllowed": "Сповіщення дозволено",
     "notificationsBlocked": "Сповіщення заблоковано",
-    "dpadDismissHint": "Вліво: Закрити • OK: Параметри"
+    "dpadDismissHint": "Вліво: Закрити • OK: Параметри",
+    "screensaverAnimation": "Screensaver Animation",
+    "screensaverAnimationBounce": "DVD Bounce",
+    "screensaverAnimationBounceSubtitle": "Classic floating DVD logo bounce with wall color shifts",
+    "screensaverAnimationFade": "Minimal Fade",
+    "screensaverAnimationFadeSubtitle": "Smooth fade out and in at new positions",
+    "screensaverAnimationScatter": "Character Scatter",
+    "screensaverAnimationScatterSubtitle": "Playful bouncing characters"
 }

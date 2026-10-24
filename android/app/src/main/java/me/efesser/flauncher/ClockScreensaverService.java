@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.service.dreams.DreamService;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Choreographer;
 import android.view.Gravity;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
@@ -38,16 +39,84 @@ public class ClockScreensaverService extends DreamService {
 
     private List<TextView> timeCharViews = new ArrayList<>();
     private List<TextView> dateCharViews = new ArrayList<>();
+    private List<TextView> amPmCharViews = new ArrayList<>();
 
     private float currentCenterX;
     private float currentCenterY;
     private float targetCenterX;
     private float targetCenterY;
 
+    // DVD Bounce state
+    private boolean isBounceRunning = false;
+    private float speedX = 110f; // px / sec
+    private float speedY = 85f;  // px / sec
+    private long lastFrameTimeNanos = 0;
+
+    private static final int[] DVD_COLORS = {
+        Color.WHITE,
+        0xFF00E5FF, // Cyan
+        0xFFB388FF, // Purple / Violet
+        0xFF76FF03, // Electric Lime
+        0xFFFFD700, // Gold / Amber
+        0xFFFF4081, // Hot Pink
+        0xFFFFAB40  // Coral
+    };
+    private int currentDvdColorIndex = 0;
+
     private static final int TIME_FONT_SIZE = 80; // sp
-    private static final int DATE_FONT_SIZE = 24; // sp
+    private static final int DATE_FONT_SIZE = 32; // sp
+    private static final int AMPM_FONT_SIZE = 32; // sp (~40% of TIME_FONT_SIZE)
     private static final int CHAR_ANIMATION_DURATION = 800; // ms per character
     private static final int CHAR_STAGGER_DELAY = 100; // ms between characters
+
+    private final Choreographer.FrameCallback bounceFrameCallback = new Choreographer.FrameCallback() {
+        @Override
+        public void doFrame(long frameTimeNanos) {
+            if (!isBounceRunning) return;
+
+            if (lastFrameTimeNanos > 0) {
+                float dt = (frameTimeNanos - lastFrameTimeNanos) / 1_000_000_000f;
+                if (dt > 0.05f) dt = 0.016f;
+
+                currentCenterX += speedX * dt;
+                currentCenterY += speedY * dt;
+
+                float totalWidth = getClockTotalWidth();
+                float totalHeight = getClockTotalHeight();
+                float halfWidth = totalWidth / 2f;
+                float halfHeight = totalHeight / 2f;
+                boolean bounced = false;
+
+                if (currentCenterX - halfWidth <= 0) {
+                    currentCenterX = halfWidth;
+                    speedX = Math.abs(speedX);
+                    bounced = true;
+                } else if (currentCenterX + halfWidth >= screenWidth) {
+                    currentCenterX = screenWidth - halfWidth;
+                    speedX = -Math.abs(speedX);
+                    bounced = true;
+                }
+
+                if (currentCenterY - halfHeight <= 0) {
+                    currentCenterY = halfHeight;
+                    speedY = Math.abs(speedY);
+                    bounced = true;
+                } else if (currentCenterY + halfHeight >= screenHeight) {
+                    currentCenterY = screenHeight - halfHeight;
+                    speedY = -Math.abs(speedY);
+                    bounced = true;
+                }
+
+                if (bounced) {
+                    cycleDvdColor();
+                }
+
+                positionCharacters(currentCenterX, currentCenterY, false);
+            }
+            lastFrameTimeNanos = frameTimeNanos;
+            Choreographer.getInstance().postFrameCallback(this);
+        }
+    };
 
     @Override
     public void onAttachedToWindow() {
@@ -91,9 +160,56 @@ public class ClockScreensaverService extends DreamService {
         createCharacterViews();
         updateTime();
 
-        // Start handlers with initial delay
-        handler.postDelayed(moveClockRunnable, 30000);
+        SharedPreferences prefs = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+        String animStyle = prefs.getString("flutter.screensaver_animation_style", "bounce");
+
+        if ("bounce".equals(animStyle)) {
+            startDvdBounce();
+        } else {
+            handler.postDelayed(moveClockRunnable, 30000);
+        }
         handler.post(updateTimeRunnable);
+    }
+
+    private void startDvdBounce() {
+        isBounceRunning = true;
+        lastFrameTimeNanos = 0;
+        Choreographer.getInstance().postFrameCallback(bounceFrameCallback);
+    }
+
+    private void cycleDvdColor() {
+        currentDvdColorIndex = (currentDvdColorIndex + 1) % DVD_COLORS.length;
+        int newColor = DVD_COLORS[currentDvdColorIndex];
+        for (TextView tv : timeCharViews) {
+            tv.setTextColor(newColor);
+        }
+        for (TextView tv : amPmCharViews) {
+            tv.setTextColor(newColor);
+        }
+        for (TextView tv : dateCharViews) {
+            tv.setTextColor(newColor);
+        }
+    }
+
+    private float getClockTotalWidth() {
+        float timeWidth = 0;
+        for (TextView tv : timeCharViews) {
+            timeWidth += getCharWidth(tv);
+        }
+        for (TextView tv : amPmCharViews) {
+            timeWidth += getCharWidth(tv);
+        }
+        float dateWidth = 0;
+        for (TextView tv : dateCharViews) {
+            dateWidth += getCharWidth(tv);
+        }
+        return Math.max(timeWidth, dateWidth);
+    }
+
+    private float getClockTotalHeight() {
+        float timeHeight = timeCharViews.isEmpty() ? 0 : getCharHeight(timeCharViews.get(0));
+        float dateHeight = dateCharViews.isEmpty() ? 0 : getCharHeight(dateCharViews.get(0));
+        return timeHeight + dateHeight + 20;
     }
 
     private void createCharacterViews() {
@@ -112,14 +228,40 @@ public class ClockScreensaverService extends DreamService {
         container.removeAllViews();
         timeCharViews.clear();
         dateCharViews.clear();
+        amPmCharViews.clear();
 
-        // Create time character views
+        // Detect AM/PM in time string
+        String amPmSuffix = "";
+        String timeDigits = timeStr;
+        if (timeStr.toUpperCase().endsWith("AM") || timeStr.toUpperCase().endsWith("PM")) {
+            amPmSuffix = timeStr.substring(timeStr.length() - 2);
+            timeDigits = timeStr.substring(0, timeStr.length() - 2).trim();
+        }
+
+        // Create time character views (digits at full size)
         float timeWidth = 0;
-        for (int i = 0; i < timeStr.length(); i++) {
-            TextView charView = createCharView(String.valueOf(timeStr.charAt(i)), TIME_FONT_SIZE);
+        for (int i = 0; i < timeDigits.length(); i++) {
+            TextView charView = createCharView(String.valueOf(timeDigits.charAt(i)), TIME_FONT_SIZE);
             timeCharViews.add(charView);
             container.addView(charView);
             timeWidth += getCharWidth(charView);
+        }
+
+        // Create AM/PM characters at smaller size (tracked separately for
+        // bottom-alignment)
+        if (!amPmSuffix.isEmpty()) {
+            // Add a small space (counted in time width for centering)
+            TextView spaceView = createCharView(" ", AMPM_FONT_SIZE);
+            amPmCharViews.add(spaceView);
+            container.addView(spaceView);
+            timeWidth += getCharWidth(spaceView);
+
+            for (int i = 0; i < amPmSuffix.length(); i++) {
+                TextView charView = createCharView(String.valueOf(amPmSuffix.charAt(i)), AMPM_FONT_SIZE);
+                amPmCharViews.add(charView);
+                container.addView(charView);
+                timeWidth += getCharWidth(charView);
+            }
         }
 
         // Create date character views
@@ -131,16 +273,52 @@ public class ClockScreensaverService extends DreamService {
             dateWidth += getCharWidth(charView);
         }
 
-        // Position characters at center
+        // Restore active DVD color if bouncing
+        String animStyle = prefs.getString("flutter.screensaver_animation_style", "bounce");
+        if ("bounce".equals(animStyle)) {
+            int currentColor = DVD_COLORS[currentDvdColorIndex];
+            for (TextView tv : timeCharViews) tv.setTextColor(currentColor);
+            for (TextView tv : amPmCharViews) tv.setTextColor(currentColor);
+            for (TextView tv : dateCharViews) tv.setTextColor(currentColor);
+        }
+
+        // Position characters at current center
         positionCharacters(currentCenterX, currentCenterY, false);
     }
 
     private TextView createCharView(String character, int fontSize) {
+        SharedPreferences prefs = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+        String clockStyle = prefs.getString("flutter.screensaver_clock_style", "minimal");
+
         TextView tv = new TextView(this);
         tv.setText(character);
         tv.setTextColor(Color.WHITE);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
-        tv.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+
+        switch (clockStyle) {
+            case "bold":
+                tv.setTypeface(Typeface.create("sans-serif", Typeface.BOLD));
+                break;
+            case "retro":
+                tv.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+                break;
+            case "elegant":
+                tv.setTypeface(Typeface.create("serif", Typeface.NORMAL));
+                break;
+            case "neon":
+                tv.setTypeface(Typeface.create("sans-serif-light", Typeface.NORMAL));
+                break;
+            case "pixel":
+                tv.setTypeface(Typeface.create("monospace", Typeface.BOLD));
+                break;
+            case "digital":
+                tv.setTypeface(Typeface.create("monospace", Typeface.NORMAL));
+                break;
+            default: // "minimal"
+                tv.setTypeface(Typeface.create("sans-serif-thin", Typeface.NORMAL));
+                break;
+        }
+
         tv.setGravity(Gravity.CENTER);
         tv.setShadowLayer(15, 0, 0, 0x60FFFFFF);
         tv.setLayoutParams(new FrameLayout.LayoutParams(
@@ -175,8 +353,14 @@ public class ClockScreensaverService extends DreamService {
         float dateHeight = dateCharViews.isEmpty() ? 0 : getCharHeight(dateCharViews.get(0));
         float totalHeight = timeHeight + dateHeight + 20; // 20px gap
 
-        // Position time characters
-        float timeStartX = centerX - timeWidth / 2;
+        // Calculate total width including AM/PM for centering
+        float totalTimeWidth = timeWidth;
+        for (TextView tv : amPmCharViews) {
+            totalTimeWidth += getCharWidth(tv);
+        }
+
+        // Position time characters (digits only)
+        float timeStartX = centerX - totalTimeWidth / 2;
         float timeY = centerY - totalHeight / 2;
         float currentX = timeStartX;
 
@@ -187,6 +371,20 @@ public class ClockScreensaverService extends DreamService {
             } else {
                 tv.setX(currentX);
                 tv.setY(timeY);
+            }
+            currentX += charWidth;
+        }
+
+        // Position AM/PM characters at the BOTTOM of the time row
+        float amPmHeight = amPmCharViews.isEmpty() ? 0 : getCharHeight(amPmCharViews.get(0));
+        float amPmY = timeY + timeHeight - amPmHeight;
+        for (TextView tv : amPmCharViews) {
+            float charWidth = getCharWidth(tv);
+            if (animate) {
+                tv.setTag(new float[] { currentX, amPmY });
+            } else {
+                tv.setX(currentX);
+                tv.setY(amPmY);
             }
             currentX += charWidth;
         }
@@ -219,13 +417,30 @@ public class ClockScreensaverService extends DreamService {
         String timeStr = timeFormat.format(new Date());
         String dateStr = dateFormat.format(new Date());
 
-        // Update time characters
-        for (int i = 0; i < timeCharViews.size() && i < timeStr.length(); i++) {
-            timeCharViews.get(i).setText(String.valueOf(timeStr.charAt(i)));
+        // Detect AM/PM in time string
+        String amPmSuffix = "";
+        String timeDigits = timeStr;
+        if (timeStr.toUpperCase().endsWith("AM") || timeStr.toUpperCase().endsWith("PM")) {
+            amPmSuffix = timeStr.substring(timeStr.length() - 2);
+            timeDigits = timeStr.substring(0, timeStr.length() - 2).trim();
+        }
+
+        // Update time digit characters
+        for (int i = 0; i < timeCharViews.size() && i < timeDigits.length(); i++) {
+            timeCharViews.get(i).setText(String.valueOf(timeDigits.charAt(i)));
+        }
+
+        // Update AM/PM characters (index 0=space, 1=A/P, 2=M)
+        if (!amPmSuffix.isEmpty() && amPmCharViews.size() >= 3) {
+            amPmCharViews.get(1).setText(String.valueOf(amPmSuffix.charAt(0)));
+            amPmCharViews.get(2).setText(String.valueOf(amPmSuffix.charAt(1)));
         }
 
         // Check if we need to recreate views (text length changed)
-        if (timeStr.length() != timeCharViews.size() || dateStr.length() != dateCharViews.size()) {
+        int expectedAmPmCount = amPmSuffix.isEmpty() ? 0 : 3; // space + 2 chars
+        if (timeDigits.length() != timeCharViews.size()
+                || expectedAmPmCount != amPmCharViews.size()
+                || dateStr.length() != dateCharViews.size()) {
             createCharacterViews();
         } else {
             // Update date characters
@@ -236,14 +451,76 @@ public class ClockScreensaverService extends DreamService {
     }
 
     private void animateToNewPosition() {
+        SharedPreferences prefs = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+        String animStyle = prefs.getString("flutter.screensaver_animation_style", "bounce");
+        if ("fade".equals(animStyle)) {
+            animateFadeToNewPosition();
+        } else {
+            animateScatterToNewPosition();
+        }
+    }
+
+    private void animateFadeToNewPosition() {
+        float margin = 150;
+        float maxWidth = getClockTotalWidth();
+        float totalHeight = getClockTotalHeight();
+
+        float maxX = screenWidth - maxWidth / 2 - margin;
+        float minX = maxWidth / 2 + margin;
+        float maxY = screenHeight - totalHeight / 2 - margin;
+        float minY = totalHeight / 2 + margin;
+
+        if (maxX <= minX || maxY <= minY)
+            return;
+
+        targetCenterX = minX + random.nextFloat() * (maxX - minX);
+        targetCenterY = minY + random.nextFloat() * (maxY - minY);
+
+        List<TextView> allChars = new ArrayList<>();
+        allChars.addAll(timeCharViews);
+        allChars.addAll(amPmCharViews);
+        allChars.addAll(dateCharViews);
+
+        if (allChars.isEmpty()) return;
+
+        AnimatorSet fadeOutSet = new AnimatorSet();
+        List<Animator> fadeOutAnimators = new ArrayList<>();
+        for (TextView tv : allChars) {
+            fadeOutAnimators.add(ObjectAnimator.ofFloat(tv, "alpha", tv.getAlpha(), 0f));
+        }
+        fadeOutSet.playTogether(fadeOutAnimators);
+        fadeOutSet.setDuration(600);
+        fadeOutSet.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        fadeOutSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                currentCenterX = targetCenterX;
+                currentCenterY = targetCenterY;
+                positionCharacters(currentCenterX, currentCenterY, false);
+
+                AnimatorSet fadeInSet = new AnimatorSet();
+                List<Animator> fadeInAnimators = new ArrayList<>();
+                for (TextView tv : allChars) {
+                    tv.setScaleX(1f);
+                    tv.setScaleY(1f);
+                    fadeInAnimators.add(ObjectAnimator.ofFloat(tv, "alpha", 0f, 1f));
+                }
+                fadeInSet.playTogether(fadeInAnimators);
+                fadeInSet.setDuration(600);
+                fadeInSet.setInterpolator(new AccelerateDecelerateInterpolator());
+                fadeInSet.start();
+            }
+        });
+
+        fadeOutSet.start();
+    }
+
+    private void animateScatterToNewPosition() {
         // Calculate new random position
         float margin = 150;
-        float maxWidth = 0;
-        for (TextView tv : timeCharViews) {
-            maxWidth += getCharWidth(tv);
-        }
-        float totalHeight = (timeCharViews.isEmpty() ? 0 : getCharHeight(timeCharViews.get(0))) +
-                (dateCharViews.isEmpty() ? 0 : getCharHeight(dateCharViews.get(0))) + 20;
+        float maxWidth = getClockTotalWidth();
+        float totalHeight = getClockTotalHeight();
 
         float maxX = screenWidth - maxWidth / 2 - margin;
         float minX = maxWidth / 2 + margin;
@@ -262,6 +539,7 @@ public class ClockScreensaverService extends DreamService {
         // Combine all character views
         List<TextView> allChars = new ArrayList<>();
         allChars.addAll(timeCharViews);
+        allChars.addAll(amPmCharViews);
         allChars.addAll(dateCharViews);
 
         // Shuffle to randomize animation order
@@ -346,6 +624,11 @@ public class ClockScreensaverService extends DreamService {
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+
+        if (isBounceRunning) {
+            isBounceRunning = false;
+            Choreographer.getInstance().removeFrameCallback(bounceFrameCallback);
+        }
 
         if (handler != null) {
             handler.removeCallbacks(updateTimeRunnable);

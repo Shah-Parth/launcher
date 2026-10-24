@@ -43,6 +43,7 @@ const _showDataWidgetInStatusBarKey = "show_wifi_widget_in_status_bar";
 const String _showNetworkIndicatorInStatusBarKey = "show_network_indicator_in_status_bar";
 const String _accentColorKey = "accent_color";
 const String _screensaverClockStyleKey = "screensaver_clock_style";
+const String _screensaverAnimationStyleKey = "screensaver_animation_style";
 const String _timeBasedWallpaperEnabledKey = "time_based_wallpaper_enabled";
 const String _showInputsWidgetInStatusBarKey = "show_inputs_widget_in_status_bar";
 const String _showContinueWatchingKey = "show_continue_watching";
@@ -88,6 +89,11 @@ const String ACCENT_COLOR_AMBER = "FFAB00";
 const String ACCENT_COLOR_ROSE = "FF4081";
 const String ACCENT_COLOR_ICE_BLUE = "80D8FF";
 
+// Screensaver animation options
+const String SCREENSAVER_ANIMATION_BOUNCE = "bounce";
+const String SCREENSAVER_ANIMATION_FADE = "fade";
+const String SCREENSAVER_ANIMATION_SCATTER = "scatter";
+
 class SettingsService extends ChangeNotifier {
   static final defaultDateFormat = "EEEE d";
   static final defaultTimeFormat = "H:mm";
@@ -113,6 +119,7 @@ class SettingsService extends ChangeNotifier {
   late bool _showNetworkIndicatorInStatusBar;
   late String _accentColorHex;
   late String _screensaverClockStyle;
+  late String _screensaverAnimationStyle;
   late bool _timeBasedWallpaperEnabled;
   late bool _showInputsWidgetInStatusBar;
   late bool _showContinueWatching;
@@ -201,6 +208,8 @@ class SettingsService extends ChangeNotifier {
 
   String get screensaverClockStyle => _screensaverClockStyle;
 
+  String get screensaverAnimationStyle => _screensaverAnimationStyle;
+
   Color get accentColor {
     final hex = accentColorHex;
     final int value = int.tryParse("0xFF$hex") ?? 0xFF7C4DFF;
@@ -232,6 +241,7 @@ class SettingsService extends ChangeNotifier {
     _showNetworkIndicatorInStatusBar = _sharedPreferences.getBool(_showNetworkIndicatorInStatusBarKey) ?? true;
     _accentColorHex = _sharedPreferences.getString(_accentColorKey) ?? ACCENT_COLOR_PURPLE;
     _screensaverClockStyle = _sharedPreferences.getString(_screensaverClockStyleKey) ?? "minimal";
+    _screensaverAnimationStyle = _sharedPreferences.getString(_screensaverAnimationStyleKey) ?? SCREENSAVER_ANIMATION_BOUNCE;
     _timeBasedWallpaperEnabled = _sharedPreferences.getBool(_timeBasedWallpaperEnabledKey) ?? false;
     _showInputsWidgetInStatusBar = _sharedPreferences.getBool(_showInputsWidgetInStatusBarKey) ?? true;
     _showContinueWatching = _sharedPreferences.getBool(_showContinueWatchingKey) ?? false;
@@ -276,6 +286,7 @@ class SettingsService extends ChangeNotifier {
       _showNetworkIndicatorInStatusBarKey: _showNetworkIndicatorInStatusBar,
       _accentColorKey: _accentColorHex,
       _screensaverClockStyleKey: _screensaverClockStyle,
+      _screensaverAnimationStyleKey: _screensaverAnimationStyle,
       _timeBasedWallpaperEnabledKey: _timeBasedWallpaperEnabled,
       _showInputsWidgetInStatusBarKey: _showInputsWidgetInStatusBar,
       _showContinueWatchingKey: _showContinueWatching,
@@ -438,6 +449,12 @@ class SettingsService extends ChangeNotifier {
   Future<void> setScreensaverClockStyle(String style) async {
     await _sharedPreferences.setString(_screensaverClockStyleKey, style);
     _screensaverClockStyle = style;
+    notifyListeners();
+  }
+
+  Future<void> setScreensaverAnimationStyle(String style) async {
+    await _sharedPreferences.setString(_screensaverAnimationStyleKey, style);
+    _screensaverAnimationStyle = style;
     notifyListeners();
   }
 

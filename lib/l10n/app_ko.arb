@@ -227,5 +227,12 @@
     "noBlockedAppsDesc": "현재 모든 애플리케이션의 알림 표시가 허용되어 있습니다",
     "notificationsAllowed": "알림 허용됨",
     "notificationsBlocked": "알림 차단됨",
-    "dpadDismissHint": "왼쪽: 닫기 • 확인: 옵션"
+    "dpadDismissHint": "왼쪽: 닫기 • 확인: 옵션",
+    "screensaverAnimation": "Screensaver Animation",
+    "screensaverAnimationBounce": "DVD Bounce",
+    "screensaverAnimationBounceSubtitle": "Classic floating DVD logo bounce with wall color shifts",
+    "screensaverAnimationFade": "Minimal Fade",
+    "screensaverAnimationFadeSubtitle": "Smooth fade out and in at new positions",
+    "screensaverAnimationScatter": "Character Scatter",
+    "screensaverAnimationScatterSubtitle": "Playful bouncing characters"
 }

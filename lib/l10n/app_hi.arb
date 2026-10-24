@@ -227,5 +227,12 @@
     "noBlockedAppsDesc": "सभी ऐप्स को वर्तमान में सूचनाएं दिखाने की अनुमति है",
     "notificationsAllowed": "सूचनाएं चालू हैं",
     "notificationsBlocked": "सूचनाएं अवरुद्ध हैं",
-    "dpadDismissHint": "बायां: हटाएं • ठीक है: विकल्प"
+    "dpadDismissHint": "बायां: हटाएं • ठीक है: विकल्प",
+    "screensaverAnimation": "Screensaver Animation",
+    "screensaverAnimationBounce": "DVD Bounce",
+    "screensaverAnimationBounceSubtitle": "Classic floating DVD logo bounce with wall color shifts",
+    "screensaverAnimationFade": "Minimal Fade",
+    "screensaverAnimationFadeSubtitle": "Smooth fade out and in at new positions",
+    "screensaverAnimationScatter": "Character Scatter",
+    "screensaverAnimationScatterSubtitle": "Playful bouncing characters"
 }

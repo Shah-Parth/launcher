@@ -355,6 +355,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get screensaverClockStyle => 'Style d\'horloge de l\'écran de veille';
 
   @override
+  String get screensaverAnimation => 'Screensaver Animation';
+
+  @override
+  String get screensaverAnimationBounce => 'DVD Bounce';
+
+  @override
+  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+
+  @override
+  String get screensaverAnimationFade => 'Minimal Fade';
+
+  @override
+  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+
+  @override
+  String get screensaverAnimationScatter => 'Character Scatter';
+
+  @override
+  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+
+  @override
   String get dataUsagePeriod => 'Période d\'utilisation des données';
 
   @override

@@ -327,4 +327,31 @@ void main() async {
       expect(service.hiddenWatchNextPackages, isEmpty);
     });
   });
+
+  group("screensaverAnimationStyle", () {
+    test("default is bounce", () async {
+      final sp = await SharedPreferences.getInstance();
+      final service = SettingsService(sp);
+      expect(service.screensaverAnimationStyle, SCREENSAVER_ANIMATION_BOUNCE);
+    });
+
+    test("sets and gets screensaver animation style", () async {
+      final sp = await SharedPreferences.getInstance();
+      final service = SettingsService(sp);
+      await service.setScreensaverAnimationStyle(SCREENSAVER_ANIMATION_FADE);
+      expect(service.screensaverAnimationStyle, SCREENSAVER_ANIMATION_FADE);
+    });
+
+    test("export and import preserve screensaver animation style", () async {
+      final sp1 = await SharedPreferences.getInstance();
+      final service1 = SettingsService(sp1);
+      await service1.setScreensaverAnimationStyle(SCREENSAVER_ANIMATION_SCATTER);
+      final exported = service1.exportSettingsMap();
+      expect(exported["screensaver_animation_style"], SCREENSAVER_ANIMATION_SCATTER);
+
+      final service2 = SettingsService(sp1);
+      await service2.importSettingsMap(exported);
+      expect(service2.screensaverAnimationStyle, SCREENSAVER_ANIMATION_SCATTER);
+    });
+  });
 }

@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.service.dreams.DreamService;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Choreographer;
 import android.view.Gravity;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
@@ -45,11 +46,77 @@ public class ClockScreensaverService extends DreamService {
     private float targetCenterX;
     private float targetCenterY;
 
+    // DVD Bounce state
+    private boolean isBounceRunning = false;
+    private float speedX = 110f; // px / sec
+    private float speedY = 85f;  // px / sec
+    private long lastFrameTimeNanos = 0;
+
+    private static final int[] DVD_COLORS = {
+        Color.WHITE,
+        0xFF00E5FF, // Cyan
+        0xFFB388FF, // Purple / Violet
+        0xFF76FF03, // Electric Lime
+        0xFFFFD700, // Gold / Amber
+        0xFFFF4081, // Hot Pink
+        0xFFFFAB40  // Coral
+    };
+    private int currentDvdColorIndex = 0;
+
     private static final int TIME_FONT_SIZE = 80; // sp
     private static final int DATE_FONT_SIZE = 32; // sp
     private static final int AMPM_FONT_SIZE = 32; // sp (~40% of TIME_FONT_SIZE)
     private static final int CHAR_ANIMATION_DURATION = 800; // ms per character
     private static final int CHAR_STAGGER_DELAY = 100; // ms between characters
+
+    private final Choreographer.FrameCallback bounceFrameCallback = new Choreographer.FrameCallback() {
+        @Override
+        public void doFrame(long frameTimeNanos) {
+            if (!isBounceRunning) return;
+
+            if (lastFrameTimeNanos > 0) {
+                float dt = (frameTimeNanos - lastFrameTimeNanos) / 1_000_000_000f;
+                if (dt > 0.05f) dt = 0.016f;
+
+                currentCenterX += speedX * dt;
+                currentCenterY += speedY * dt;
+
+                float totalWidth = getClockTotalWidth();
+                float totalHeight = getClockTotalHeight();
+                float halfWidth = totalWidth / 2f;
+                float halfHeight = totalHeight / 2f;
+                boolean bounced = false;
+
+                if (currentCenterX - halfWidth <= 0) {
+                    currentCenterX = halfWidth;
+                    speedX = Math.abs(speedX);
+                    bounced = true;
+                } else if (currentCenterX + halfWidth >= screenWidth) {
+                    currentCenterX = screenWidth - halfWidth;
+                    speedX = -Math.abs(speedX);
+                    bounced = true;
+                }
+
+                if (currentCenterY - halfHeight <= 0) {
+                    currentCenterY = halfHeight;
+                    speedY = Math.abs(speedY);
+                    bounced = true;
+                } else if (currentCenterY + halfHeight >= screenHeight) {
+                    currentCenterY = screenHeight - halfHeight;
+                    speedY = -Math.abs(speedY);
+                    bounced = true;
+                }
+
+                if (bounced) {
+                    cycleDvdColor();
+                }
+
+                positionCharacters(currentCenterX, currentCenterY, false);
+            }
+            lastFrameTimeNanos = frameTimeNanos;
+            Choreographer.getInstance().postFrameCallback(this);
+        }
+    };
 
     @Override
     public void onAttachedToWindow() {
@@ -93,9 +160,56 @@ public class ClockScreensaverService extends DreamService {
         createCharacterViews();
         updateTime();
 
-        // Start handlers with initial delay
-        handler.postDelayed(moveClockRunnable, 30000);
+        SharedPreferences prefs = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+        String animStyle = prefs.getString("flutter.screensaver_animation_style", "bounce");
+
+        if ("bounce".equals(animStyle)) {
+            startDvdBounce();
+        } else {
+            handler.postDelayed(moveClockRunnable, 30000);
+        }
         handler.post(updateTimeRunnable);
+    }
+
+    private void startDvdBounce() {
+        isBounceRunning = true;
+        lastFrameTimeNanos = 0;
+        Choreographer.getInstance().postFrameCallback(bounceFrameCallback);
+    }
+
+    private void cycleDvdColor() {
+        currentDvdColorIndex = (currentDvdColorIndex + 1) % DVD_COLORS.length;
+        int newColor = DVD_COLORS[currentDvdColorIndex];
+        for (TextView tv : timeCharViews) {
+            tv.setTextColor(newColor);
+        }
+        for (TextView tv : amPmCharViews) {
+            tv.setTextColor(newColor);
+        }
+        for (TextView tv : dateCharViews) {
+            tv.setTextColor(newColor);
+        }
+    }
+
+    private float getClockTotalWidth() {
+        float timeWidth = 0;
+        for (TextView tv : timeCharViews) {
+            timeWidth += getCharWidth(tv);
+        }
+        for (TextView tv : amPmCharViews) {
+            timeWidth += getCharWidth(tv);
+        }
+        float dateWidth = 0;
+        for (TextView tv : dateCharViews) {
+            dateWidth += getCharWidth(tv);
+        }
+        return Math.max(timeWidth, dateWidth);
+    }
+
+    private float getClockTotalHeight() {
+        float timeHeight = timeCharViews.isEmpty() ? 0 : getCharHeight(timeCharViews.get(0));
+        float dateHeight = dateCharViews.isEmpty() ? 0 : getCharHeight(dateCharViews.get(0));
+        return timeHeight + dateHeight + 20;
     }
 
     private void createCharacterViews() {
@@ -159,7 +273,16 @@ public class ClockScreensaverService extends DreamService {
             dateWidth += getCharWidth(charView);
         }
 
-        // Position characters at center
+        // Restore active DVD color if bouncing
+        String animStyle = prefs.getString("flutter.screensaver_animation_style", "bounce");
+        if ("bounce".equals(animStyle)) {
+            int currentColor = DVD_COLORS[currentDvdColorIndex];
+            for (TextView tv : timeCharViews) tv.setTextColor(currentColor);
+            for (TextView tv : amPmCharViews) tv.setTextColor(currentColor);
+            for (TextView tv : dateCharViews) tv.setTextColor(currentColor);
+        }
+
+        // Position characters at current center
         positionCharacters(currentCenterX, currentCenterY, false);
     }
 
@@ -328,17 +451,76 @@ public class ClockScreensaverService extends DreamService {
     }
 
     private void animateToNewPosition() {
+        SharedPreferences prefs = getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+        String animStyle = prefs.getString("flutter.screensaver_animation_style", "bounce");
+        if ("fade".equals(animStyle)) {
+            animateFadeToNewPosition();
+        } else {
+            animateScatterToNewPosition();
+        }
+    }
+
+    private void animateFadeToNewPosition() {
+        float margin = 150;
+        float maxWidth = getClockTotalWidth();
+        float totalHeight = getClockTotalHeight();
+
+        float maxX = screenWidth - maxWidth / 2 - margin;
+        float minX = maxWidth / 2 + margin;
+        float maxY = screenHeight - totalHeight / 2 - margin;
+        float minY = totalHeight / 2 + margin;
+
+        if (maxX <= minX || maxY <= minY)
+            return;
+
+        targetCenterX = minX + random.nextFloat() * (maxX - minX);
+        targetCenterY = minY + random.nextFloat() * (maxY - minY);
+
+        List<TextView> allChars = new ArrayList<>();
+        allChars.addAll(timeCharViews);
+        allChars.addAll(amPmCharViews);
+        allChars.addAll(dateCharViews);
+
+        if (allChars.isEmpty()) return;
+
+        AnimatorSet fadeOutSet = new AnimatorSet();
+        List<Animator> fadeOutAnimators = new ArrayList<>();
+        for (TextView tv : allChars) {
+            fadeOutAnimators.add(ObjectAnimator.ofFloat(tv, "alpha", tv.getAlpha(), 0f));
+        }
+        fadeOutSet.playTogether(fadeOutAnimators);
+        fadeOutSet.setDuration(600);
+        fadeOutSet.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        fadeOutSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                currentCenterX = targetCenterX;
+                currentCenterY = targetCenterY;
+                positionCharacters(currentCenterX, currentCenterY, false);
+
+                AnimatorSet fadeInSet = new AnimatorSet();
+                List<Animator> fadeInAnimators = new ArrayList<>();
+                for (TextView tv : allChars) {
+                    tv.setScaleX(1f);
+                    tv.setScaleY(1f);
+                    fadeInAnimators.add(ObjectAnimator.ofFloat(tv, "alpha", 0f, 1f));
+                }
+                fadeInSet.playTogether(fadeInAnimators);
+                fadeInSet.setDuration(600);
+                fadeInSet.setInterpolator(new AccelerateDecelerateInterpolator());
+                fadeInSet.start();
+            }
+        });
+
+        fadeOutSet.start();
+    }
+
+    private void animateScatterToNewPosition() {
         // Calculate new random position
         float margin = 150;
-        float maxWidth = 0;
-        for (TextView tv : timeCharViews) {
-            maxWidth += getCharWidth(tv);
-        }
-        for (TextView tv : amPmCharViews) {
-            maxWidth += getCharWidth(tv);
-        }
-        float totalHeight = (timeCharViews.isEmpty() ? 0 : getCharHeight(timeCharViews.get(0))) +
-                (dateCharViews.isEmpty() ? 0 : getCharHeight(dateCharViews.get(0))) + 20;
+        float maxWidth = getClockTotalWidth();
+        float totalHeight = getClockTotalHeight();
 
         float maxX = screenWidth - maxWidth / 2 - margin;
         float minX = maxWidth / 2 + margin;
@@ -442,6 +624,11 @@ public class ClockScreensaverService extends DreamService {
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+
+        if (isBounceRunning) {
+            isBounceRunning = false;
+            Choreographer.getInstance().removeFrameCallback(bounceFrameCallback);
+        }
 
         if (handler != null) {
             handler.removeCallbacks(updateTimeRunnable);

@@ -781,6 +781,48 @@ abstract class AppLocalizations {
   /// **'Screensaver Clock Style'**
   String get screensaverClockStyle;
 
+  /// No description provided for @screensaverAnimation.
+  ///
+  /// In en, this message translates to:
+  /// **'Screensaver Animation'**
+  String get screensaverAnimation;
+
+  /// No description provided for @screensaverAnimationBounce.
+  ///
+  /// In en, this message translates to:
+  /// **'DVD Bounce'**
+  String get screensaverAnimationBounce;
+
+  /// No description provided for @screensaverAnimationBounceSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic floating DVD logo bounce with wall color shifts'**
+  String get screensaverAnimationBounceSubtitle;
+
+  /// No description provided for @screensaverAnimationFade.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimal Fade'**
+  String get screensaverAnimationFade;
+
+  /// No description provided for @screensaverAnimationFadeSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Smooth fade out and in at new positions'**
+  String get screensaverAnimationFadeSubtitle;
+
+  /// No description provided for @screensaverAnimationScatter.
+  ///
+  /// In en, this message translates to:
+  /// **'Character Scatter'**
+  String get screensaverAnimationScatter;
+
+  /// No description provided for @screensaverAnimationScatterSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Playful bouncing characters'**
+  String get screensaverAnimationScatterSubtitle;
+
   /// No description provided for @dataUsagePeriod.
   ///
   /// In en, this message translates to:
