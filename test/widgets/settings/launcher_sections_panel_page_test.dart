@@ -126,6 +126,33 @@ void main() {
     expect(find.text("Section 9"), findsOneWidget);
   });
 
+  testWidgets("Can navigate down and up through 20 sections using D-pad", (tester) async {
+    final appsService = MockAppsService();
+    final List<LauncherSection> sections = List.generate(20, (i) => fakeCategory(name: "Section $i", order: i));
+    when(appsService.launcherSections).thenReturn(sections);
+    await _pumpWidgetWithProviders(tester, appsService);
+
+    // Request focus on Section 0
+    Focus.of(tester.element(find.text("Section 0"))).requestFocus();
+    await tester.pumpAndSettle();
+
+    // Navigate down through all 20 sections
+    for (int i = 0; i < 19; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+    }
+
+    // Section 19 should now be visible and in the tree
+    expect(find.text("Section 19"), findsOneWidget);
+
+    // Navigate back up to Section 0
+    for (int i = 0; i < 19; i++) {
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+    }
+    expect(find.text("Section 0"), findsOneWidget);
+  });
+
   testWidgets("Continue watching section is displayed when SettingsService is provided", (tester) async {
     final appsService = MockAppsService();
     when(appsService.launcherSections).thenReturn([

@@ -211,6 +211,12 @@ class _LauncherSectionsPanelPageState extends State<LauncherSectionsPanelPage> {
                 Navigator.pushNamed(context, LauncherSectionPanelPage.routeName, arguments: idx);
               }
               return KeyEventResult.handled;
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowDown && index < totalCount - 1) {
+              _getFocusNode(displaySections[index + 1]).requestFocus();
+              return KeyEventResult.handled;
+            } else if (event.logicalKey == LogicalKeyboardKey.arrowUp && index > 0) {
+              _getFocusNode(displaySections[index - 1]).requestFocus();
+              return KeyEventResult.handled;
             }
           }
           return KeyEventResult.ignored;
