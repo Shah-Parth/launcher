@@ -34,6 +34,9 @@ class ScreensaverAnimationPage extends StatelessWidget {
       selector: (_, settingsService) => settingsService.screensaverAnimationStyle,
       builder: (context, currentAnimation, _) {
         final settingsService = context.read<SettingsService>();
+        final bool isAnySelected = currentAnimation == SCREENSAVER_ANIMATION_BOUNCE ||
+            currentAnimation == SCREENSAVER_ANIMATION_FADE ||
+            currentAnimation == SCREENSAVER_ANIMATION_SCATTER;
 
         return Column(
           children: [
@@ -49,7 +52,7 @@ class ScreensaverAnimationPage extends StatelessWidget {
                       value: SCREENSAVER_ANIMATION_BOUNCE,
                       groupValue: currentAnimation,
                       onChanged: (value) => settingsService.setScreensaverAnimationStyle(value!),
-                      autofocus: currentAnimation == SCREENSAVER_ANIMATION_BOUNCE,
+                      autofocus: currentAnimation == SCREENSAVER_ANIMATION_BOUNCE || !isAnySelected,
                     ),
                     _AnimationRadioTile(
                       title: localizations.screensaverAnimationFade,
@@ -107,10 +110,14 @@ class _AnimationRadioTileState extends State<_AnimationRadioTile> {
     final bool isSelected = widget.value == widget.groupValue;
     final primaryColor = Theme.of(context).colorScheme.primary;
 
-    return FocusableActionDetector(
+    return RepaintBoundary(
       child: Actions(
-        actions: {
-          ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (intent) {
+        actions: <Type, Action<Intent>>{
+          ActivateIntent: CallbackAction<ActivateIntent>(onInvoke: (_) {
+            widget.onChanged(widget.value);
+            return null;
+          }),
+          ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(onInvoke: (_) {
             widget.onChanged(widget.value);
             return null;
           }),
@@ -130,14 +137,11 @@ class _AnimationRadioTileState extends State<_AnimationRadioTile> {
               );
             }
           },
-          child: InkWell(
+          child: GestureDetector(
             onTap: () {
               widget.onChanged(widget.value);
             },
-            focusColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
+            behavior: HitTestBehavior.opaque,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

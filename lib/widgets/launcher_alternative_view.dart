@@ -188,8 +188,8 @@ class _BouncingDvdClockState extends State<_BouncingDvdClock> with SingleTickerP
   late Ticker _ticker;
   double _x = 60.0;
   double _y = 60.0;
-  double _vx = 1.8;
-  double _vy = 1.3;
+  double _vx = 1.0;
+  double _vy = 0.75;
   int _colorIndex = 0;
   final GlobalKey _contentKey = GlobalKey();
   Size _contentSize = const Size(360, 180);
@@ -323,12 +323,16 @@ class _FadingScreensaverClockState extends State<_FadingScreensaverClock> {
 
   static const List<Alignment> _positions = [
     Alignment.center,
-    Alignment(-0.5, -0.5),
-    Alignment(0.5, -0.5),
-    Alignment(-0.5, 0.5),
-    Alignment(0.5, 0.5),
-    Alignment(0.0, -0.4),
-    Alignment(0.0, 0.4),
+    Alignment(-0.6, -0.8),
+    Alignment(0.6, -0.8),
+    Alignment(0.0, -0.75),
+    Alignment(-0.5, -0.35),
+    Alignment(0.5, -0.35),
+    Alignment(-0.6, 0.4),
+    Alignment(0.6, 0.4),
+    Alignment(0.0, 0.75),
+    Alignment(-0.5, 0.8),
+    Alignment(0.5, 0.8),
   ];
 
   @override

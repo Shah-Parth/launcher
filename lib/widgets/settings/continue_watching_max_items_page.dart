@@ -58,26 +58,29 @@ class ContinueWatchingMaxItemsPage extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  children: maxItemsPresets.map((preset) {
-                    final count = preset.$1;
-                    final title = preset.$2;
-                    final subtitle = preset.$3;
-                    final isSelected = currentCount == count;
+                  children: () {
+                    final hasSelected = maxItemsPresets.any((preset) => preset.$1 == currentCount);
+                    return maxItemsPresets.map((preset) {
+                      final count = preset.$1;
+                      final title = preset.$2;
+                      final subtitle = preset.$3;
+                      final isSelected = currentCount == count;
 
-                    return _MaxItemsRadioTile(
-                      title: title,
-                      subtitle: subtitle,
-                      value: count,
-                      groupValue: currentCount,
-                      isSelected: isSelected,
-                      autofocus: isSelected,
-                      onChanged: (value) {
-                        if (value != null) {
-                          settingsService.setContinueWatchingMaxItems(value);
-                        }
-                      },
-                    );
-                  }).toList(),
+                      return _MaxItemsRadioTile(
+                        title: title,
+                        subtitle: subtitle,
+                        value: count,
+                        groupValue: currentCount,
+                        isSelected: isSelected,
+                        autofocus: isSelected || (!hasSelected && preset == maxItemsPresets.first),
+                        onChanged: (value) {
+                          if (value != null) {
+                            settingsService.setContinueWatchingMaxItems(value);
+                          }
+                        },
+                      );
+                    }).toList();
+                  }(),
                 ),
               ),
             ),
@@ -145,14 +148,11 @@ class _MaxItemsRadioTileState extends State<_MaxItemsRadioTile> {
               );
             }
           },
-          child: InkWell(
+          child: GestureDetector(
             onTap: () {
               widget.onChanged(widget.value);
             },
-            focusColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
+            behavior: HitTestBehavior.opaque,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

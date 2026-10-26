@@ -34,6 +34,13 @@ class ScreensaverClockStylePage extends StatelessWidget {
       selector: (_, settingsService) => settingsService.screensaverClockStyle,
       builder: (context, currentStyle, _) {
         final settingsService = context.read<SettingsService>();
+        final bool isAnySelected = currentStyle == 'minimal' ||
+            currentStyle == 'bold' ||
+            currentStyle == 'retro' ||
+            currentStyle == 'elegant' ||
+            currentStyle == 'neon' ||
+            currentStyle == 'pixel' ||
+            currentStyle == 'digital';
 
         return Column(
           children: [
@@ -49,7 +56,7 @@ class ScreensaverClockStylePage extends StatelessWidget {
                       value: 'minimal',
                       groupValue: currentStyle,
                       onChanged: (value) => settingsService.setScreensaverClockStyle(value!),
-                      autofocus: currentStyle == 'minimal',
+                      autofocus: currentStyle == 'minimal' || !isAnySelected,
                     ),
                     _StyleRadioTile(
                       title: 'Bold',
@@ -166,14 +173,11 @@ class _StyleRadioTileState extends State<_StyleRadioTile> {
               );
             }
           },
-          child: InkWell(
+          child: GestureDetector(
             onTap: () {
               widget.onChanged(widget.value);
             },
-            focusColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
+            behavior: HitTestBehavior.opaque,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

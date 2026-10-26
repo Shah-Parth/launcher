@@ -48,8 +48,8 @@ public class ClockScreensaverService extends DreamService {
 
     // DVD Bounce state
     private boolean isBounceRunning = false;
-    private float speedX = 110f; // px / sec
-    private float speedY = 85f;  // px / sec
+    private float speedX = 60f;  // px / sec
+    private float speedY = 45f;  // px / sec
     private long lastFrameTimeNanos = 0;
 
     private static final int[] DVD_COLORS = {
@@ -461,7 +461,7 @@ public class ClockScreensaverService extends DreamService {
     }
 
     private void animateFadeToNewPosition() {
-        float margin = 150;
+        float margin = 48f;
         float maxWidth = getClockTotalWidth();
         float totalHeight = getClockTotalHeight();
 
@@ -518,7 +518,7 @@ public class ClockScreensaverService extends DreamService {
 
     private void animateScatterToNewPosition() {
         // Calculate new random position
-        float margin = 150;
+        float margin = 48f;
         float maxWidth = getClockTotalWidth();
         float totalHeight = getClockTotalHeight();
 

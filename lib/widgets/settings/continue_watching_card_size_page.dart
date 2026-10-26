@@ -67,26 +67,29 @@ class ContinueWatchingCardSizePage extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  children: cardSizePresets.map((preset) {
-                    final height = preset.$1;
-                    final title = preset.$2;
-                    final subtitle = preset.$3;
-                    final isSelected = currentHeight == height;
+                  children: () {
+                    final hasSelected = cardSizePresets.any((preset) => preset.$1 == currentHeight);
+                    return cardSizePresets.map((preset) {
+                      final height = preset.$1;
+                      final title = preset.$2;
+                      final subtitle = preset.$3;
+                      final isSelected = currentHeight == height;
 
-                    return _CardSizeRadioTile(
-                      title: title,
-                      subtitle: subtitle,
-                      value: height.toString(),
-                      groupValue: currentHeight.toString(),
-                      isSelected: isSelected,
-                      autofocus: isSelected,
-                      onChanged: (value) {
-                        if (value != null) {
-                          settingsService.setContinueWatchingCardSize(value);
-                        }
-                      },
-                    );
-                  }).toList(),
+                      return _CardSizeRadioTile(
+                        title: title,
+                        subtitle: subtitle,
+                        value: height.toString(),
+                        groupValue: currentHeight.toString(),
+                        isSelected: isSelected,
+                        autofocus: isSelected || (!hasSelected && preset == cardSizePresets.first),
+                        onChanged: (value) {
+                          if (value != null) {
+                            settingsService.setContinueWatchingCardSize(value);
+                          }
+                        },
+                      );
+                    }).toList();
+                  }(),
                 ),
               ),
             ),
@@ -154,14 +157,11 @@ class _CardSizeRadioTileState extends State<_CardSizeRadioTile> {
               );
             }
           },
-          child: InkWell(
+          child: GestureDetector(
             onTap: () {
               widget.onChanged(widget.value);
             },
-            focusColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
+            behavior: HitTestBehavior.opaque,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

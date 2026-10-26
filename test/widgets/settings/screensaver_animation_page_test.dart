@@ -2,6 +2,7 @@ import 'package:flauncher/l10n/app_localizations.dart';
 import 'package:flauncher/providers/settings_service.dart';
 import 'package:flauncher/widgets/settings/screensaver_animation_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
@@ -61,5 +62,34 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(settingsService.screensaverAnimationStyle, SCREENSAVER_ANIMATION_SCATTER);
+  });
+
+  testWidgets('handles D-pad select key to choose animation option', (WidgetTester tester) async {
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    // Initial selected is bounce
+    expect(settingsService.screensaverAnimationStyle, SCREENSAVER_ANIMATION_BOUNCE);
+
+    // Send D-pad down to focus Minimal Fade
+    await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+    await tester.pumpAndSettle();
+
+    // Press D-pad Select / OK button (LogicalKeyboardKey.select)
+    await tester.sendKeyEvent(LogicalKeyboardKey.select);
+    await tester.pumpAndSettle();
+
+    expect(settingsService.screensaverAnimationStyle, SCREENSAVER_ANIMATION_FADE);
+  });
+
+  testWidgets('re-entering page preserves selected state and autofocuses selected option', (WidgetTester tester) async {
+    await settingsService.setScreensaverAnimationStyle(SCREENSAVER_ANIMATION_SCATTER);
+
+    await tester.pumpWidget(buildSubject());
+    await tester.pumpAndSettle();
+
+    // Scatter option should be selected
+    expect(settingsService.screensaverAnimationStyle, SCREENSAVER_ANIMATION_SCATTER);
+    expect(find.byIcon(Icons.check_circle), findsOneWidget);
   });
 }

@@ -57,26 +57,29 @@ class ContinueWatchingHideThresholdPage extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                  children: hideThresholdPresets.map((preset) {
-                    final threshold = preset.$1;
-                    final title = preset.$2;
-                    final subtitle = preset.$3;
-                    final isSelected = currentThreshold == threshold;
+                  children: () {
+                    final hasSelected = hideThresholdPresets.any((preset) => preset.$1 == currentThreshold);
+                    return hideThresholdPresets.map((preset) {
+                      final threshold = preset.$1;
+                      final title = preset.$2;
+                      final subtitle = preset.$3;
+                      final isSelected = currentThreshold == threshold;
 
-                    return _HideThresholdRadioTile(
-                      title: title,
-                      subtitle: subtitle,
-                      value: threshold,
-                      groupValue: currentThreshold,
-                      isSelected: isSelected,
-                      autofocus: isSelected,
-                      onChanged: (value) {
-                        if (value != null) {
-                          settingsService.setContinueWatchingHideThreshold(value);
-                        }
-                      },
-                    );
-                  }).toList(),
+                      return _HideThresholdRadioTile(
+                        title: title,
+                        subtitle: subtitle,
+                        value: threshold,
+                        groupValue: currentThreshold,
+                        isSelected: isSelected,
+                        autofocus: isSelected || (!hasSelected && preset == hideThresholdPresets.first),
+                        onChanged: (value) {
+                          if (value != null) {
+                            settingsService.setContinueWatchingHideThreshold(value);
+                          }
+                        },
+                      );
+                    }).toList();
+                  }(),
                 ),
               ),
             ),
@@ -144,14 +147,11 @@ class _HideThresholdRadioTileState extends State<_HideThresholdRadioTile> {
               );
             }
           },
-          child: InkWell(
+          child: GestureDetector(
             onTap: () {
               widget.onChanged(widget.value);
             },
-            focusColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
+            behavior: HitTestBehavior.opaque,
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
