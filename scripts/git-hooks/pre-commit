@@ -1,0 +1,9 @@
+#!/bin/sh
+# Git pre-commit hook to verify localization completeness
+
+echo "Running translation completeness check..."
+python3 .github/scripts/check_translations.py
+if [ $? -ne 0 ]; then
+    echo "Translation check failed! Please fix untranslated or missing keys before committing."
+    exit 1
+fi
