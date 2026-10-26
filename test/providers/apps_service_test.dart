@@ -5,12 +5,10 @@ import 'package:flauncher/database.dart';
 import 'package:flauncher/models/app.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/apps_service.dart';
-import 'package:flutter_test/flutter_test.dart' hide Category;
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:shared_preferences_platform_interface/shared_preferences_platform_interface.dart';
 
-import '../mocks.dart';
 import '../mocks.mocks.dart';
 
 void main() {
@@ -246,6 +244,104 @@ void main() {
         'activitiesInfo': [updatedHiddenAppInfo]
       });
       expect(appsInCategory(), ["app.1"]);
+    });
+
+    test(
+        "app update preserves lastLaunchedAt and re-sorts category when name changes",
+        () async {
+      final channel = MockFLauncherChannel();
+      final database = MockFLauncherDatabase();
+
+      final launchedTime = DateTime(2026, 5, 10, 12, 0);
+      final appBeta = App(
+          packageName: "app.beta",
+          name: "Beta App",
+          version: "1.0.0",
+          hidden: false,
+          action: "android.intent.action.MAIN")
+        ..lastLaunchedAt = launchedTime;
+
+      final appAlpha = App(
+          packageName: "app.alpha",
+          name: "Alpha App",
+          version: "1.0.0",
+          hidden: false);
+
+      final category = Category(
+          id: 1,
+          name: "Test Category",
+          order: 0,
+          sort: CategorySort.alphabetical);
+
+      when(channel.getApplications()).thenAnswer((_) => Future.value([
+            {
+              'packageName': 'app.beta',
+              'name': 'Beta App',
+              'version': '1.0.0',
+              'sideloaded': false,
+              'action': 'android.intent.action.MAIN'
+            },
+            {
+              'packageName': 'app.alpha',
+              'name': 'Alpha App',
+              'version': '1.0.0',
+              'sideloaded': false
+            },
+          ]));
+      when(channel.getApplicationIcon(any))
+          .thenAnswer((_) => Future.value(Uint8List(0)));
+      when(channel.getApplicationBanner(any))
+          .thenAnswer((_) => Future.value(Uint8List(0)));
+
+      when(database.getApplications())
+          .thenAnswer((_) => Future.value([appBeta, appAlpha]));
+      when(database.getCategories())
+          .thenAnswer((_) => Future.value([category]));
+      when(database.getAppsCategories()).thenAnswer((_) => Future.value([
+            AppCategory(categoryId: 1, appPackageName: "app.beta", order: 0),
+            AppCategory(categoryId: 1, appPackageName: "app.alpha", order: 1),
+          ]));
+      when(database.getLauncherSpacers()).thenAnswer((_) => Future.value([]));
+      when(database.transaction(any)).thenAnswer(
+          (realInvocation) => realInvocation.positionalArguments[0]());
+      when(database.wasCreated).thenReturn(false);
+      when(database.persistApps(any)).thenAnswer((_) => Future.value());
+      when(database.deleteApps(any)).thenAnswer((_) => Future.value());
+
+      final appsService = AppsService(channel, database);
+      while (!appsService.initialized) {
+        await Future.delayed(const Duration(milliseconds: 10));
+      }
+      final dynamic onAppsChanged =
+          verify(channel.addAppsChangedListener(captureAny)).captured.single;
+
+      List<String> appsInCategory() => appsService.categories[0].applications
+          .map((app) => app.packageName)
+          .toList();
+
+      // Alphabetical sort: "Alpha App" before "Beta App"
+      expect(appsInCategory(), ["app.alpha", "app.beta"]);
+
+      // Update "Beta App" name to "Aardvark App" (without providing action in event)
+      final updatedAppBetaInfo = {
+        'packageName': 'app.beta',
+        'name': 'Aardvark App',
+        'version': '1.0.1',
+        'sideloaded': false
+      };
+
+      await onAppsChanged(
+          {'action': 'PACKAGE_CHANGED', 'activityInfo': updatedAppBetaInfo});
+
+      // Name change re-sorted the category: "Aardvark App" is now before "Alpha App"
+      expect(appsInCategory(), ["app.beta", "app.alpha"]);
+
+      // Preserved lastLaunchedAt and original action
+      final updatedApp = appsService.applications
+          .firstWhere((a) => a.packageName == "app.beta");
+      expect(updatedApp.lastLaunchedAt, launchedTime);
+      expect(updatedApp.action, "android.intent.action.MAIN");
+      expect(updatedApp.name, "Aardvark App");
     });
 
     test("saveApplicationOrderInCategory updates local categoryOrders map",

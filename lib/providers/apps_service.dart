@@ -123,20 +123,7 @@ class AppsService extends ChangeNotifier {
           App? existingApp = _applications[newApp.packageName];
 
           if (existingApp != null) {
-            newApp.hidden = existingApp.hidden;
-            newApp.categoryOrders = Map.from(existingApp.categoryOrders);
-            for (int categoryId in newApp.categoryOrders.keys) {
-              final category = _categoriesById[categoryId];
-              if (category != null) {
-                int index = category.applications.indexOf(existingApp);
-                if (index != -1) {
-                  category.applications[index] = newApp;
-                } else if (!newApp.hidden) {
-                  category.applications.add(newApp);
-                }
-              }
-            }
-            _applications[newApp.packageName] = newApp;
+            _updateExistingApp(existingApp, newApp);
           } else {
             _applications[newApp.packageName] = newApp;
             final targetCategory =
@@ -157,20 +144,7 @@ class AppsService extends ChangeNotifier {
             App? existingApp = _applications[newApp.packageName];
 
             if (existingApp != null) {
-              newApp.hidden = existingApp.hidden;
-              newApp.categoryOrders = Map.from(existingApp.categoryOrders);
-              for (int categoryId in newApp.categoryOrders.keys) {
-                final category = _categoriesById[categoryId];
-                if (category != null) {
-                  int index = category.applications.indexOf(existingApp);
-                  if (index != -1) {
-                    category.applications[index] = newApp;
-                  } else if (!newApp.hidden) {
-                    category.applications.add(newApp);
-                  }
-                }
-              }
-              _applications[newApp.packageName] = newApp;
+              _updateExistingApp(existingApp, newApp);
             } else {
               _applications[newApp.packageName] = newApp;
             }
@@ -220,6 +194,34 @@ class AppsService extends ChangeNotifier {
       // Also cache banner if it's likely to be needed soon
       pool.withResource(() => getAppBanner(app.packageName));
     }
+  }
+
+  void _updateExistingApp(App existingApp, App newApp) {
+    newApp.hidden = existingApp.hidden;
+    newApp.lastLaunchedAt = existingApp.lastLaunchedAt;
+    newApp.categoryOrders = Map.from(existingApp.categoryOrders);
+    newApp.action ??= existingApp.action;
+
+    for (int categoryId in newApp.categoryOrders.keys) {
+      final category = _categoriesById[categoryId];
+      if (category != null) {
+        final index = category.applications
+            .indexWhere((app) => app.packageName == newApp.packageName);
+        if (newApp.hidden) {
+          if (index != -1) {
+            category.applications.removeAt(index);
+          }
+        } else {
+          if (index != -1) {
+            category.applications[index] = newApp;
+          } else {
+            category.applications.add(newApp);
+          }
+          sortCategory(category);
+        }
+      }
+    }
+    _applications[newApp.packageName] = newApp;
   }
 
   AppsCompanion _buildAppCompanion(dynamic data) {
