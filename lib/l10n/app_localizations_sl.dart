@@ -76,12 +76,12 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String formattedDate(String dateString) {
-    return 'Formatiran datum: $dateString';
+    return 'Oblika datuma: $dateString';
   }
 
   @override
   String formattedTime(String timeString) {
-    return 'Formatiran čas: $timeString';
+    return 'Oblika časa: $timeString';
   }
 
   @override
@@ -227,7 +227,7 @@ class AppLocalizationsSl extends AppLocalizations {
   String get typeInTheHourFormat => 'Vnesite obliko časa';
 
   @override
-  String get uninstall => 'Odstrani';
+  String get uninstall => 'Odmesti';
 
   @override
   String get wallpaper => 'Ozadje';
@@ -541,5 +541,5 @@ class AppLocalizationsSl extends AppLocalizations {
   String get notificationsBlocked => 'Obvestila blokirana';
 
   @override
-  String get dpadDismissHint => 'Levo: Opusti • V redu: Možnosti';
+  String get dpadDismissHint => 'Levo: Opusti • OK: Možnosti';
 }
