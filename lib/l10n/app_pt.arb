@@ -228,11 +228,12 @@
     "notificationsAllowed": "Notificações permitidas",
     "notificationsBlocked": "Notificações bloqueadas",
     "dpadDismissHint": "Esquerda: Descartar • OK: Opções",
-    "screensaverAnimation": "Screensaver Animation",
-    "screensaverAnimationBounce": "DVD Bounce",
-    "screensaverAnimationBounceSubtitle": "Classic floating DVD logo bounce with wall color shifts",
-    "screensaverAnimationFade": "Minimal Fade",
-    "screensaverAnimationFadeSubtitle": "Smooth fade out and in at new positions",
-    "screensaverAnimationScatter": "Character Scatter",
-    "screensaverAnimationScatterSubtitle": "Playful bouncing characters"
+    "screensaverAnimation": "Animação do protetor de tela",
+    "screensaverAnimationBounce": "Salto DVD",
+    "screensaverAnimationBounceSubtitle": "Salto clássico de logo DVD com mudança de cor nas bordas",
+    "screensaverAnimationFade": "Esmaecimento sutil",
+    "screensaverAnimationFadeSubtitle": "Esmaecimento suave em novas posições",
+    "screensaverAnimationScatter": "Dispersão de caracteres",
+    "screensaverAnimationScatterSubtitle": "Caracteres saltitantes divertidos",
+    "autoAddNewApps": "Adicionar aplicativos recém-instalados ao launcher"
 }

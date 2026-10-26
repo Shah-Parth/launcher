@@ -355,25 +355,25 @@ class AppLocalizationsAr extends AppLocalizations {
   String get screensaverClockStyle => 'نمط ساعة شاشة التوقف';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => 'حركة شاشة التوقف';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'ارتداد DVD';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => 'ارتداد شعار DVD الكلاسيكي مع تغير الألوان عند الحواف';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => 'تلاشٍ هادئ';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => 'تلاشٍ وظهور سلس في مواضع جديدة';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => 'تبعثر الحروف';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => 'حروف مرحة ترتد على الشاشة';
 
   @override
   String get dataUsagePeriod => 'فترة استخدام البيانات';
@@ -542,4 +542,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dpadDismissHint => 'يسار: تجاهل • موافق: خيارات';
+
+  @override
+  String get autoAddNewApps => 'إضافة التطبيقات المثبتة حديثاً إلى المشغل';
 }

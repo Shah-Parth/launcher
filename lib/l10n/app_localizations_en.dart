@@ -542,4 +542,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dpadDismissHint => 'Left: Dismiss • OK: Options';
+
+  @override
+  String get autoAddNewApps => 'Add newly installed apps to launcher';
 }

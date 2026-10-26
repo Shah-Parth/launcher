@@ -355,25 +355,25 @@ class AppLocalizationsSl extends AppLocalizations {
   String get screensaverClockStyle => 'Slog ure ohranjevalnika zaslona';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => 'Animacija ohranjevalnika zaslona';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'DVD odboj';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => 'Klasičen odboj logotipa s spreminjanjem barv ob stenah';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => 'Minimalno bledenje';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => 'Gladko bledenje in pojavljanje na novih položajih';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => 'Razpršeni znaki';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => 'Razposajeni poskakujoči znaki';
 
   @override
   String get dataUsagePeriod => 'Obdobje porabe podatkov';
@@ -542,4 +542,7 @@ class AppLocalizationsSl extends AppLocalizations {
 
   @override
   String get dpadDismissHint => 'Levo: Opusti • OK: Možnosti';
+
+  @override
+  String get autoAddNewApps => 'Dodaj na novo nameščene aplikacije v zaganjalnik';
 }

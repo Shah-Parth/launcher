@@ -228,11 +228,12 @@
     "notificationsAllowed": "Bildirimlere İzin Verildi",
     "notificationsBlocked": "Bildirimler Engellendi",
     "dpadDismissHint": "Sol: Kapat • Tamam: Seçenekler",
-    "screensaverAnimation": "Screensaver Animation",
-    "screensaverAnimationBounce": "DVD Bounce",
-    "screensaverAnimationBounceSubtitle": "Classic floating DVD logo bounce with wall color shifts",
-    "screensaverAnimationFade": "Minimal Fade",
-    "screensaverAnimationFadeSubtitle": "Smooth fade out and in at new positions",
-    "screensaverAnimationScatter": "Character Scatter",
-    "screensaverAnimationScatterSubtitle": "Playful bouncing characters"
+    "screensaverAnimation": "Ekran koruyucu animasyonu",
+    "screensaverAnimationBounce": "DVD sekmesi",
+    "screensaverAnimationBounceSubtitle": "Kenarlara çarptıkça renk değiştiren klasik DVD logosu sekmesi",
+    "screensaverAnimationFade": "Hafif kararma",
+    "screensaverAnimationFadeSubtitle": "Yeni konumlarda yumuşakça kaybolup belirme",
+    "screensaverAnimationScatter": "Karakter dağılması",
+    "screensaverAnimationScatterSubtitle": "Eğlenceli zıplayan karakterler",
+    "autoAddNewApps": "Yeni yüklenen uygulamaları başlatıcıya ekle"
 }

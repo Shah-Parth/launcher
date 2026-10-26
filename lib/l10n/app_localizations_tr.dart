@@ -355,25 +355,25 @@ class AppLocalizationsTr extends AppLocalizations {
   String get screensaverClockStyle => 'Ekran Koruyucu Saat Stili';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => 'Ekran koruyucu animasyonu';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'DVD sekmesi';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => 'Kenarlara çarptıkça renk değiştiren klasik DVD logosu sekmesi';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => 'Hafif kararma';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => 'Yeni konumlarda yumuşakça kaybolup belirme';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => 'Karakter dağılması';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => 'Eğlenceli zıplayan karakterler';
 
   @override
   String get dataUsagePeriod => 'Veri Kullanım Dönemi';
@@ -542,4 +542,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get dpadDismissHint => 'Sol: Kapat • Tamam: Seçenekler';
+
+  @override
+  String get autoAddNewApps => 'Yeni yüklenen uygulamaları başlatıcıya ekle';
 }

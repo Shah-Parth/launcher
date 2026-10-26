@@ -63,6 +63,7 @@ const String _appLanguageKey = "app_language";
 const String _showWeatherInStatusBarKey = "show_weather_in_status_bar";
 const String _showWeatherWarningsKey = "show_weather_warnings";
 const String _temperatureUnitKey = "temperature_unit";
+const String _autoAddNewAppsKey = "auto_add_new_apps";
 
 const String TEMPERATURE_UNIT_CELSIUS = "celsius";
 const String TEMPERATURE_UNIT_FAHRENHEIT = "fahrenheit";
@@ -139,7 +140,9 @@ class SettingsService extends ChangeNotifier {
   late bool _showWeatherInStatusBar;
   late bool _showWeatherWarnings;
   late String _temperatureUnit;
+  late bool _autoAddNewApps;
 
+  bool get autoAddNewApps => _autoAddNewApps;
   bool get appHighlightAnimationEnabled => _appHighlightAnimationEnabled;
 
   bool get appKeyClickEnabled => _appKeyClickEnabled;
@@ -261,11 +264,13 @@ class SettingsService extends ChangeNotifier {
     _showWeatherInStatusBar = _sharedPreferences.getBool(_showWeatherInStatusBarKey) ?? false;
     _showWeatherWarnings = _sharedPreferences.getBool(_showWeatherWarningsKey) ?? true;
     _temperatureUnit = _sharedPreferences.getString(_temperatureUnitKey) ?? TEMPERATURE_UNIT_CELSIUS;
+    _autoAddNewApps = _sharedPreferences.getBool(_autoAddNewAppsKey) ?? true;
     notifyListeners();
   }
 
   Map<String, dynamic> exportSettingsMap() {
     return {
+      _autoAddNewAppsKey: _autoAddNewApps,
       _appHighlightAnimationEnabledKey: _appHighlightAnimationEnabled,
       _appKeyClickEnabledKey: _appKeyClickEnabled,
       _autoHideAppBarKey: _autoHideAppBarEnabled,
@@ -607,6 +612,12 @@ class SettingsService extends ChangeNotifier {
   Future<void> setTemperatureUnit(String unit) async {
     await _sharedPreferences.setString(_temperatureUnitKey, unit);
     _temperatureUnit = unit;
+    notifyListeners();
+  }
+
+  Future<void> setAutoAddNewApps(bool enabled) async {
+    await _sharedPreferences.setBool(_autoAddNewAppsKey, enabled);
+    _autoAddNewApps = enabled;
     notifyListeners();
   }
 }

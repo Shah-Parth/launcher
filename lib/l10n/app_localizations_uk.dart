@@ -355,25 +355,25 @@ class AppLocalizationsUk extends AppLocalizations {
   String get screensaverClockStyle => 'Стиль годинника заставки';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => 'Анімація заставки';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'Відскік DVD';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => 'Класичний відскік логотипу DVD зі зміною кольору біля меж';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => 'Плавне згасання';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => 'Плавне зникнення та поява на нових позиціях';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => 'Розсипання символів';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => 'Грайливі стрибаючі символи';
 
   @override
   String get dataUsagePeriod => 'Період використання даних';
@@ -542,4 +542,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get dpadDismissHint => 'Вліво: Закрити • OK: Параметри';
+
+  @override
+  String get autoAddNewApps => 'Додавати щойно встановлені додатки до лаунчера';
 }

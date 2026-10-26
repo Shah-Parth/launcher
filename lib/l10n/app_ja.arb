@@ -228,11 +228,12 @@
     "notificationsAllowed": "通知を許可",
     "notificationsBlocked": "通知をブロック",
     "dpadDismissHint": "左: 非表示 • OK: オプション",
-    "screensaverAnimation": "Screensaver Animation",
-    "screensaverAnimationBounce": "DVD Bounce",
-    "screensaverAnimationBounceSubtitle": "Classic floating DVD logo bounce with wall color shifts",
-    "screensaverAnimationFade": "Minimal Fade",
-    "screensaverAnimationFadeSubtitle": "Smooth fade out and in at new positions",
-    "screensaverAnimationScatter": "Character Scatter",
-    "screensaverAnimationScatterSubtitle": "Playful bouncing characters"
+    "screensaverAnimation": "スクリーンセーバーのアニメーション",
+    "screensaverAnimationBounce": "DVDバウンス",
+    "screensaverAnimationBounceSubtitle": "壁に当たると色が変わるクラシックなDVDロゴバウンス",
+    "screensaverAnimationFade": "ミニマルフェード",
+    "screensaverAnimationFadeSubtitle": "新しい位置へスムーズにフェードイン・フェードアウト",
+    "screensaverAnimationScatter": "文字スキャッター",
+    "screensaverAnimationScatterSubtitle": "文字が軽快に跳ね回る演出",
+    "autoAddNewApps": "新しくインストールしたアプリをランチャーに追加"
 }

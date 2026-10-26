@@ -355,25 +355,25 @@ class AppLocalizationsJa extends AppLocalizations {
   String get screensaverClockStyle => 'スクリーンセーバー時計スタイル';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => 'スクリーンセーバーのアニメーション';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'DVDバウンス';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => '壁に当たると色が変わるクラシックなDVDロゴバウンス';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => 'ミニマルフェード';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => '新しい位置へスムーズにフェードイン・フェードアウト';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => '文字スキャッター';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => '文字が軽快に跳ね回る演出';
 
   @override
   String get dataUsagePeriod => 'データ使用期間';
@@ -542,4 +542,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get dpadDismissHint => '左: 非表示 • OK: オプション';
+
+  @override
+  String get autoAddNewApps => '新しくインストールしたアプリをランチャーに追加';
 }

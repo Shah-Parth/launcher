@@ -21,6 +21,7 @@ import 'dart:io';
 import 'dart:collection';
 import 'package:collection/collection.dart' as collection;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'settings_service.dart';
 
 import 'package:drift/drift.dart';
 import 'package:flauncher/database.dart';
@@ -35,6 +36,7 @@ import '../models/category.dart';
 class AppsService extends ChangeNotifier {
   final FLauncherChannel _fLauncherChannel;
   final FLauncherDatabase _database;
+  final SettingsService? _settingsService;
 
   bool _initialized = false;
 
@@ -87,8 +89,9 @@ class AppsService extends ChangeNotifier {
   List<Category> get categories => _categoriesById.values
       .map((category) => category.unmodifiable())
       .toList(growable: false);
+  SettingsService? get settingsService => _settingsService;
 
-  AppsService(this._fLauncherChannel, this._database) {
+  AppsService(this._fLauncherChannel, this._database, [this._settingsService]) {
     _init();
   }
 
@@ -126,11 +129,14 @@ class AppsService extends ChangeNotifier {
             _updateExistingApp(existingApp, newApp);
           } else {
             _applications[newApp.packageName] = newApp;
-            final targetCategory =
-                _findTargetCategoryForNewApp(newApp.sideloaded);
-            if (targetCategory != null) {
-              await addToCategory(newApp, targetCategory,
-                  shouldNotifyListeners: false);
+            final shouldAutoAdd = _settingsService?.autoAddNewApps ?? true;
+            if (shouldAutoAdd) {
+              final targetCategory =
+                  _findTargetCategoryForNewApp(newApp.sideloaded);
+              if (targetCategory != null) {
+                await addToCategory(newApp, targetCategory,
+                    shouldNotifyListeners: false);
+              }
             }
           }
           break;
@@ -402,7 +408,10 @@ class AppsService extends ChangeNotifier {
         } else if (!knownPackageNames.contains(application.packageName)) {
           // This app was newly installed while the launcher was offline or rebooting.
           // Existing apps with zero categories were intentionally removed by the user.
-          newAppsToCategorize.add(application);
+          final shouldAutoAdd = _settingsService?.autoAddNewApps ?? true;
+          if (shouldAutoAdd) {
+            newAppsToCategorize.add(application);
+          }
         }
       }
     }

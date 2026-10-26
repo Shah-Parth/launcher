@@ -355,25 +355,25 @@ class AppLocalizationsHi extends AppLocalizations {
   String get screensaverClockStyle => 'स्क्रीनसेवर घड़ी शैली';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => 'स्क्रीनसेवर एनिमेशन';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'डीवीडी बाउंस';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => 'दीवार से टकराने पर रंग बदलने वाला क्लासिक डीवीडी लोगो बाउंस';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => 'शांत फ़ेड';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => 'नए स्थानों पर सहजता से फ़ेड आउट और इन';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => 'अक्षर बिखराव';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => 'उछलते-कूदते मनोरंजक अक्षर';
 
   @override
   String get dataUsagePeriod => 'डेटा उपयोग अवधि';
@@ -542,4 +542,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get dpadDismissHint => 'बायां: हटाएं • ठीक है: विकल्प';
+
+  @override
+  String get autoAddNewApps => 'नए इंस्टॉल किए गए ऐप्स को लॉन्चर में जोड़ें';
 }

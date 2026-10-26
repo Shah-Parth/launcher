@@ -83,6 +83,12 @@ class MiscPanelPage extends StatelessWidget {
                 title: Text(localizations.appSelectorTransitionAnimation, style: Theme.of(context).textTheme.bodyMedium),
                 secondary: const Icon(Icons.animation),
               ),
+              RoundedSwitchListTile(
+                value: settingsService.autoAddNewApps,
+                onChanged: (value) => settingsService.setAutoAddNewApps(value),
+                title: Text(localizations.autoAddNewApps, style: Theme.of(context).textTheme.bodyMedium),
+                secondary: const Icon(Icons.add_to_home_screen),
+              ),
             ],
           ),
         ),

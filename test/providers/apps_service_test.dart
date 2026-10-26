@@ -5,6 +5,7 @@ import 'package:flauncher/database.dart';
 import 'package:flauncher/models/app.dart';
 import 'package:flauncher/models/category.dart';
 import 'package:flauncher/providers/apps_service.dart';
+import 'package:flauncher/providers/settings_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -882,6 +883,47 @@ void main() {
 
       expect((appsService.launcherSections[0] as Category).name, "TV Apps");
       expect((appsService.launcherSections[1] as Category).name, "Non-TV Apps");
+    });
+
+    test("does not add newly installed app to category when autoAddNewApps is false", () async {
+      final channel = MockFLauncherChannel();
+      final database = MockFLauncherDatabase();
+      final category = Category(id: 1, name: "TV Apps", order: 0, sort: CategorySort.manual);
+
+      when(channel.getApplications()).thenAnswer((_) => Future.value([]));
+      when(channel.getApplicationIcon(any)).thenAnswer((_) => Future.value(Uint8List(0)));
+      when(channel.getApplicationBanner(any)).thenAnswer((_) => Future.value(Uint8List(0)));
+      when(database.getApplications()).thenAnswer((_) => Future.value([]));
+      when(database.getAppsCategories()).thenAnswer((_) => Future.value([]));
+      when(database.getCategories()).thenAnswer((_) => Future.value([category]));
+      when(database.getLauncherSpacers()).thenAnswer((_) => Future.value([]));
+      when(database.transaction(any)).thenAnswer((realInvocation) => realInvocation.positionalArguments[0]());
+      when(database.persistApps(any)).thenAnswer((_) => Future.value());
+      when(database.wasCreated).thenReturn(false);
+
+      final sp = await SharedPreferences.getInstance();
+      final settingsService = SettingsService(sp);
+      await settingsService.setAutoAddNewApps(false);
+
+      final appsService = AppsService(channel, database, settingsService);
+      while (!appsService.initialized) {
+        await Future.delayed(const Duration(milliseconds: 10));
+      }
+
+      final dynamic onAppsChanged =
+          verify(channel.addAppsChangedListener(captureAny)).captured.single;
+
+      final newAppInfo = {
+        'packageName': 'new.app',
+        'name': 'New App',
+        'version': '1.0',
+        'sideloaded': false,
+      };
+
+      await onAppsChanged({'action': 'PACKAGE_ADDED', 'activityInfo': newAppInfo});
+
+      expect(appsService.applications.map((a) => a.packageName), contains('new.app'));
+      expect(appsService.categories[0].applications, isEmpty);
     });
   });
 }

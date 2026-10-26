@@ -228,11 +228,12 @@
     "notificationsAllowed": "允许通知",
     "notificationsBlocked": "已屏蔽通知",
     "dpadDismissHint": "左键: 关闭 • 确定: 选项",
-    "screensaverAnimation": "Screensaver Animation",
-    "screensaverAnimationBounce": "DVD Bounce",
-    "screensaverAnimationBounceSubtitle": "Classic floating DVD logo bounce with wall color shifts",
-    "screensaverAnimationFade": "Minimal Fade",
-    "screensaverAnimationFadeSubtitle": "Smooth fade out and in at new positions",
-    "screensaverAnimationScatter": "Character Scatter",
-    "screensaverAnimationScatterSubtitle": "Playful bouncing characters"
+    "screensaverAnimation": "屏幕保护动画",
+    "screensaverAnimationBounce": "DVD 弹跳",
+    "screensaverAnimationBounceSubtitle": "经典 DVD 图标边缘碰撞变色弹跳",
+    "screensaverAnimationFade": "极简淡入淡出",
+    "screensaverAnimationFadeSubtitle": "在不同位置平滑淡出与淡入",
+    "screensaverAnimationScatter": "字符散开",
+    "screensaverAnimationScatterSubtitle": "趣味跳跃字符",
+    "autoAddNewApps": "将新安装的应用添加到启动器"
 }

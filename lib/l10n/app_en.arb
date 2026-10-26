@@ -234,5 +234,6 @@
     "noBlockedAppsDesc": "All applications are currently allowed to show notifications",
     "notificationsAllowed": "Notifications Allowed",
     "notificationsBlocked": "Notifications Blocked",
-    "dpadDismissHint": "Left: Dismiss • OK: Options"
+    "dpadDismissHint": "Left: Dismiss • OK: Options",
+    "autoAddNewApps": "Add newly installed apps to launcher"
 }

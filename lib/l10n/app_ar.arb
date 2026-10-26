@@ -228,11 +228,12 @@
     "notificationsAllowed": "الإشعارات مسموحة",
     "notificationsBlocked": "الإشعارات محظورة",
     "dpadDismissHint": "يسار: تجاهل • موافق: خيارات",
-    "screensaverAnimation": "Screensaver Animation",
-    "screensaverAnimationBounce": "DVD Bounce",
-    "screensaverAnimationBounceSubtitle": "Classic floating DVD logo bounce with wall color shifts",
-    "screensaverAnimationFade": "Minimal Fade",
-    "screensaverAnimationFadeSubtitle": "Smooth fade out and in at new positions",
-    "screensaverAnimationScatter": "Character Scatter",
-    "screensaverAnimationScatterSubtitle": "Playful bouncing characters"
+    "screensaverAnimation": "حركة شاشة التوقف",
+    "screensaverAnimationBounce": "ارتداد DVD",
+    "screensaverAnimationBounceSubtitle": "ارتداد شعار DVD الكلاسيكي مع تغير الألوان عند الحواف",
+    "screensaverAnimationFade": "تلاشٍ هادئ",
+    "screensaverAnimationFadeSubtitle": "تلاشٍ وظهور سلس في مواضع جديدة",
+    "screensaverAnimationScatter": "تبعثر الحروف",
+    "screensaverAnimationScatterSubtitle": "حروف مرحة ترتد على الشاشة",
+    "autoAddNewApps": "إضافة التطبيقات المثبتة حديثاً إلى المشغل"
 }

@@ -228,11 +228,12 @@
     "notificationsAllowed": "알림 허용됨",
     "notificationsBlocked": "알림 차단됨",
     "dpadDismissHint": "왼쪽: 닫기 • 확인: 옵션",
-    "screensaverAnimation": "Screensaver Animation",
-    "screensaverAnimationBounce": "DVD Bounce",
-    "screensaverAnimationBounceSubtitle": "Classic floating DVD logo bounce with wall color shifts",
-    "screensaverAnimationFade": "Minimal Fade",
-    "screensaverAnimationFadeSubtitle": "Smooth fade out and in at new positions",
-    "screensaverAnimationScatter": "Character Scatter",
-    "screensaverAnimationScatterSubtitle": "Playful bouncing characters"
+    "screensaverAnimation": "화면 보호기 애니메이션",
+    "screensaverAnimationBounce": "DVD 바운스",
+    "screensaverAnimationBounceSubtitle": "벽에 부딪힐 때마다 색상이 바뀌는 클래식 DVD 로고 바운스",
+    "screensaverAnimationFade": "미니멀 페이드",
+    "screensaverAnimationFadeSubtitle": "새로운 위치에서 부드럽게 페이드 아웃/인",
+    "screensaverAnimationScatter": "글자 흩뿌리기",
+    "screensaverAnimationScatterSubtitle": "통통 튀는 재미있는 글자 애니메이션",
+    "autoAddNewApps": "새로 설치된 앱을 런처에 추가"
 }

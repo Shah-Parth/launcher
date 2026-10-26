@@ -355,25 +355,25 @@ class AppLocalizationsEs extends AppLocalizations {
   String get screensaverClockStyle => 'Estilo de reloj del salvapantallas';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => 'Animación del salvapantallas';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'Rebote DVD';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => 'Rebote clásico de logotipo DVD con cambio de color al chocar';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => 'Desvanecimiento sutil';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => 'Desvanecimiento suave en nuevas posiciones';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => 'Dispersión de caracteres';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => 'Caracteres animados que rebotan';
 
   @override
   String get dataUsagePeriod => 'Período de uso de datos';
@@ -542,4 +542,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get dpadDismissHint => 'Izquierda: Descartar • OK: Opciones';
+
+  @override
+  String get autoAddNewApps => 'Añadir aplicaciones recién instaladas al iniciador';
 }

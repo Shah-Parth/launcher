@@ -110,7 +110,11 @@ Future<void> main() async {
         ChangeNotifierProvider(
             create: (_) => SettingsService(sharedPreferences),
             lazy: false),
-        ChangeNotifierProvider(create: (_) => AppsService(fLauncherChannel, fLauncherDatabase)),
+        ChangeNotifierProvider(
+            create: (context) {
+              SettingsService settingsService = Provider.of(context, listen: false);
+              return AppsService(fLauncherChannel, fLauncherDatabase, settingsService);
+            }),
         ChangeNotifierProvider(create: (_) => LauncherState()),
         ChangeNotifierProvider(create: (_) => NetworkService(fLauncherChannel)),
         ChangeNotifierProvider(

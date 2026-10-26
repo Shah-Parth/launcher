@@ -354,4 +354,33 @@ void main() async {
       expect(service2.screensaverAnimationStyle, SCREENSAVER_ANIMATION_SCATTER);
     });
   });
+
+  group("autoAddNewApps", () {
+    test("default is true", () async {
+      final sp = await SharedPreferences.getInstance();
+      final service = SettingsService(sp);
+      expect(service.autoAddNewApps, isTrue);
+    });
+
+    test("sets and gets autoAddNewApps", () async {
+      final sp = await SharedPreferences.getInstance();
+      final service = SettingsService(sp);
+      await service.setAutoAddNewApps(false);
+      expect(service.autoAddNewApps, isFalse);
+      await service.setAutoAddNewApps(true);
+      expect(service.autoAddNewApps, isTrue);
+    });
+
+    test("export and import preserve autoAddNewApps", () async {
+      final sp1 = await SharedPreferences.getInstance();
+      final service1 = SettingsService(sp1);
+      await service1.setAutoAddNewApps(false);
+      final exported = service1.exportSettingsMap();
+      expect(exported["auto_add_new_apps"], isFalse);
+
+      final service2 = SettingsService(sp1);
+      await service2.importSettingsMap(exported);
+      expect(service2.autoAddNewApps, isFalse);
+    });
+  });
 }

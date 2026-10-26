@@ -355,25 +355,25 @@ class AppLocalizationsRu extends AppLocalizations {
   String get screensaverClockStyle => 'Стиль часов заставки';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => 'Анимация заставки';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'Отскок DVD';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => 'Классический отскок логотипа DVD со сменой цвета у границ';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => 'Плавное затухание';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => 'Плавное исчезновение и появление на новых позициях';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => 'Рассыпание символов';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => 'Игривые прыгающие символы';
 
   @override
   String get dataUsagePeriod => 'Период использования данных';
@@ -542,4 +542,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get dpadDismissHint => 'Влево: Закрыть • OK: Параметры';
+
+  @override
+  String get autoAddNewApps => 'Добавлять новые установленные приложения в лаунчер';
 }

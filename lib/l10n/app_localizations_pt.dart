@@ -355,25 +355,25 @@ class AppLocalizationsPt extends AppLocalizations {
   String get screensaverClockStyle => 'Estilo de relógio do protetor de tela';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => 'Animação do protetor de tela';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'Salto DVD';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => 'Salto clássico de logo DVD com mudança de cor nas bordas';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => 'Esmaecimento sutil';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => 'Esmaecimento suave em novas posições';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => 'Dispersão de caracteres';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => 'Caracteres saltitantes divertidos';
 
   @override
   String get dataUsagePeriod => 'Período de uso de dados';
@@ -542,4 +542,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get dpadDismissHint => 'Esquerda: Descartar • OK: Opções';
+
+  @override
+  String get autoAddNewApps => 'Adicionar aplicativos recém-instalados ao launcher';
 }

@@ -1158,6 +1158,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Left: Dismiss • OK: Options'**
   String get dpadDismissHint;
+
+  /// No description provided for @autoAddNewApps.
+  ///
+  /// In en, this message translates to:
+  /// **'Add newly installed apps to launcher'**
+  String get autoAddNewApps;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

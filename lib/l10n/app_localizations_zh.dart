@@ -355,25 +355,25 @@ class AppLocalizationsZh extends AppLocalizations {
   String get screensaverClockStyle => '屏保时钟样式';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => '屏幕保护动画';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'DVD 弹跳';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => '经典 DVD 图标边缘碰撞变色弹跳';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => '极简淡入淡出';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => '在不同位置平滑淡出与淡入';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => '字符散开';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => '趣味跳跃字符';
 
   @override
   String get dataUsagePeriod => '数据使用周期';
@@ -542,4 +542,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get dpadDismissHint => '左键: 关闭 • 确定: 选项';
+
+  @override
+  String get autoAddNewApps => '将新安装的应用添加到启动器';
 }

@@ -165,11 +165,12 @@
     "notificationsAllowed": "Obvestila dovoljena",
     "notificationsBlocked": "Obvestila blokirana",
     "dpadDismissHint": "Levo: Opusti • OK: Možnosti",
-    "screensaverAnimation": "Screensaver Animation",
-    "screensaverAnimationBounce": "DVD Bounce",
-    "screensaverAnimationBounceSubtitle": "Classic floating DVD logo bounce with wall color shifts",
-    "screensaverAnimationFade": "Minimal Fade",
-    "screensaverAnimationFadeSubtitle": "Smooth fade out and in at new positions",
-    "screensaverAnimationScatter": "Character Scatter",
-    "screensaverAnimationScatterSubtitle": "Playful bouncing characters"
+    "screensaverAnimation": "Animacija ohranjevalnika zaslona",
+    "screensaverAnimationBounce": "DVD odboj",
+    "screensaverAnimationBounceSubtitle": "Klasičen odboj logotipa s spreminjanjem barv ob stenah",
+    "screensaverAnimationFade": "Minimalno bledenje",
+    "screensaverAnimationFadeSubtitle": "Gladko bledenje in pojavljanje na novih položajih",
+    "screensaverAnimationScatter": "Razpršeni znaki",
+    "screensaverAnimationScatterSubtitle": "Razposajeni poskakujoči znaki",
+    "autoAddNewApps": "Dodaj na novo nameščene aplikacije v zaganjalnik"
 }

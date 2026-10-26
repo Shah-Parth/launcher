@@ -355,25 +355,25 @@ class AppLocalizationsKo extends AppLocalizations {
   String get screensaverClockStyle => '화면 보호기 시계 스타일';
 
   @override
-  String get screensaverAnimation => 'Screensaver Animation';
+  String get screensaverAnimation => '화면 보호기 애니메이션';
 
   @override
-  String get screensaverAnimationBounce => 'DVD Bounce';
+  String get screensaverAnimationBounce => 'DVD 바운스';
 
   @override
-  String get screensaverAnimationBounceSubtitle => 'Classic floating DVD logo bounce with wall color shifts';
+  String get screensaverAnimationBounceSubtitle => '벽에 부딪힐 때마다 색상이 바뀌는 클래식 DVD 로고 바운스';
 
   @override
-  String get screensaverAnimationFade => 'Minimal Fade';
+  String get screensaverAnimationFade => '미니멀 페이드';
 
   @override
-  String get screensaverAnimationFadeSubtitle => 'Smooth fade out and in at new positions';
+  String get screensaverAnimationFadeSubtitle => '새로운 위치에서 부드럽게 페이드 아웃/인';
 
   @override
-  String get screensaverAnimationScatter => 'Character Scatter';
+  String get screensaverAnimationScatter => '글자 흩뿌리기';
 
   @override
-  String get screensaverAnimationScatterSubtitle => 'Playful bouncing characters';
+  String get screensaverAnimationScatterSubtitle => '통통 튀는 재미있는 글자 애니메이션';
 
   @override
   String get dataUsagePeriod => '데이터 사용 기간';
@@ -542,4 +542,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get dpadDismissHint => '왼쪽: 닫기 • 확인: 옵션';
+
+  @override
+  String get autoAddNewApps => '새로 설치된 앱을 런처에 추가';
 }
