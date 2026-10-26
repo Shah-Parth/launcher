@@ -1,0 +1,6 @@
+- Added DVD Bounce screensaver animation with wall bounce color cycling, calibrated speed, and full top-screen movement.
+- Fixed screensaver animation selection focus and D-pad remote OK activation.
+- Added setting to toggle auto-adding newly installed apps to the launcher.
+- Added Continue Watching completion threshold filter (e.g. 90%, 95%) to hide finished media.
+- Fixed hidden apps unexpectedly unhiding when updated in the background.
+- Added complete Slovenian language support and verified full translations across all 15 languages.
