@@ -1,0 +1,4 @@
+- Restored byte-for-byte reproducible builds for independent F-Droid and IzzyOnDroid verification (#160).
+- Modernized back navigation and dialog pop handling with PopScope for smooth predictive back support on Android 14+.
+- Upgraded deprecated Material State properties to modern WidgetState across settings and launcher core.
+- Streamlined release workflow and code hygiene with 0 analyzer warnings across the entire codebase.
