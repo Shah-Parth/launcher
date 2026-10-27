@@ -87,7 +87,6 @@ class FLauncherApp extends StatelessWidget
             primary: accentColor,
             secondary: accentColor,
             surface: const Color(0xFF0F0F0F),
-            background: const Color(0xFF0A0A0A),
           ),
           cardColor: const Color(0xFF0F0F0F), // Dark surface color
           canvasColor: const Color(0xFF0A0A0A), // Dark background
@@ -133,12 +132,12 @@ class FLauncherApp extends StatelessWidget
             fillColor: accentColor.withOpacity(0.1),
           ),
           switchTheme: SwitchThemeData(
-            thumbColor: MaterialStateProperty.resolveWith((states) {
-              if (states.contains(MaterialState.selected)) return accentColor;
+            thumbColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) return accentColor;
               return null;
             }),
-            trackColor: MaterialStateProperty.resolveWith((states) {
-              if (states.contains(MaterialState.selected)) return accentColor.withOpacity(0.5);
+            trackColor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.selected)) return accentColor.withOpacity(0.5);
               return null;
             }),
           ),
@@ -147,7 +146,8 @@ class FLauncherApp extends StatelessWidget
         builder: (context) => PopScope(
           canPop: false,
           child: FLauncher(),
-          onPopInvoked: (didPop) {
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
             LauncherState launcherState = context.read<LauncherState>();
             launcherState.handleBackNavigation(context);
           }

@@ -63,8 +63,18 @@ class _SettingsPanelState extends State<SettingsPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => !await _navigatorKey.currentState!.maybePop(),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        final navigator = _navigatorKey.currentState;
+        if (navigator != null && await navigator.maybePop()) {
+          return;
+        }
+        if (context.mounted) {
+          Navigator.of(context).pop();
+        }
+      },
       child: Scaffold(
         backgroundColor: Colors.black.withOpacity(0.70), // Dim the background
         body: Stack(

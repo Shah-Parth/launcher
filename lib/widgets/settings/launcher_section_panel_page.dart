@@ -240,29 +240,29 @@ class LauncherSectionPanelPage extends StatelessWidget
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: FilledButton(
                       style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.resolveWith((states) {
-                          if (states.contains(MaterialState.disabled)) {
+                        backgroundColor: WidgetStateProperty.resolveWith((states) {
+                          if (states.contains(WidgetState.disabled)) {
                             return Colors.white10;
                           }
                           return Color(0xFF6366F1); // Indigo (Modern Primary)
                         }),
-                        foregroundColor: MaterialStateProperty.resolveWith((states) {
-                           if (states.contains(MaterialState.disabled)) {
+                        foregroundColor: WidgetStateProperty.resolveWith((states) {
+                           if (states.contains(WidgetState.disabled)) {
                              return Colors.white38;
                            }
                            return Colors.white;
                         }),
-                        shape: MaterialStatePropertyAll(
+                        shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
                         ),
-                        side: MaterialStateProperty.resolveWith((states) {
-                          if (states.contains(MaterialState.focused)) {
+                        side: WidgetStateProperty.resolveWith((states) {
+                          if (states.contains(WidgetState.focused)) {
                             return BorderSide(color: Colors.white, width: 2);
                           }
                           return null;
                         }),
-                        elevation: MaterialStatePropertyAll(0),
-                        padding: MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 12))
+                        elevation: WidgetStatePropertyAll(0),
+                        padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 12))
                       ),
                       onPressed: onSavePressed,
                       child: Text(localizations.save),
@@ -276,19 +276,19 @@ class LauncherSectionPanelPage extends StatelessWidget
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: FilledButton(
                     style: ButtonStyle(
-                      backgroundColor: MaterialStatePropertyAll(Color(0xFF27272A)), // Zinc 800
-                      foregroundColor: MaterialStatePropertyAll(Color(0xFFEF4444)), // Red 500
-                      shape: MaterialStatePropertyAll(
+                      backgroundColor: WidgetStatePropertyAll(Color(0xFF27272A)), // Zinc 800
+                      foregroundColor: WidgetStatePropertyAll(Color(0xFFEF4444)), // Red 500
+                      shape: WidgetStatePropertyAll(
                           RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))
                       ),
-                      side: MaterialStateProperty.resolveWith((states) {
-                        if (states.contains(MaterialState.focused)) {
+                      side: WidgetStateProperty.resolveWith((states) {
+                        if (states.contains(WidgetState.focused)) {
                           return BorderSide(color: Colors.white, width: 2);
                         }
                         return null;
                       }),
-                      elevation: MaterialStatePropertyAll(0),
-                      padding: MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 12))
+                      elevation: WidgetStatePropertyAll(0),
+                      padding: WidgetStatePropertyAll(EdgeInsets.symmetric(vertical: 12))
                     ),
                     onPressed: () async {
                       state.setDeleted();
