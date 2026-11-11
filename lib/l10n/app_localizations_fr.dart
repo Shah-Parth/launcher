@@ -511,6 +511,57 @@ class AppLocalizationsFr extends AppLocalizations {
   String get breezyWeatherSetupHint => 'Installez Breezy Weather et activez le \'Partage local des données\' / \'Gadgetbridge\' dans ses paramètres pour afficher la météo et les alertes de pluie.';
 
   @override
+  String get weatherSource => 'Source météo';
+
+  @override
+  String get weatherSourceDevice => 'Position de l\'appareil';
+
+  @override
+  String get weatherSourceManual => 'Position manuelle';
+
+  @override
+  String get weatherSourceBreezy => 'Application Breezy Weather';
+
+  @override
+  String get weatherAllowLocation => 'Autoriser l\'accès à la position';
+
+  @override
+  String get weatherLocationPermissionHint => 'La météo utilise la position approximative de l\'appareil pour rester exacte lorsque l\'appareil change de lieu. Elle sert uniquement à demander les prévisions à Open-Meteo et n\'est stockée nulle part ailleurs.';
+
+  @override
+  String get weatherLocationPermissionDenied => 'Accès à la position refusé. Autorisez-le dans les paramètres système de l\'application.';
+
+  @override
+  String get weatherOpenAppSettings => 'Ouvrir les paramètres de l\'application';
+
+  @override
+  String get weatherCurrentLocation => 'Position';
+
+  @override
+  String get weatherSetLocation => 'Définir la position';
+
+  @override
+  String get weatherLocationNotSet => 'Non définie';
+
+  @override
+  String get weatherSearchHint => 'Ville ou code postal';
+
+  @override
+  String get weatherNoResults => 'Aucun lieu trouvé';
+
+  @override
+  String get weatherLastUpdated => 'Dernière mise à jour';
+
+  @override
+  String get weatherUnavailable => 'Météo indisponible pour le moment. Vérifiez la connexion réseau.';
+
+  @override
+  String get weatherLocationUnavailable => 'Position de l\'appareil pas encore disponible. Nouvel essai automatique.';
+
+  @override
+  String get weatherAttribution => 'Données météo d\'Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => 'Affichage et écran de veille';
 
   @override

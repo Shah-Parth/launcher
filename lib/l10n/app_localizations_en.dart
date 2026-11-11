@@ -511,6 +511,57 @@ class AppLocalizationsEn extends AppLocalizations {
   String get breezyWeatherSetupHint => 'Install Breezy Weather and enable \'Local data sharing\' / \'Gadgetbridge\' in its settings to see weather and rain warnings.';
 
   @override
+  String get weatherSource => 'Weather source';
+
+  @override
+  String get weatherSourceDevice => 'Device location';
+
+  @override
+  String get weatherSourceManual => 'Manual location';
+
+  @override
+  String get weatherSourceBreezy => 'Breezy Weather app';
+
+  @override
+  String get weatherAllowLocation => 'Allow location access';
+
+  @override
+  String get weatherLocationPermissionHint => 'Weather uses the device\'s approximate location so it stays correct when the device moves. It is only used to request the forecast from Open-Meteo and is not stored anywhere else.';
+
+  @override
+  String get weatherLocationPermissionDenied => 'Location access is denied. Allow it in the app\'s system settings.';
+
+  @override
+  String get weatherOpenAppSettings => 'Open app settings';
+
+  @override
+  String get weatherCurrentLocation => 'Location';
+
+  @override
+  String get weatherSetLocation => 'Set location';
+
+  @override
+  String get weatherLocationNotSet => 'Not set';
+
+  @override
+  String get weatherSearchHint => 'City or postal code';
+
+  @override
+  String get weatherNoResults => 'No locations found';
+
+  @override
+  String get weatherLastUpdated => 'Last updated';
+
+  @override
+  String get weatherUnavailable => 'Weather is unavailable right now. Check the network connection.';
+
+  @override
+  String get weatherLocationUnavailable => 'Device location is not available yet. It will retry automatically.';
+
+  @override
+  String get weatherAttribution => 'Weather data by Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => 'Display & Screensaver';
 
   @override

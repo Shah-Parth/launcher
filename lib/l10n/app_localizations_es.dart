@@ -511,6 +511,57 @@ class AppLocalizationsEs extends AppLocalizations {
   String get breezyWeatherSetupHint => 'Instala Breezy Weather y activa \'Compartir datos locales\' / \'Gadgetbridge\' en sus ajustes para ver el clima y avisos de lluvia.';
 
   @override
+  String get weatherSource => 'Fuente del clima';
+
+  @override
+  String get weatherSourceDevice => 'Ubicación del dispositivo';
+
+  @override
+  String get weatherSourceManual => 'Ubicación manual';
+
+  @override
+  String get weatherSourceBreezy => 'App Breezy Weather';
+
+  @override
+  String get weatherAllowLocation => 'Permitir acceso a la ubicación';
+
+  @override
+  String get weatherLocationPermissionHint => 'El clima usa la ubicación aproximada del dispositivo para seguir siendo correcto cuando el dispositivo se mueve. Solo se usa para pedir el pronóstico a Open-Meteo y no se guarda en ningún otro lugar.';
+
+  @override
+  String get weatherLocationPermissionDenied => 'Acceso a la ubicación denegado. Permítelo en los ajustes del sistema de la app.';
+
+  @override
+  String get weatherOpenAppSettings => 'Abrir ajustes de la app';
+
+  @override
+  String get weatherCurrentLocation => 'Ubicación';
+
+  @override
+  String get weatherSetLocation => 'Definir ubicación';
+
+  @override
+  String get weatherLocationNotSet => 'Sin definir';
+
+  @override
+  String get weatherSearchHint => 'Ciudad o código postal';
+
+  @override
+  String get weatherNoResults => 'No se encontraron ubicaciones';
+
+  @override
+  String get weatherLastUpdated => 'Última actualización';
+
+  @override
+  String get weatherUnavailable => 'El clima no está disponible ahora. Comprueba la conexión de red.';
+
+  @override
+  String get weatherLocationUnavailable => 'La ubicación del dispositivo aún no está disponible. Se reintentará automáticamente.';
+
+  @override
+  String get weatherAttribution => 'Datos meteorológicos de Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => 'Pantalla y salvapantallas';
 
   @override

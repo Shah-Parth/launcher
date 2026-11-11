@@ -511,6 +511,57 @@ class AppLocalizationsZh extends AppLocalizations {
   String get breezyWeatherSetupHint => '安装 Breezy Weather 并在其设置中开启“本地数据共享”/“Gadgetbridge”以显示天气和降雨预警。';
 
   @override
+  String get weatherSource => '天气来源';
+
+  @override
+  String get weatherSourceDevice => '设备位置';
+
+  @override
+  String get weatherSourceManual => '手动位置';
+
+  @override
+  String get weatherSourceBreezy => 'Breezy Weather 应用';
+
+  @override
+  String get weatherAllowLocation => '允许访问位置';
+
+  @override
+  String get weatherLocationPermissionHint => '天气使用设备的大致位置，以便设备移动后仍然准确。该位置仅用于向 Open-Meteo 请求预报，不会存储在其他任何地方。';
+
+  @override
+  String get weatherLocationPermissionDenied => '位置访问已被拒绝。请在应用的系统设置中允许。';
+
+  @override
+  String get weatherOpenAppSettings => '打开应用设置';
+
+  @override
+  String get weatherCurrentLocation => '位置';
+
+  @override
+  String get weatherSetLocation => '设置位置';
+
+  @override
+  String get weatherLocationNotSet => '未设置';
+
+  @override
+  String get weatherSearchHint => '城市或邮政编码';
+
+  @override
+  String get weatherNoResults => '未找到位置';
+
+  @override
+  String get weatherLastUpdated => '最后更新';
+
+  @override
+  String get weatherUnavailable => '当前无法获取天气。请检查网络连接。';
+
+  @override
+  String get weatherLocationUnavailable => '设备位置暂不可用。将自动重试。';
+
+  @override
+  String get weatherAttribution => '天气数据来自 Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => '显示与屏幕保护程序';
 
   @override

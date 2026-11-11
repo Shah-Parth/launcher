@@ -37,11 +37,14 @@ class WeatherLocation {
 
   static WeatherLocation? fromJson(Map<dynamic, dynamic>? json) {
     if (json == null) return null;
-    final lat = (json["latitude"] as num?)?.toDouble();
-    final lon = (json["longitude"] as num?)?.toDouble();
-    if (lat == null || lon == null || lat.isNaN || lon.isNaN) return null;
+    // Tolerant of corrupted cache/backup values: anything that is not a finite
+    // number in range yields null rather than an exception.
+    final latV = json["latitude"], lonV = json["longitude"], nameV = json["name"];
+    final lat = latV is num ? latV.toDouble() : null;
+    final lon = lonV is num ? lonV.toDouble() : null;
+    if (lat == null || lon == null || !lat.isFinite || !lon.isFinite) return null;
     if (lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
-    return WeatherLocation(latitude: lat, longitude: lon, name: json["name"] as String?);
+    return WeatherLocation(latitude: lat, longitude: lon, name: nameV is String && nameV.isNotEmpty ? nameV : null);
   }
 
   static WeatherLocation? fromJsonString(String? s) {

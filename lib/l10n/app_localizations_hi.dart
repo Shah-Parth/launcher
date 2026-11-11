@@ -511,6 +511,57 @@ class AppLocalizationsHi extends AppLocalizations {
   String get breezyWeatherSetupHint => 'मौसम और बारिश की चेतावनी देखने के लिए Breezy Weather इंस्टॉल करें और उसकी सेटिंग्स में \'स्थानीय डेटा साझाकरण\' सक्षम करें।';
 
   @override
+  String get weatherSource => 'मौसम स्रोत';
+
+  @override
+  String get weatherSourceDevice => 'डिवाइस का स्थान';
+
+  @override
+  String get weatherSourceManual => 'मैन्युअल स्थान';
+
+  @override
+  String get weatherSourceBreezy => 'Breezy Weather ऐप';
+
+  @override
+  String get weatherAllowLocation => 'स्थान एक्सेस की अनुमति दें';
+
+  @override
+  String get weatherLocationPermissionHint => 'मौसम डिवाइस के अनुमानित स्थान का उपयोग करता है ताकि डिवाइस के स्थान बदलने पर भी यह सही रहे। इसका उपयोग केवल Open-Meteo से पूर्वानुमान मांगने के लिए होता है और इसे कहीं और संग्रहीत नहीं किया जाता।';
+
+  @override
+  String get weatherLocationPermissionDenied => 'स्थान एक्सेस अस्वीकृत है। ऐप की सिस्टम सेटिंग में इसकी अनुमति दें।';
+
+  @override
+  String get weatherOpenAppSettings => 'ऐप सेटिंग खोलें';
+
+  @override
+  String get weatherCurrentLocation => 'स्थान';
+
+  @override
+  String get weatherSetLocation => 'स्थान सेट करें';
+
+  @override
+  String get weatherLocationNotSet => 'सेट नहीं है';
+
+  @override
+  String get weatherSearchHint => 'शहर या पिन कोड';
+
+  @override
+  String get weatherNoResults => 'कोई स्थान नहीं मिला';
+
+  @override
+  String get weatherLastUpdated => 'अंतिम अपडेट';
+
+  @override
+  String get weatherUnavailable => 'मौसम अभी उपलब्ध नहीं है। नेटवर्क कनेक्शन जांचें।';
+
+  @override
+  String get weatherLocationUnavailable => 'डिवाइस का स्थान अभी उपलब्ध नहीं है। यह अपने आप पुनः प्रयास करेगा।';
+
+  @override
+  String get weatherAttribution => 'मौसम डेटा Open-Meteo.com से (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => 'डिस्प्ले और स्क्रीनसेवर';
 
   @override

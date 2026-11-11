@@ -511,6 +511,57 @@ class AppLocalizationsKo extends AppLocalizations {
   String get breezyWeatherSetupHint => 'Breezy Weather를 설치하고 설정에서 \'로컬 데이터 공유\' / \'Gadgetbridge\'를 활성화하면 날씨 및 강우 경보가 표시됩니다.';
 
   @override
+  String get weatherSource => '날씨 출처';
+
+  @override
+  String get weatherSourceDevice => '기기 위치';
+
+  @override
+  String get weatherSourceManual => '수동 위치';
+
+  @override
+  String get weatherSourceBreezy => 'Breezy Weather 앱';
+
+  @override
+  String get weatherAllowLocation => '위치 접근 허용';
+
+  @override
+  String get weatherLocationPermissionHint => '날씨는 기기가 이동해도 정확하도록 기기의 대략적인 위치를 사용합니다. 위치는 Open-Meteo에 예보를 요청하는 데만 사용되며 다른 곳에 저장되지 않습니다.';
+
+  @override
+  String get weatherLocationPermissionDenied => '위치 접근이 거부되었습니다. 앱의 시스템 설정에서 허용하세요.';
+
+  @override
+  String get weatherOpenAppSettings => '앱 설정 열기';
+
+  @override
+  String get weatherCurrentLocation => '위치';
+
+  @override
+  String get weatherSetLocation => '위치 설정';
+
+  @override
+  String get weatherLocationNotSet => '설정되지 않음';
+
+  @override
+  String get weatherSearchHint => '도시 또는 우편번호';
+
+  @override
+  String get weatherNoResults => '위치를 찾을 수 없음';
+
+  @override
+  String get weatherLastUpdated => '마지막 업데이트';
+
+  @override
+  String get weatherUnavailable => '지금은 날씨를 사용할 수 없습니다. 네트워크 연결을 확인하세요.';
+
+  @override
+  String get weatherLocationUnavailable => '기기 위치를 아직 사용할 수 없습니다. 자동으로 다시 시도합니다.';
+
+  @override
+  String get weatherAttribution => '날씨 데이터: Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => '디스플레이 및 화면 보호기';
 
   @override

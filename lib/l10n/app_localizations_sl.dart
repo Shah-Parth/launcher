@@ -511,6 +511,57 @@ class AppLocalizationsSl extends AppLocalizations {
   String get breezyWeatherSetupHint => 'Namestite Breezy Weather in v njegovih nastavitvah omogočite »Lokalna skupna raba podatkov« / »Gadgetbridge«, da boste videli opozorila za vreme in dež.';
 
   @override
+  String get weatherSource => 'Vir vremena';
+
+  @override
+  String get weatherSourceDevice => 'Lokacija naprave';
+
+  @override
+  String get weatherSourceManual => 'Ročna lokacija';
+
+  @override
+  String get weatherSourceBreezy => 'Aplikacija Breezy Weather';
+
+  @override
+  String get weatherAllowLocation => 'Dovoli dostop do lokacije';
+
+  @override
+  String get weatherLocationPermissionHint => 'Vreme uporablja približno lokacijo naprave, da ostane pravilno, ko napravo premaknete. Uporablja se samo za zahtevo napovedi pri Open-Meteo in ni shranjena nikjer drugje.';
+
+  @override
+  String get weatherLocationPermissionDenied => 'Dostop do lokacije je zavrnjen. Dovolite ga v sistemskih nastavitvah aplikacije.';
+
+  @override
+  String get weatherOpenAppSettings => 'Odpri nastavitve aplikacije';
+
+  @override
+  String get weatherCurrentLocation => 'Lokacija';
+
+  @override
+  String get weatherSetLocation => 'Nastavi lokacijo';
+
+  @override
+  String get weatherLocationNotSet => 'Ni nastavljeno';
+
+  @override
+  String get weatherSearchHint => 'Mesto ali poštna številka';
+
+  @override
+  String get weatherNoResults => 'Ni najdenih lokacij';
+
+  @override
+  String get weatherLastUpdated => 'Nazadnje posodobljeno';
+
+  @override
+  String get weatherUnavailable => 'Vreme trenutno ni na voljo. Preverite omrežno povezavo.';
+
+  @override
+  String get weatherLocationUnavailable => 'Lokacija naprave še ni na voljo. Poskus se bo samodejno ponovil.';
+
+  @override
+  String get weatherAttribution => 'Vremenski podatki: Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => 'Zaslon in ohranjevalnik';
 
   @override

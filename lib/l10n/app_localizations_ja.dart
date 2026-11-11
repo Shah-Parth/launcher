@@ -511,6 +511,57 @@ class AppLocalizationsJa extends AppLocalizations {
   String get breezyWeatherSetupHint => 'Breezy Weather をインストールし、設定で「ローカルデータ共有」/「Gadgetbridge」を有効にすると、天気と雨の警告が表示されます。';
 
   @override
+  String get weatherSource => '天気のソース';
+
+  @override
+  String get weatherSourceDevice => 'デバイスの位置情報';
+
+  @override
+  String get weatherSourceManual => '手動で設定した位置';
+
+  @override
+  String get weatherSourceBreezy => 'Breezy Weather アプリ';
+
+  @override
+  String get weatherAllowLocation => '位置情報へのアクセスを許可';
+
+  @override
+  String get weatherLocationPermissionHint => '天気はデバイスのおおよその位置情報を使い、移動後も正しい情報を表示します。位置情報は Open-Meteo への予報の問い合わせにのみ使われ、他には保存されません。';
+
+  @override
+  String get weatherLocationPermissionDenied => '位置情報へのアクセスが拒否されています。アプリのシステム設定で許可してください。';
+
+  @override
+  String get weatherOpenAppSettings => 'アプリ設定を開く';
+
+  @override
+  String get weatherCurrentLocation => '位置';
+
+  @override
+  String get weatherSetLocation => '位置を設定';
+
+  @override
+  String get weatherLocationNotSet => '未設定';
+
+  @override
+  String get weatherSearchHint => '都市名または郵便番号';
+
+  @override
+  String get weatherNoResults => '場所が見つかりません';
+
+  @override
+  String get weatherLastUpdated => '最終更新';
+
+  @override
+  String get weatherUnavailable => '現在、天気を取得できません。ネットワーク接続を確認してください。';
+
+  @override
+  String get weatherLocationUnavailable => 'デバイスの位置情報をまだ取得できません。自動的に再試行します。';
+
+  @override
+  String get weatherAttribution => '天気データ: Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => 'ディスプレイとスクリーンセーバー';
 
   @override

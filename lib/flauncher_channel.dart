@@ -345,37 +345,6 @@ class FLauncherChannel {
     }
   }
 
-  // ---- built-in weather: device location via the runtime-permission model ----
-
-  Future<bool> checkLocationPermission() async {
-    try {
-      final bool? granted = await _methodChannel.invokeMethod<bool>("checkLocationPermission");
-      return granted ?? false;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  /// Shows the system permission dialog for ACCESS_COARSE_LOCATION.
-  Future<bool> requestLocationPermission() async {
-    try {
-      final bool? granted = await _methodChannel.invokeMethod<bool>("requestLocationPermission");
-      return granted ?? false;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  /// Coarse device position, or null when unavailable. Requires the permission.
-  Future<WeatherLocation?> getDeviceLocation() async {
-    try {
-      final Map<dynamic, dynamic>? map = await _methodChannel.invokeMapMethod("getDeviceLocation");
-      return WeatherLocation.fromJson(map);
-    } catch (_) {
-      return null;
-    }
-  }
-
   StreamSubscription<dynamic> addWeatherChangedListener(void Function(dynamic) onEvent) =>
       _weatherEventChannel.receiveBroadcastStream().listen(onEvent);
 

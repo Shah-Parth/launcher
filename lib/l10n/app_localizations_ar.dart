@@ -511,6 +511,57 @@ class AppLocalizationsAr extends AppLocalizations {
   String get breezyWeatherSetupHint => 'قم بتثبيت تطبيق Breezy Weather وتفعيل \'مشاركة البيانات المحلية\' في إعداداته لعرض الطقس وتحذيرات الأمطار.';
 
   @override
+  String get weatherSource => 'مصدر الطقس';
+
+  @override
+  String get weatherSourceDevice => 'موقع الجهاز';
+
+  @override
+  String get weatherSourceManual => 'موقع يدوي';
+
+  @override
+  String get weatherSourceBreezy => 'تطبيق Breezy Weather';
+
+  @override
+  String get weatherAllowLocation => 'السماح بالوصول إلى الموقع';
+
+  @override
+  String get weatherLocationPermissionHint => 'يستخدم الطقس الموقع التقريبي للجهاز ليبقى صحيحًا عند نقل الجهاز. يُستخدم فقط لطلب التوقعات من Open-Meteo ولا يُخزَّن في أي مكان آخر.';
+
+  @override
+  String get weatherLocationPermissionDenied => 'تم رفض الوصول إلى الموقع. اسمح به من إعدادات النظام الخاصة بالتطبيق.';
+
+  @override
+  String get weatherOpenAppSettings => 'فتح إعدادات التطبيق';
+
+  @override
+  String get weatherCurrentLocation => 'الموقع';
+
+  @override
+  String get weatherSetLocation => 'تعيين الموقع';
+
+  @override
+  String get weatherLocationNotSet => 'غير محدد';
+
+  @override
+  String get weatherSearchHint => 'المدينة أو الرمز البريدي';
+
+  @override
+  String get weatherNoResults => 'لم يتم العثور على مواقع';
+
+  @override
+  String get weatherLastUpdated => 'آخر تحديث';
+
+  @override
+  String get weatherUnavailable => 'الطقس غير متاح الآن. تحقق من اتصال الشبكة.';
+
+  @override
+  String get weatherLocationUnavailable => 'موقع الجهاز غير متاح بعد. ستتم إعادة المحاولة تلقائيًا.';
+
+  @override
+  String get weatherAttribution => 'بيانات الطقس من Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => 'الشاشة وشاشة التوقف';
 
   @override

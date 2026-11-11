@@ -511,6 +511,57 @@ class AppLocalizationsPt extends AppLocalizations {
   String get breezyWeatherSetupHint => 'Instale o Breezy Weather e ative o \'Compartilhamento local de dados\' / \'Gadgetbridge\' nas configurações para ver o clima e alertas de chuva.';
 
   @override
+  String get weatherSource => 'Fonte do clima';
+
+  @override
+  String get weatherSourceDevice => 'Localização do dispositivo';
+
+  @override
+  String get weatherSourceManual => 'Localização manual';
+
+  @override
+  String get weatherSourceBreezy => 'App Breezy Weather';
+
+  @override
+  String get weatherAllowLocation => 'Permitir acesso à localização';
+
+  @override
+  String get weatherLocationPermissionHint => 'O clima usa a localização aproximada do dispositivo para continuar correto quando o dispositivo muda de lugar. É usada apenas para pedir a previsão à Open-Meteo e não é guardada em nenhum outro lugar.';
+
+  @override
+  String get weatherLocationPermissionDenied => 'Acesso à localização negado. Permita-o nas definições de sistema da app.';
+
+  @override
+  String get weatherOpenAppSettings => 'Abrir definições da app';
+
+  @override
+  String get weatherCurrentLocation => 'Localização';
+
+  @override
+  String get weatherSetLocation => 'Definir localização';
+
+  @override
+  String get weatherLocationNotSet => 'Não definida';
+
+  @override
+  String get weatherSearchHint => 'Cidade ou código postal';
+
+  @override
+  String get weatherNoResults => 'Nenhuma localização encontrada';
+
+  @override
+  String get weatherLastUpdated => 'Última atualização';
+
+  @override
+  String get weatherUnavailable => 'O clima não está disponível agora. Verifique a ligação à rede.';
+
+  @override
+  String get weatherLocationUnavailable => 'A localização do dispositivo ainda não está disponível. Vai tentar novamente automaticamente.';
+
+  @override
+  String get weatherAttribution => 'Dados meteorológicos de Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => 'Tela e protetor de tela';
 
   @override

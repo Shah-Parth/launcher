@@ -511,6 +511,57 @@ class AppLocalizationsUk extends AppLocalizations {
   String get breezyWeatherSetupHint => 'Встановіть Breezy Weather та увімкніть \'Локальний обмін даними\' / \'Gadgetbridge\' у налаштуваннях для перегляду погоди та попереджень про дощ.';
 
   @override
+  String get weatherSource => 'Джерело погоди';
+
+  @override
+  String get weatherSourceDevice => 'Розташування пристрою';
+
+  @override
+  String get weatherSourceManual => 'Ручне розташування';
+
+  @override
+  String get weatherSourceBreezy => 'Застосунок Breezy Weather';
+
+  @override
+  String get weatherAllowLocation => 'Дозволити доступ до розташування';
+
+  @override
+  String get weatherLocationPermissionHint => 'Погода використовує приблизне розташування пристрою, щоб залишатися точною після переміщення. Воно використовується лише для запиту прогнозу в Open-Meteo і ніде більше не зберігається.';
+
+  @override
+  String get weatherLocationPermissionDenied => 'Доступ до розташування заборонено. Дозвольте його в системних налаштуваннях застосунку.';
+
+  @override
+  String get weatherOpenAppSettings => 'Відкрити налаштування застосунку';
+
+  @override
+  String get weatherCurrentLocation => 'Розташування';
+
+  @override
+  String get weatherSetLocation => 'Вказати розташування';
+
+  @override
+  String get weatherLocationNotSet => 'Не вказано';
+
+  @override
+  String get weatherSearchHint => 'Місто або поштовий індекс';
+
+  @override
+  String get weatherNoResults => 'Розташувань не знайдено';
+
+  @override
+  String get weatherLastUpdated => 'Останнє оновлення';
+
+  @override
+  String get weatherUnavailable => 'Погода зараз недоступна. Перевірте підключення до мережі.';
+
+  @override
+  String get weatherLocationUnavailable => 'Розташування пристрою поки недоступне. Повторна спроба буде автоматичною.';
+
+  @override
+  String get weatherAttribution => 'Дані про погоду: Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => 'Екран та заставка';
 
   @override

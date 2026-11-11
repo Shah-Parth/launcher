@@ -511,6 +511,57 @@ class AppLocalizationsTr extends AppLocalizations {
   String get breezyWeatherSetupHint => 'Hava durumu ve yağmur uyarılarını görmek için Breezy Weather\'ı yükleyin ve ayarlarından \'Yerel veri paylaşımı\' / \'Gadgetbridge\' özelliğini etkinleştirin.';
 
   @override
+  String get weatherSource => 'Hava durumu kaynağı';
+
+  @override
+  String get weatherSourceDevice => 'Cihaz konumu';
+
+  @override
+  String get weatherSourceManual => 'Elle girilen konum';
+
+  @override
+  String get weatherSourceBreezy => 'Breezy Weather uygulaması';
+
+  @override
+  String get weatherAllowLocation => 'Konum erişimine izin ver';
+
+  @override
+  String get weatherLocationPermissionHint => 'Hava durumu, cihaz taşındığında doğru kalması için cihazın yaklaşık konumunu kullanır. Yalnızca Open-Meteo\'dan tahmin istemek için kullanılır ve başka hiçbir yerde saklanmaz.';
+
+  @override
+  String get weatherLocationPermissionDenied => 'Konum erişimi reddedildi. Uygulamanın sistem ayarlarından izin verin.';
+
+  @override
+  String get weatherOpenAppSettings => 'Uygulama ayarlarını aç';
+
+  @override
+  String get weatherCurrentLocation => 'Konum';
+
+  @override
+  String get weatherSetLocation => 'Konumu ayarla';
+
+  @override
+  String get weatherLocationNotSet => 'Ayarlanmadı';
+
+  @override
+  String get weatherSearchHint => 'Şehir veya posta kodu';
+
+  @override
+  String get weatherNoResults => 'Konum bulunamadı';
+
+  @override
+  String get weatherLastUpdated => 'Son güncelleme';
+
+  @override
+  String get weatherUnavailable => 'Hava durumu şu anda kullanılamıyor. Ağ bağlantısını kontrol edin.';
+
+  @override
+  String get weatherLocationUnavailable => 'Cihaz konumu henüz alınamadı. Otomatik olarak yeniden denenecek.';
+
+  @override
+  String get weatherAttribution => 'Hava durumu verileri: Open-Meteo.com (CC BY 4.0)';
+
+  @override
   String get displayAndScreensaver => 'Ekran ve Ekran Koruyucu';
 
   @override

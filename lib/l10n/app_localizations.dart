@@ -1095,6 +1095,108 @@ abstract class AppLocalizations {
   /// **'Install Breezy Weather and enable \'Local data sharing\' / \'Gadgetbridge\' in its settings to see weather and rain warnings.'**
   String get breezyWeatherSetupHint;
 
+  /// No description provided for @weatherSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather source'**
+  String get weatherSource;
+
+  /// No description provided for @weatherSourceDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Device location'**
+  String get weatherSourceDevice;
+
+  /// No description provided for @weatherSourceManual.
+  ///
+  /// In en, this message translates to:
+  /// **'Manual location'**
+  String get weatherSourceManual;
+
+  /// No description provided for @weatherSourceBreezy.
+  ///
+  /// In en, this message translates to:
+  /// **'Breezy Weather app'**
+  String get weatherSourceBreezy;
+
+  /// No description provided for @weatherAllowLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow location access'**
+  String get weatherAllowLocation;
+
+  /// No description provided for @weatherLocationPermissionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather uses the device\'s approximate location so it stays correct when the device moves. It is only used to request the forecast from Open-Meteo and is not stored anywhere else.'**
+  String get weatherLocationPermissionHint;
+
+  /// No description provided for @weatherLocationPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Location access is denied. Allow it in the app\'s system settings.'**
+  String get weatherLocationPermissionDenied;
+
+  /// No description provided for @weatherOpenAppSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Open app settings'**
+  String get weatherOpenAppSettings;
+
+  /// No description provided for @weatherCurrentLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get weatherCurrentLocation;
+
+  /// No description provided for @weatherSetLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Set location'**
+  String get weatherSetLocation;
+
+  /// No description provided for @weatherLocationNotSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get weatherLocationNotSet;
+
+  /// No description provided for @weatherSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'City or postal code'**
+  String get weatherSearchHint;
+
+  /// No description provided for @weatherNoResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No locations found'**
+  String get weatherNoResults;
+
+  /// No description provided for @weatherLastUpdated.
+  ///
+  /// In en, this message translates to:
+  /// **'Last updated'**
+  String get weatherLastUpdated;
+
+  /// No description provided for @weatherUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather is unavailable right now. Check the network connection.'**
+  String get weatherUnavailable;
+
+  /// No description provided for @weatherLocationUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Device location is not available yet. It will retry automatically.'**
+  String get weatherLocationUnavailable;
+
+  /// No description provided for @weatherAttribution.
+  ///
+  /// In en, this message translates to:
+  /// **'Weather data by Open-Meteo.com (CC BY 4.0)'**
+  String get weatherAttribution;
+
   /// No description provided for @displayAndScreensaver.
   ///
   /// In en, this message translates to:
