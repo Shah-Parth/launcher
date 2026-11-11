@@ -107,6 +107,8 @@ class _WeatherLocationPageState extends State<WeatherLocationPage> {
                   itemBuilder: (context, i) {
                     final r = _results[i];
                     return FocusableSettingsTile(
+                      // Jump the remote's focus straight to the first hit after a search.
+                      autofocus: i == 0,
                       leading: const Icon(Icons.place_outlined),
                       title: Text(r.name ?? "${r.latitude.toStringAsFixed(2)}, ${r.longitude.toStringAsFixed(2)}"),
                       onPressed: () => _select(r),
