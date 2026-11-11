@@ -84,6 +84,8 @@ public class MainActivity extends FlutterActivity {
     private final String WEATHER_EVENT_CHANNEL = "me.efesser.flauncher/event_weather";
     private final String WATCH_NEXT_EVENT_CHANNEL = "me.efesser.flauncher/event_watch_next";
     private MethodChannel.Result pendingPermissionResult;
+    private MethodChannel.Result pendingLocationPermissionResult;
+    private static final int LOCATION_PERMISSION_REQUEST = 1003;
     private static final ExecutorService sIoExecutor = Executors.newFixedThreadPool(4);
 
     @Override
@@ -196,6 +198,9 @@ public class MainActivity extends FlutterActivity {
                 case "getLatestWeatherData" -> result.success(getLatestWeatherData());
                 case "isBreezyWeatherInstalled" -> result.success(isBreezyWeatherInstalled());
                 case "openBreezyWeather" -> result.success(openBreezyWeather());
+                case "checkLocationPermission" -> result.success(checkLocationPermission());
+                case "requestLocationPermission" -> requestLocationPermission(result);
+                case "getDeviceLocation" -> getDeviceLocation(result);
                 case "getPackageName" -> result.success(getPackageName());
                 case "playClickSound" -> {
                     getWindow().getDecorView().playSoundEffect(android.view.SoundEffectConstants.CLICK);
@@ -1588,6 +1593,146 @@ public class MainActivity extends FlutterActivity {
         return false;
     }
 
+    // ------------------------------------------------------------------
+    // Built-in weather: coarse device location via the runtime permission model.
+    // Only ACCESS_COARSE_LOCATION is requested (city-level accuracy is all a
+    // forecast needs) and nothing is read until the user grants it.
+    // ------------------------------------------------------------------
+
+    private boolean checkLocationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true;
+        return checkSelfPermission(android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestLocationPermission(MethodChannel.Result result) {
+        if (checkLocationPermission()) {
+            result.success(true);
+            return;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            result.success(true);
+            return;
+        }
+        if (pendingLocationPermissionResult != null) {
+            result.error("ALREADY_REQUESTING", "A location permission request is already in progress", null);
+            return;
+        }
+        pendingLocationPermissionResult = result;
+        requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, LOCATION_PERMISSION_REQUEST);
+    }
+
+    /**
+     * Resolves a coarse position and answers with {latitude, longitude, accuracy, time, name?}
+     * or null. Tries a fresh fix first (fused on S+, otherwise network), falls back to the
+     * freshest last-known location from any provider. Always answers exactly once, on the
+     * main thread, within ~15 seconds.
+     */
+    @android.annotation.SuppressLint("MissingPermission")
+    private void getDeviceLocation(MethodChannel.Result result) {
+        if (!checkLocationPermission()) {
+            result.success(null);
+            return;
+        }
+        final android.location.LocationManager lm =
+                (android.location.LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (lm == null) {
+            result.success(null);
+            return;
+        }
+        final java.util.concurrent.atomic.AtomicBoolean answered = new java.util.concurrent.atomic.AtomicBoolean(false);
+        final Handler main = new Handler(Looper.getMainLooper());
+
+        String provider = null;
+        List<String> providers = lm.getAllProviders();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && providers.contains("fused")) {
+            provider = "fused"; // LocationManager.FUSED_PROVIDER
+        } else if (providers.contains(android.location.LocationManager.NETWORK_PROVIDER)) {
+            provider = android.location.LocationManager.NETWORK_PROVIDER;
+        }
+
+        if (provider != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            try {
+                final android.os.CancellationSignal signal = new android.os.CancellationSignal();
+                // Hard timeout: answer with whatever we have rather than hanging the UI.
+                main.postDelayed(() -> {
+                    if (!answered.get()) {
+                        signal.cancel();
+                        deliverLocation(result, answered, main, lm, null);
+                    }
+                }, 15_000);
+                lm.getCurrentLocation(provider, signal, getMainExecutor(),
+                        location -> deliverLocation(result, answered, main, lm, location));
+                return;
+            } catch (SecurityException | IllegalArgumentException e) {
+                // fall through to last known location
+            }
+        }
+        deliverLocation(result, answered, main, lm, null);
+    }
+
+    /** Answers the channel exactly once, on the main thread, with a fresh or last-known position. */
+    private void deliverLocation(MethodChannel.Result result,
+                                 java.util.concurrent.atomic.AtomicBoolean answered,
+                                 Handler main,
+                                 android.location.LocationManager lm,
+                                 android.location.Location fresh) {
+        final android.location.Location loc = fresh != null ? fresh : bestLastKnownLocation(lm);
+        sIoExecutor.execute(() -> {
+            final Map<String, Object> payload = loc != null ? locationPayload(loc) : null;
+            main.post(() -> {
+                if (answered.compareAndSet(false, true)) {
+                    result.success(payload);
+                }
+            });
+        });
+    }
+
+    @android.annotation.SuppressLint("MissingPermission")
+    private android.location.Location bestLastKnownLocation(android.location.LocationManager lm) {
+        android.location.Location best = null;
+        try {
+            for (String p : lm.getAllProviders()) {
+                android.location.Location l = lm.getLastKnownLocation(p);
+                if (l != null && (best == null || l.getTime() > best.getTime())) {
+                    best = l;
+                }
+            }
+        } catch (SecurityException ignored) {
+        }
+        return best;
+    }
+
+    /** Builds the channel payload; runs on the IO executor because reverse geocoding blocks. */
+    private Map<String, Object> locationPayload(android.location.Location loc) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("latitude", loc.getLatitude());
+        map.put("longitude", loc.getLongitude());
+        map.put("accuracy", (double) loc.getAccuracy());
+        map.put("time", loc.getTime());
+        String name = reverseGeocode(loc.getLatitude(), loc.getLongitude());
+        if (name != null) map.put("name", name);
+        return map;
+    }
+
+    private String reverseGeocode(double lat, double lon) {
+        try {
+            if (!android.location.Geocoder.isPresent()) return null;
+            android.location.Geocoder geocoder = new android.location.Geocoder(this, java.util.Locale.getDefault());
+            @SuppressWarnings("deprecation")
+            List<android.location.Address> addresses = geocoder.getFromLocation(lat, lon, 1);
+            if (addresses == null || addresses.isEmpty()) return null;
+            android.location.Address a = addresses.get(0);
+            String city = a.getLocality() != null ? a.getLocality()
+                    : a.getSubAdminArea() != null ? a.getSubAdminArea() : a.getAdminArea();
+            if (city == null) return null;
+            String region = a.getAdminArea();
+            return region != null && !region.equals(city) ? city + ", " + region : city;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -1596,6 +1741,13 @@ public class MainActivity extends FlutterActivity {
                 boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
                 pendingPermissionResult.success(granted);
                 pendingPermissionResult = null;
+            }
+        }
+        if (requestCode == LOCATION_PERMISSION_REQUEST) {
+            if (pendingLocationPermissionResult != null) {
+                boolean granted = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                pendingLocationPermissionResult.success(granted);
+                pendingLocationPermissionResult = null;
             }
         }
     }

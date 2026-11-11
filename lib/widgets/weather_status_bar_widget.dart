@@ -48,17 +48,17 @@ class _WeatherStatusBarWidgetState extends State<WeatherStatusBarWidget> {
             return Actions(
               actions: <Type, Action<Intent>>{
                 ActivateIntent: CallbackAction<ActivateIntent>(
-                  onInvoke: (_) => weatherService.openBreezyWeather(),
+                  onInvoke: (_) => weatherService.onStatusBarActivated(),
                 ),
                 ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
-                  onInvoke: (_) => weatherService.openBreezyWeather(),
+                  onInvoke: (_) => weatherService.onStatusBarActivated(),
                 ),
               },
               child: Focus(
                 focusNode: widget.focusNode,
                 onFocusChange: (hasFocus) => setState(() => _focused = hasFocus),
                 child: InkWell(
-                  onTap: () => weatherService.openBreezyWeather(),
+                  onTap: () => weatherService.onStatusBarActivated(),
                   borderRadius: BorderRadius.circular(14),
                   focusColor: Colors.transparent,
                   child: AnimatedContainer(

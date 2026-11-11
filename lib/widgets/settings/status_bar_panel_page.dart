@@ -19,6 +19,7 @@
 import 'package:flauncher/providers/weather_service.dart';
 import 'package:flauncher/widgets/rounded_switch_list_tile.dart';
 import 'package:flauncher/widgets/settings/focusable_settings_tile.dart';
+import 'package:flauncher/widgets/settings/weather_source_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flauncher/l10n/app_localizations.dart';
@@ -95,7 +96,12 @@ class StatusBarPanelPage extends StatelessWidget {
                 Divider(),
                 RoundedSwitchListTile(
                   value: settingsService.showWeatherInStatusBar,
-                  onChanged: (value) => settingsService.setShowWeatherInStatusBar(value),
+                  onChanged: (value) async {
+                    await settingsService.setShowWeatherInStatusBar(value);
+                    if (value && context.mounted) {
+                      await context.read<WeatherService>().onWeatherEnabled();
+                    }
+                  },
                   title: Text(localizations.weather),
                   secondary: Icon(Icons.wb_sunny_outlined),
                 ),
@@ -118,35 +124,7 @@ class StatusBarPanelPage extends StatelessWidget {
                       settingsService.setTemperatureUnit(next);
                     },
                   ),
-                  Consumer<WeatherService>(
-                    builder: (context, weatherService, _) {
-                      if (!weatherService.hasWeather) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Container(
-                            padding: const EdgeInsets.all(12),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.05),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.info_outline, size: 20, color: Colors.white70),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Text(
-                                    localizations.breezyWeatherSetupHint,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white70),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
+                  const WeatherSourceSettings(),
                 ],
               ],
             ),

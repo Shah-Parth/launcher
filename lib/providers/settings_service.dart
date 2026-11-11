@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import 'package:flauncher/models/weather_location.dart';
 import 'dart:async';
 
 import 'package:flauncher/widgets/settings/back_button_actions.dart';
@@ -63,10 +64,17 @@ const String _appLanguageKey = "app_language";
 const String _showWeatherInStatusBarKey = "show_weather_in_status_bar";
 const String _showWeatherWarningsKey = "show_weather_warnings";
 const String _temperatureUnitKey = "temperature_unit";
+const String _weatherSourceKey = "weather_source";
+const String _weatherManualLocationKey = "weather_manual_location";
 const String _autoAddNewAppsKey = "auto_add_new_apps";
 
 const String TEMPERATURE_UNIT_CELSIUS = "celsius";
 const String TEMPERATURE_UNIT_FAHRENHEIT = "fahrenheit";
+
+// Weather source options (see WeatherService)
+const String WEATHER_SOURCE_DEVICE = "device";
+const String WEATHER_SOURCE_MANUAL = "manual";
+const String WEATHER_SOURCE_BREEZY = "breezy";
 
 // WiFi usage period options
 const String DATA_USAGE_DAILY = "daily";
@@ -140,6 +148,8 @@ class SettingsService extends ChangeNotifier {
   late bool _showWeatherInStatusBar;
   late bool _showWeatherWarnings;
   late String _temperatureUnit;
+  late String _weatherSource;
+  late String _weatherManualLocationJson;
   late bool _autoAddNewApps;
 
   bool get autoAddNewApps => _autoAddNewApps;
@@ -197,6 +207,8 @@ class SettingsService extends ChangeNotifier {
   bool get showWeatherWarnings => _showWeatherWarnings;
   String get temperatureUnit => _temperatureUnit;
   bool get useFahrenheit => _temperatureUnit == TEMPERATURE_UNIT_FAHRENHEIT;
+  String get weatherSource => _weatherSource;
+  WeatherLocation? get weatherManualLocation => WeatherLocation.fromJsonString(_weatherManualLocationJson);
 
   String get appLanguage => _appLanguage;
 
@@ -264,6 +276,8 @@ class SettingsService extends ChangeNotifier {
     _showWeatherInStatusBar = _sharedPreferences.getBool(_showWeatherInStatusBarKey) ?? false;
     _showWeatherWarnings = _sharedPreferences.getBool(_showWeatherWarningsKey) ?? true;
     _temperatureUnit = _sharedPreferences.getString(_temperatureUnitKey) ?? TEMPERATURE_UNIT_CELSIUS;
+    _weatherSource = _sharedPreferences.getString(_weatherSourceKey) ?? WEATHER_SOURCE_DEVICE;
+    _weatherManualLocationJson = _sharedPreferences.getString(_weatherManualLocationKey) ?? "";
     _autoAddNewApps = _sharedPreferences.getBool(_autoAddNewAppsKey) ?? true;
     notifyListeners();
   }
@@ -311,6 +325,8 @@ class SettingsService extends ChangeNotifier {
       _showWeatherInStatusBarKey: _showWeatherInStatusBar,
       _showWeatherWarningsKey: _showWeatherWarnings,
       _temperatureUnitKey: _temperatureUnit,
+      _weatherSourceKey: _weatherSource,
+      _weatherManualLocationKey: _weatherManualLocationJson,
     };
   }
 
@@ -612,6 +628,19 @@ class SettingsService extends ChangeNotifier {
   Future<void> setTemperatureUnit(String unit) async {
     await _sharedPreferences.setString(_temperatureUnitKey, unit);
     _temperatureUnit = unit;
+    notifyListeners();
+  }
+
+  Future<void> setWeatherSource(String source) async {
+    await _sharedPreferences.setString(_weatherSourceKey, source);
+    _weatherSource = source;
+    notifyListeners();
+  }
+
+  Future<void> setWeatherManualLocation(WeatherLocation? location) async {
+    final json = location?.toJsonString() ?? "";
+    await _sharedPreferences.setString(_weatherManualLocationKey, json);
+    _weatherManualLocationJson = json;
     notifyListeners();
   }
 

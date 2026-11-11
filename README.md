@@ -1,5 +1,13 @@
 # LTvLauncher
 
+> **This fork: built-in weather with device location.** Weather no longer requires the Breezy Weather app.
+> In *Settings → Status bar → Weather* choose a source: **Device location** (asks for the Android
+> *approximate location* permission at runtime and re-resolves it whenever the launcher resumes, so a
+> device that travels stays correct), **Manual location** (search a city or postal code), or the original
+> **Breezy Weather app**. Forecasts come from [Open-Meteo](https://open-meteo.com) (free, no API key,
+> CC BY 4.0); the release build therefore declares `INTERNET` and `ACCESS_COARSE_LOCATION`.
+> There is still no analytics, telemetry or tracking of any kind.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner_dark.svg">
   <source media="(prefers-color-scheme: light)" srcset=".github/assets/banner_light.svg">

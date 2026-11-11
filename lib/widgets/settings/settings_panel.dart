@@ -17,6 +17,7 @@
  */
 
 import 'package:flauncher/widgets/side_panel_dialog.dart';
+import 'package:flauncher/widgets/settings/weather_location_page.dart';
 import 'package:flauncher/widgets/settings/applications_panel_page.dart';
 import 'package:flauncher/widgets/settings/launcher_sections_panel_page.dart';
 import 'package:flauncher/widgets/settings/gradient_panel_page.dart';
@@ -118,6 +119,8 @@ class _SettingsPanelState extends State<SettingsPanel> {
                       return _FastPageRoute(builder: (_) => BackButtonActionPage());
                     case DateTimeFormatPage.routeName:
                       return _FastPageRoute(builder: (_) => DateTimeFormatPage());
+                    case WeatherLocationPage.routeName:
+                      return _FastPageRoute(builder: (_) => const WeatherLocationPage());
                     case MiscPanelPage.routeName:
                       return _FastPageRoute(builder: (_) => MiscPanelPage());
                     case ScreensaverClockStylePage.routeName:

@@ -129,7 +129,11 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => TvInputsService(fLauncherChannel)),
         ChangeNotifierProvider(create: (_) => NotificationsService(fLauncherChannel)),
         ChangeNotifierProvider(create: (_) => WatchNextService(fLauncherChannel)),
-        ChangeNotifierProvider(create: (_) => WeatherService(fLauncherChannel)),
+        ChangeNotifierProvider(
+            create: (context) {
+              SettingsService settingsService = Provider.of(context, listen: false);
+              return WeatherService(fLauncherChannel, settingsService: settingsService, preferences: sharedPreferences);
+            }),
       ],
       child: FLauncherApp()
     )
