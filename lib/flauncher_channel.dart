@@ -345,6 +345,20 @@ class FLauncherChannel {
     }
   }
 
+  /// Forward-geocodes a city or postal code with the platform Geocoder.
+  /// Returns an empty list when the device has no geocoder backend.
+  Future<List<WeatherLocation>> geocodeLocationName(String query) async {
+    try {
+      final List<dynamic>? list = await _methodChannel.invokeListMethod("geocodeLocationName", query);
+      return (list ?? const [])
+          .map((e) => WeatherLocation.fromJson(e as Map<dynamic, dynamic>?))
+          .whereType<WeatherLocation>()
+          .toList(growable: false);
+    } catch (_) {
+      return const [];
+    }
+  }
+
   StreamSubscription<dynamic> addWeatherChangedListener(void Function(dynamic) onEvent) =>
       _weatherEventChannel.receiveBroadcastStream().listen(onEvent);
 

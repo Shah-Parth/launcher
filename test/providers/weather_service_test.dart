@@ -230,6 +230,7 @@ void builtInSourceTests() {
       when(channel.checkLocationPermission()).thenAnswer((_) async => true);
       when(channel.requestLocationPermission()).thenAnswer((_) async => true);
       when(channel.getDeviceLocation()).thenAnswer((_) async => dulles);
+      when(channel.geocodeLocationName(any)).thenAnswer((_) async => const []);
     });
 
     tearDown(() => stream.close());
@@ -377,12 +378,23 @@ void builtInSourceTests() {
       verifyNever(channel.openBreezyWeather());
     });
 
-    test('searchLocations delegates to the API and swallows failures', () async {
+    test('searchLocations prefers the device geocoder (knows postal codes) and falls back to the API', () async {
+      const stoneRidge = WeatherLocation(latitude: 38.93, longitude: -77.54, name: "Stone Ridge, Virginia, US");
+      when(channel.geocodeLocationName("20152")).thenAnswer((_) async => [stoneRidge]);
+      when(channel.geocodeLocationName("Nowhere")).thenAnswer((_) async => const []);
       final service = await start();
-      final results = await service.searchLocations("20152");
-      expect(results.single.name, "Result for 20152");
+
+      expect(await service.searchLocations("20152"), [stoneRidge]);
+      expect(api.searchCalls, 0, reason: "no network search when the device already resolved the query");
+
+      final results = await service.searchLocations("Nowhere");
+      expect(results.single.name, "Result for Nowhere");
+      expect(api.searchCalls, 1);
+
       api.failWith = const WeatherApiException("down");
-      expect(await service.searchLocations("20152"), isEmpty);
+      expect(await service.searchLocations("Nowhere"), isEmpty);
+      expect(await service.searchLocations("x"), isEmpty, reason: "too short to search");
+      verifyNever(channel.geocodeLocationName("x"));
     });
   });
 }

@@ -263,9 +263,17 @@ class WeatherService extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
+  /// Resolves a city or postal code to candidate places. The device's own
+  /// geocoder is tried first because it understands postal codes (e.g. US ZIPs)
+  /// and small places that Open-Meteo's gazetteer lacks; Open-Meteo is the
+  /// fallback for devices without a geocoder backend.
   Future<List<WeatherLocation>> searchLocations(String query) async {
+    final q = query.trim();
+    if (q.length < 2) return const [];
+    final fromDevice = await _channel.geocodeLocationName(q);
+    if (fromDevice.isNotEmpty) return fromDevice;
     try {
-      return await _api.searchLocations(query, language: _settings?.appLanguage.isNotEmpty == true ? _settings!.appLanguage : "en");
+      return await _api.searchLocations(q, language: _settings?.appLanguage.isNotEmpty == true ? _settings!.appLanguage : "en");
     } on WeatherApiException catch (e) {
       developer.log("searchLocations failed", error: e);
       return const [];

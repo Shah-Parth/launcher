@@ -201,6 +201,7 @@ public class MainActivity extends FlutterActivity {
                 case "checkLocationPermission" -> result.success(checkLocationPermission());
                 case "requestLocationPermission" -> requestLocationPermission(result);
                 case "getDeviceLocation" -> getDeviceLocation(result);
+                case "geocodeLocationName" -> geocodeLocationName(call.arguments(), result);
                 case "getPackageName" -> result.success(getPackageName());
                 case "playClickSound" -> {
                     getWindow().getDecorView().playSoundEffect(android.view.SoundEffectConstants.CLICK);
@@ -1713,6 +1714,50 @@ public class MainActivity extends FlutterActivity {
         String name = reverseGeocode(loc.getLatitude(), loc.getLongitude());
         if (name != null) map.put("name", name);
         return map;
+    }
+
+    /**
+     * Forward geocoding for the manual weather location: the platform Geocoder knows
+     * postal codes (e.g. US ZIPs) and small places that Open-Meteo's index does not.
+     * Answers a list of {latitude, longitude, name} maps (possibly empty) on the main thread.
+     */
+    private void geocodeLocationName(String query, MethodChannel.Result result) {
+        final Handler main = new Handler(Looper.getMainLooper());
+        sIoExecutor.execute(() -> {
+            final List<Map<String, Object>> out = new ArrayList<>();
+            try {
+                if (query != null && query.trim().length() >= 2 && android.location.Geocoder.isPresent()) {
+                    android.location.Geocoder geocoder = new android.location.Geocoder(this, java.util.Locale.getDefault());
+                    @SuppressWarnings("deprecation")
+                    List<android.location.Address> addresses = geocoder.getFromLocationName(query.trim(), 8);
+                    if (addresses != null) {
+                        for (android.location.Address a : addresses) {
+                            if (!a.hasLatitude() || !a.hasLongitude()) continue;
+                            Map<String, Object> m = new HashMap<>();
+                            m.put("latitude", a.getLatitude());
+                            m.put("longitude", a.getLongitude());
+                            String name = describeAddress(a);
+                            if (name != null) m.put("name", name);
+                            out.add(m);
+                        }
+                    }
+                }
+            } catch (Exception ignored) {
+                // Geocoder is best-effort (needs the backend + network); Dart falls back to Open-Meteo.
+            }
+            main.post(() -> result.success(out));
+        });
+    }
+
+    /** "City, Region, CC" style label; falls back to the first address line. */
+    private String describeAddress(android.location.Address a) {
+        String city = a.getLocality() != null ? a.getLocality()
+                : a.getSubAdminArea() != null ? a.getSubAdminArea() : a.getAdminArea();
+        if (city == null) return a.getMaxAddressLineIndex() >= 0 ? a.getAddressLine(0) : null;
+        StringBuilder sb = new StringBuilder(city);
+        if (a.getAdminArea() != null && !a.getAdminArea().equals(city)) sb.append(", ").append(a.getAdminArea());
+        if (a.getCountryCode() != null) sb.append(", ").append(a.getCountryCode());
+        return sb.toString();
     }
 
     private String reverseGeocode(double lat, double lon) {
